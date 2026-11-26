@@ -17,6 +17,7 @@ function App() {
   const [analytics, setAnalytics] = useState({ total: 0, today: 0, week: 0, unique: 0, error: '' })
   const [menu, setMenu] = useState(false)
   const [installPrompt, setInstallPrompt] = useState(null)
+  const [isInstalled, setIsInstalled] = useState(false)
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
   const [publicAuthOpen, setPublicAuthOpen] = useState(false)
@@ -328,6 +329,9 @@ function App() {
       setInstallPrompt(e)
     }
     window.addEventListener('beforeinstallprompt', handler)
+    const installedHandler = () => { setIsInstalled(true); setInstallPrompt(null) }
+    window.addEventListener('appinstalled', installedHandler)
+    setIsInstalled(window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true)
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL })
@@ -375,6 +379,7 @@ function App() {
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler)
+      window.removeEventListener('appinstalled', installedHandler)
       authListener.subscription.unsubscribe()
     }
   }, [])
@@ -389,6 +394,11 @@ function App() {
     "Администрирование": "Адміністрування",
     "МЕНЮ": "МЕНЮ",
     "Установить": "Встановити",
+    "Скачать приложение VORTEX UNIT": "Завантажити застосунок VORTEX UNIT",
+    "Установите приложение на устройство": "Встановіть застосунок на свій пристрій",
+    "Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».": "Відкрийте меню браузера та виберіть «Додати на головний екран» або «Встановити застосунок».",
+    "Приложение уже установлено": "Застосунок уже встановлено",
+    "Установка приложения запущена": "Встановлення застосунку розпочато",
     "NFT · DIGITAL UNITS": "NFT · ЦИФРОВІ ЮНІТИ",
     "Вход или регистрация": "Вхід або реєстрація",
     "Панель администратора": "Панель адміністратора",
@@ -522,6 +532,11 @@ function App() {
     "Администрирование": "Administration",
     "МЕНЮ": "MENU",
     "Установить": "Install",
+    "Скачать приложение VORTEX UNIT": "Download the VORTEX UNIT app",
+    "Установите приложение на устройство": "Install the app on your device",
+    "Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».": "Open your browser menu and choose “Add to Home screen” or “Install app”.",
+    "Приложение уже установлено": "The app is already installed",
+    "Установка приложения запущена": "App installation started",
     "NFT · DIGITAL UNITS": "NFT · DIGITAL UNITS",
     "Вход или регистрация": "Sign in or register",
     "Панель администратора": "Admin panel",
@@ -655,6 +670,11 @@ function App() {
     "Администрирование": "Administration",
     "МЕНЮ": "MENÜ",
     "Установить": "Installieren",
+    "Скачать приложение VORTEX UNIT": "VORTEX UNIT-App herunterladen",
+    "Установите приложение на устройство": "Installieren Sie die App auf Ihrem Gerät",
+    "Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».": "Öffnen Sie das Browsermenü und wählen Sie „Zum Startbildschirm hinzufügen“ oder „App installieren“.",
+    "Приложение уже установлено": "Die App ist bereits installiert",
+    "Установка приложения запущена": "App-Installation gestartet",
     "NFT · DIGITAL UNITS": "NFT · DIGITALE UNITS",
     "Вход или регистрация": "Anmelden oder registrieren",
     "Панель администратора": "Adminbereich",
@@ -788,6 +808,11 @@ function App() {
     "Администрирование": "Administration",
     "МЕНЮ": "MENU",
     "Установить": "Installer",
+    "Скачать приложение VORTEX UNIT": "Télécharger l’application VORTEX UNIT",
+    "Установите приложение на устройство": "Installez l’application sur votre appareil",
+    "Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».": "Ouvrez le menu du navigateur et choisissez « Ajouter à l’écran d’accueil » ou « Installer l’application ».",
+    "Приложение уже установлено": "L’application est déjà installée",
+    "Установка приложения запущена": "Installation de l’application lancée",
     "NFT · DIGITAL UNITS": "NFT · UNITÉS NUMÉRIQUES",
     "Вход или регистрация": "Connexion ou inscription",
     "Панель администратора": "Panneau administrateur",
@@ -904,6 +929,24 @@ function App() {
 }
 
   const t = value => translations[language]?.[value] || value
+
+  async function handleInstall() {
+    if (isInstalled) {
+      setNotice(t('Приложение уже установлено'))
+      return
+    }
+    if (installPrompt) {
+      try {
+        await installPrompt.prompt()
+        setInstallPrompt(null)
+        setNotice(t('Установка приложения запущена'))
+      } catch (error) {
+        setNotice(t('Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».'))
+      }
+      return
+    }
+    setNotice(t('Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».'))
+  }
 
   const referralLink = useMemo(
     () => `${location.origin}${import.meta.env.BASE_URL}?ref=${user?.id || 'YOUR_CODE'}`,
@@ -1164,6 +1207,7 @@ function App() {
             <Quick icon={<CreditCard />} title="Мои юниты" desc="Баланс и переводы" click={() => setTab('cards')} />
             <Quick icon={<Store />} title="P2P-рынок" desc="Покупка и продажа" click={() => setTab('market')} />
             <Quick icon={<Users />} title="Пригласить друга" desc="Получить юнит" click={() => setTab('referrals')} />
+            {!isInstalled && <Quick className="install-quick" icon={<Download />} title={t('Скачать приложение VORTEX UNIT')} desc={t('Установите приложение на устройство')} click={handleInstall} />}
           </div>
         </>}
 
@@ -1521,8 +1565,8 @@ function Stat({ label, value, icon }) {
   </div>
 }
 
-function Quick({ icon, title, desc, click }) {
-  return <button type="button" className="quick" onClick={click}>
+function Quick({ icon, title, desc, click, className = '' }) {
+  return <button type="button" className={`quick ${className}`} onClick={click}>
     <div className="quick-icon">{icon}</div>
     <div><b>{title}</b><span>{desc}</span></div>
     <span className="arrow">↗</span>
