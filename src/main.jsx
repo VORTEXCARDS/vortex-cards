@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createClient } from '@supabase/supabase-js'
 import {
   Home, CreditCard, Users, Store, UserRound, Shield, ArrowLeftRight,
-  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye
+  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, Mail
 } from 'lucide-react'
 import './style.css'
 
@@ -1130,7 +1130,8 @@ function App() {
     ['cards', t('Юниты'), CreditCard],
     ['market', t('Маркетплейс'), Store],
     ['referrals', t('Рефералы'), Users],
-    ['profile', t('Профиль'), UserRound]
+    ['profile', t('Профиль'), UserRound],
+    ['support', t('Поддержка'), Mail]
   ]
   const title = nav.find(x => x[0] === tab)?.[1] || (tab === 'admin' ? 'Администратор' : 'Обзор')
 
@@ -1212,6 +1213,8 @@ function App() {
             {!isInstalled && <Quick className="install-quick" icon={<Download />} title={t('Скачать приложение VORTEX UNIT')} desc={t('Установите приложение на устройство')} click={handleInstall} />}
           </div>
         </>}
+
+        {tab === 'support' && <SupportCenter userEmail={user?.email} language={language} />}
 
         {tab === 'cards' && <>
           <div className="balance-panel">
@@ -1526,12 +1529,49 @@ function App() {
           </form>}
         </section>}
       </main>
+      <section className="public-support-wrap"><SupportCenter language={language} /></section>
       <footer className="public-footer">© 2026 VORTEX UNIT <span>NFT · DIGITAL UNITS</span></footer>
     </div>
     return translateTree(publicPage, language, translations)
   }
 
   return translateTree(page, language, translations)
+}
+
+
+function SupportCenter({ userEmail = '', language = 'ru' }) {
+  const [replyEmail, setReplyEmail] = useState(userEmail || '')
+  const [topic, setTopic] = useState('Вопрос по аккаунту')
+  const [message, setMessage] = useState('')
+  const [sent, setSent] = useState(false)
+  const copy = {
+    ru: {title:'Центр поддержки',sub:'Мы на связи и готовы помочь.',email:'Ваш email для ответа',topic:'Тема обращения',message:'Опишите, чем мы можем помочь',send:'Написать в поддержку',direct:'Или напишите нам напрямую',hint:'При отправке откроется почтовое приложение с уже подготовленным письмом.',success:'Почтовое приложение открыто. Завершите отправку письма.',topics:['Вопрос по аккаунту','Проблема с входом','Юниты и переводы','Маркетплейс','Сообщить об ошибке','Другое'],required:'Укажите email и сообщение.'},
+    uk: {title:'Центр підтримки',sub:'Ми на зв’язку та готові допомогти.',email:'Ваш email для відповіді',topic:'Тема звернення',message:'Опишіть, чим ми можемо допомогти',send:'Написати до підтримки',direct:'Або напишіть нам напряму',hint:'Відкриється поштова програма з підготовленим листом.',success:'Поштову програму відкрито. Завершіть надсилання листа.',topics:['Питання щодо акаунта','Проблема зі входом','Юніти та перекази','Маркетплейс','Повідомити про помилку','Інше'],required:'Вкажіть email і повідомлення.'},
+    en: {title:'Support Center',sub:'We are here and ready to help.',email:'Your reply email',topic:'Request topic',message:'Tell us how we can help',send:'Contact support',direct:'Or email us directly',hint:'Your email app will open with a prepared message.',success:'Email app opened. Please finish sending your message.',topics:['Account question','Login problem','Units and transfers','Marketplace','Report a bug','Other'],required:'Enter your email and message.'},
+    de: {title:'Support-Center',sub:'Wir sind für Sie da und helfen gerne.',email:'Ihre Antwort-E-Mail',topic:'Thema der Anfrage',message:'Wie können wir Ihnen helfen?',send:'Support kontaktieren',direct:'Oder schreiben Sie uns direkt',hint:'Ihre E-Mail-App öffnet sich mit einer vorbereiteten Nachricht.',success:'E-Mail-App geöffnet. Bitte senden Sie die Nachricht ab.',topics:['Frage zum Konto','Anmeldeproblem','Units und Übertragungen','Marktplatz','Fehler melden','Sonstiges'],required:'E-Mail und Nachricht eingeben.'},
+    fr: {title:'Centre d’assistance',sub:'Nous sommes là pour vous aider.',email:'Votre adresse e-mail',topic:'Sujet de la demande',message:'Comment pouvons-nous vous aider ?',send:'Contacter le support',direct:'Ou écrivez-nous directement',hint:'Votre application e-mail s’ouvrira avec un message préparé.',success:'Application e-mail ouverte. Veuillez envoyer le message.',topics:['Question sur le compte','Problème de connexion','Units et transferts','Marketplace','Signaler un bug','Autre'],required:'Saisissez votre e-mail et votre message.'}
+  }
+  const c = copy[language] || copy.ru
+  function submit(e) {
+    e.preventDefault()
+    if (!replyEmail.trim() || !message.trim()) { window.alert(c.required); return }
+    const subject = '[VORTEX UNIT] ' + topic
+    const body = 'Email для ответа: ' + replyEmail.trim() + '\\n\\n' + message.trim()
+    window.location.href = 'mailto:support@vortexunit.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body)
+    setSent(true)
+  }
+  return <section className="support-center">
+    <div className="support-heading"><div className="support-mark"><Mail size={25} /></div><div><div className="eyebrow">VORTEX UNIT · CARE</div><h2>{c.title}</h2><p>{c.sub}</p></div></div>
+    <form className="support-form" onSubmit={submit}>
+      <label>{c.email}<input type="email" value={replyEmail} onChange={e=>setReplyEmail(e.target.value)} placeholder="name@example.com" required /></label>
+      <label>{c.topic}<select value={topic} onChange={e=>setTopic(e.target.value)}>{c.topics.map(x=><option key={x}>{x}</option>)}</select></label>
+      <label>{c.message}<textarea value={message} onChange={e=>setMessage(e.target.value)} rows="6" required placeholder="..." /></label>
+      <button className="primary full" type="submit"><Mail size={17}/>{c.send}</button>
+      {sent && <p className="support-success">{c.success}</p>}
+    </form>
+    <div className="support-direct"><span>{c.direct}</span><a href="mailto:support@vortexunit.com">support@vortexunit.com</a></div>
+    <p className="support-hint">{c.hint}</p>
+  </section>
 }
 
 function urlBase64ToUint8Array(base64String) {
