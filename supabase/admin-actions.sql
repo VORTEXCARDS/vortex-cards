@@ -137,3 +137,118 @@ grant execute on function public.admin_set_user_block(uuid, boolean, text) to au
 grant execute on function public.admin_resolve_complaint(uuid) to authenticated;
 grant execute on function public.admin_resolve_dispute(uuid, text) to authenticated;
 grant execute on function public.admin_review_buyback(uuid, boolean, text) to authenticated;
+
+
+-- Additional guarded administrator operations.
+create or replace function public.admin_issue_card(p_owner_id uuid, p_serial_number text)
+returns jsonb language plpgsql security definer set search_path = public, auth
+as $$
+declare v_card_id uuid;
+begin
+  if not public.is_admin() then raise exception 'Недостаточно прав администратора'; end if;
+  if p_owner_id is null or not exists (select 1 from auth.users where id = p_owner_id) then
+    raise exception 'Пользователь не найден';
+  end if;
+  if length(trim(coalesce(p_serial_number,''))) < 3 then raise exception 'Укажите серийный номер минимум из 3 символов'; end if;
+  insert into public.card_inventory(serial_number, owner_id, status)
+  values (trim(p_serial_number), p_owner_id, 'owned')
+  returning id into v_card_id;
+  insert into public.admin_audit_log(admin_id, action, entity_type, entity_id, details)
+  values (auth.uid(), 'card_issued', 'card', v_card_id, jsonb_build_object('owner_id',p_owner_id,'serial_number',trim(p_serial_number)));
+  return jsonb_build_object('id',v_card_id,'serial_number',trim(p_serial_number));
+end; $$;
+
+create or replace function public.admin_set_card_retired(p_card_id uuid, p_retired boolean)
+returns jsonb language plpgsql security definer set search_path = public, auth
+as $$
+begin
+  if not public.is_admin() then raise exception 'Недостаточно прав администратора'; end if;
+  update public.card_inventory
+    set status = case when p_retired then 'retired' else 'owned' end,
+        listing_id = case when p_retired then null else listing_id end,
+        updated_at = now()
+    where id = p_card_id and (p_retired or status = 'retired');
+  if not found then raise exception 'Карточка не найдена или её нельзя восстановить в текущем статусе'; end if;
+  insert into public.admin_audit_log(admin_id, action, entity_type, entity_id, details)
+  values (auth.uid(), case when p_retired then 'card_retired' else 'card_restored' end,
+          'card', p_card_id, '{}'::jsonb);
+  return jsonb_build_object('id',p_card_id,'status',case when p_retired then 'retired' else 'owned' end);
+end; $$;
+
+create or replace function public.admin_cancel_listing(p_listing_id uuid)
+returns jsonb language plpgsql security definer set search_path = public, auth
+as $$
+begin
+  if not public.is_admin() then raise exception 'Недостаточно прав администратора'; end if;
+  update public.market_listings set status = 'cancelled'
+    where id = p_listing_id and status = 'active';
+  if not found then raise exception 'Активное объявление не найдено'; end if;
+  update public.card_inventory set status = 'owned', listing_id = null, updated_at = now()
+    where listing_id = p_listing_id and status = 'listed';
+  insert into public.admin_audit_log(admin_id, action, entity_type, entity_id, details)
+  values (auth.uid(), 'listing_cancelled', 'market_listing', p_listing_id, '{}'::jsonb);
+  return jsonb_build_object('id',p_listing_id,'status','cancelled');
+end; $$;
+
+create or replace function public.admin_review_deposit(p_request_id uuid, p_status text, p_note text default null)
+returns jsonb language plpgsql security definer set search_path = public, auth
+as $$
+begin
+  if not public.is_admin() then raise exception 'Недостаточно прав администратора'; end if;
+  if p_status not in ('detected','confirming','rejected','expired') then
+    raise exception 'Разрешено только отметить обнаружение/подтверждение сети или отклонить заявку. Зачисление требует проверки платежа.';
+  end if;
+  update public.crypto_deposit_requests set status=p_status, admin_note=nullif(trim(coalesce(p_note,'')),''),
+    updated_at=now()
+    where id=p_request_id and status in ('pending','detected','confirming');
+  if not found then raise exception 'Заявка не найдена или уже обработана'; end if;
+  insert into public.admin_audit_log(admin_id, action, entity_type, entity_id, details)
+  values (auth.uid(), 'deposit_status_changed', 'crypto_deposit_request', p_request_id,
+          jsonb_build_object('status',p_status,'note',p_note));
+  return jsonb_build_object('id',p_request_id,'status',p_status);
+end; $$;
+
+create or replace function public.admin_review_withdrawal(p_request_id uuid, p_status text, p_note text default null)
+returns jsonb language plpgsql security definer set search_path = public, auth
+as $$
+begin
+  if not public.is_admin() then raise exception 'Недостаточно прав администратора'; end if;
+  if p_status not in ('under_review','rejected') then
+    raise exception 'Для безопасности доступна только проверка или отклонение. Реальная выплата требует платёжного провайдера.';
+  end if;
+  update public.crypto_withdrawal_requests set status=p_status, admin_note=nullif(trim(coalesce(p_note,'')),''),
+    updated_at=now()
+    where id=p_request_id and status in ('pending','under_review');
+  if not found then raise exception 'Заявка не найдена или уже обработана'; end if;
+  insert into public.admin_audit_log(admin_id, action, entity_type, entity_id, details)
+  values (auth.uid(), 'withdrawal_status_changed', 'crypto_withdrawal_request', p_request_id,
+          jsonb_build_object('status',p_status,'note',p_note));
+  return jsonb_build_object('id',p_request_id,'status',p_status);
+end; $$;
+
+create or replace function public.admin_reject_exchange(p_request_id uuid, p_note text default null)
+returns jsonb language plpgsql security definer set search_path = public, auth
+as $$
+begin
+  if not public.is_admin() then raise exception 'Недостаточно прав администратора'; end if;
+  update public.exchange_requests set status='rejected'
+    where id=p_request_id and status in ('pending','quoted');
+  if not found then raise exception 'Заявка не найдена или уже обработана'; end if;
+  insert into public.admin_audit_log(admin_id, action, entity_type, entity_id, details)
+  values (auth.uid(), 'exchange_rejected', 'exchange_request', p_request_id,
+          jsonb_build_object('note',p_note));
+  return jsonb_build_object('id',p_request_id,'status','rejected');
+end; $$;
+
+revoke all on function public.admin_issue_card(uuid,text) from public;
+revoke all on function public.admin_set_card_retired(uuid,boolean) from public;
+revoke all on function public.admin_cancel_listing(uuid) from public;
+revoke all on function public.admin_review_deposit(uuid,text,text) from public;
+revoke all on function public.admin_review_withdrawal(uuid,text,text) from public;
+revoke all on function public.admin_reject_exchange(uuid,text) from public;
+grant execute on function public.admin_issue_card(uuid,text) to authenticated;
+grant execute on function public.admin_set_card_retired(uuid,boolean) to authenticated;
+grant execute on function public.admin_cancel_listing(uuid) to authenticated;
+grant execute on function public.admin_review_deposit(uuid,text,text) to authenticated;
+grant execute on function public.admin_review_withdrawal(uuid,text,text) to authenticated;
+grant execute on function public.admin_reject_exchange(uuid,text) to authenticated;
