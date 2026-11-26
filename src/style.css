@@ -49,19 +49,10 @@ body{
 }
 .hero h2 span{color:var(--cyan);text-shadow:0 0 24px #19dcf244}
 .hero-card{
-  border-color:#71649f;
-  background:
-    radial-gradient(ellipse at 50% 48%,#263b52 0%,#1c263e 42%,#151526 76%,#10121e 100%),
-    radial-gradient(circle at 18% 50%,#873cff38 0,transparent 42%),
-    radial-gradient(circle at 82% 50%,#19dcf238 0,transparent 42%);
-  box-shadow:0 18px 45px #0009,0 0 26px #7841ca26,inset 0 1px #ffffff18;
+  border-color:#6d62a6;
+  background:linear-gradient(135deg,#3d2365 0%,#17233a 72%,#102b38);
+  box-shadow:0 18px 45px #0009,0 0 24px #7841ca22;
 }
-.hero-card:before{
-  content:"";position:absolute;inset:8px;border:1px solid #a99bd533;border-radius:10px;
-  background:linear-gradient(90deg,#873cff0b,transparent 35%,transparent 65%,#19dcf20b);
-  pointer-events:none;
-}
-.hero-card .card-top,.hero-card .card-bottom,.hero-card .card-unit{z-index:1}
 .orb{border-color:#19dcf2;box-shadow:0 0 25px #19dcf255,inset 0 0 18px #19dcf233}
 .orb div{border-color:#a34dff}
 .primary{
@@ -281,10 +272,10 @@ body{
 
 
 /* UNIT lettering centered on both VORTEX cards */
-.card-unit{position:absolute;width:67px;height:67px;left:calc(50% - 33px);top:42px;display:grid;place-items:center;border:1px solid #44365f;border-radius:15px;background:linear-gradient(145deg,#171326 0%,#101827 62%,#0b1c27 100%);box-shadow:0 0 22px #873cff45,0 0 20px #16d9ed28;overflow:hidden;color:#65f5e5;font-size:13px;font-weight:900;letter-spacing:1.6px;text-shadow:0 0 12px #19dcf288}
-.card-unit:before{content:"";position:absolute;inset:7px;border:1px solid #19dcf2;border-left-color:#a34dff;border-radius:11px;transform:rotate(30deg);opacity:.7}
+.card-unit{position:absolute;width:67px;height:67px;left:calc(50% - 33px);top:42px;display:grid;place-items:center;border:1px solid #53617b;border-radius:15px;background:radial-gradient(circle at 50% 45%,#26364b 0%,#1b2036 58%,#151426 100%);box-shadow:0 0 22px #873cff35,0 0 22px #16d9ed35,inset 0 0 18px #ffffff0b;overflow:hidden;color:#65f5e5;font-size:13px;font-weight:900;letter-spacing:1.6px;text-shadow:0 0 12px #19dcf288}
+.card-unit:before{content:"";position:absolute;inset:7px;border:1px solid #6d83a0;border-radius:10px;opacity:.65;background:linear-gradient(90deg,#873cff12,transparent 50%,#19dcf212)}
 .card-unit{isolation:isolate}
-.card-unit:after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#a78bfa22,transparent 55%,#19dcf222);pointer-events:none}
+.card-unit:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,#19dcf21c 0%,transparent 72%);pointer-events:none}
 @media(max-width:800px){
   .card-unit{width:45px;height:45px;left:calc(50% - 22px);top:31px;font-size:9px;letter-spacing:1px}
   .public-hero{display:flex;align-items:center;gap:12px;padding:20px}
