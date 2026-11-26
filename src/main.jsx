@@ -884,6 +884,12 @@ function App() {
     "Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.": "Seules les unités disponibles peuvent être transférées. Les unités mises en vente sont bloquées jusqu'au retrait de l'annonce.",
     "Перевести другому пользователю": "Transférer à un autre utilisateur",
     "Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.": "Les données sont chargées depuis Supabase. Les soldes sont calculés à partir du journal financier ; les demandes ne signifient pas à elles seules qu'un dépôt ou un paiement a eu lieu.",
+    "Push-уведомления": "Notifications push",
+    "Получать важные сообщения VORTEX UNIT на этом устройстве.": "Recevoir les messages importants de VORTEX UNIT sur cet appareil.",
+    "Разрешение сохраняется. Сервер отправки будет подключён отдельно.": "Votre autorisation est enregistrée. Le serveur d’envoi sera connecté séparément.",
+    "Получать push-уведомления": "Recevoir les notifications push",
+    "Перевести юниты другому пользователю": "Transférer des units à un autre utilisateur",
+    "Укажите email получателя и количество свободных юнитов. Юниты, выставленные на маркетплейс, передать нельзя.": "Indiquez l’adresse e-mail du destinataire et le nombre d’unités disponibles. Les units mises en vente sur la marketplace ne peuvent pas être transférées.",
   },
 }
 
@@ -1215,20 +1221,20 @@ function App() {
 
         {tab === 'profile' && <div className="profile-dashboard">
           <section className="panel auth-panel profile-account">
-            <h2>{user ? 'Аккаунт' : 'Вход или регистрация'}</h2>
+            <h2>{user ? t('Аккаунт') : t('Вход или регистрация')}</h2>
             {user && authMode !== 'reset' ? <>
               <p className="muted">{user.email}</p>
               <div className="push-settings-row">
                 <div className="push-settings-copy">
-                  <b>Push-уведомления</b>
-                  <span>{pushServerReady ? 'Получать важные сообщения VORTEX UNIT на этом устройстве.' : 'Разрешение сохраняется. Сервер отправки будет подключён отдельно.'}</span>
+                  <b>{t('Push-уведомления')}</b>
+                  <span>{pushServerReady ? t('Получать важные сообщения VORTEX UNIT на этом устройстве.') : t('Разрешение сохраняется. Сервер отправки будет подключён отдельно.')}</span>
                 </div>
-                <label className="push-switch" aria-label="Получать push-уведомления">
+                <label className="push-switch" aria-label={t('Получать push-уведомления')}>
                   <input type="checkbox" checked={pushEnabled} disabled={pushBusy} onChange={event => savePushPreference(event.target.checked)} />
                   <span className="push-switch-track"></span>
                 </label>
               </div>
-              <button type="button" className="outline" onClick={logout} disabled={busy}>Выйти</button>
+              <button type="button" className="outline" onClick={logout} disabled={busy}>{t('Выйти')}</button>
             </> : authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
               <p className="muted">Укажите email, который использовали при регистрации. Мы отправим на него ссылку для восстановления доступа.</p>
               <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
@@ -1249,8 +1255,8 @@ function App() {
           </section>
           {user && <>
             <section className="panel">
-              <h3>Перевести юниты другому пользователю</h3>
-              <p className="muted">Укажите email получателя и количество свободных юнитов. Юниты, выставленные на маркетплейс, передать нельзя.</p>
+              <h3>{t('Перевести юниты другому пользователю')}</h3>
+              <p className="muted">{t('Укажите email получателя и количество свободных юнитов. Юниты, выставленные на маркетплейс, передать нельзя.')}</p>
               <form onSubmit={transferCards}>
                 <label>{t('Email получателя')}<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
                 <label>{t('Количество юнитов')}<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
