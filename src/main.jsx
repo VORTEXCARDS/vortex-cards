@@ -37,6 +37,8 @@ function App() {
   const [transferEmail, setTransferEmail] = useState('')
   const [transferQuantity, setTransferQuantity] = useState('1')
   const [adminActionBusy, setAdminActionBusy] = useState(false)
+  const [issueOwnerId, setIssueOwnerId] = useState('')
+  const [issueSerial, setIssueSerial] = useState('')
 
   const adminTables = [
     { name: 'user_accounts', label: 'Аккаунты пользователей' },
@@ -120,6 +122,13 @@ function App() {
     } catch (error) {
       setNotice('Не удалось передать карточки: ' + (error.message || 'ошибка операции'))
     } finally { setBusy(false) }
+  }
+
+  async function issueCard(e) {
+    e.preventDefault()
+    if (!isAdmin || !issueOwnerId.trim() || !issueSerial.trim()) return
+    await runAdminAction('admin_issue_card', { p_owner_id: issueOwnerId.trim(), p_serial_number: issueSerial.trim() }, 'Карточка выпущена и закреплена за пользователем.')
+    setIssueSerial('')
   }
 
   async function runAdminAction(rpcName, args, successMessage) {
@@ -1009,6 +1018,15 @@ function App() {
                 </button>
               </>}
           </div>
+          {user && isAdmin && <div className="panel">
+            <h3>Выпустить карточку пользователю</h3>
+            <p className="muted">Укажите UUID пользователя из таблицы user_accounts и уникальный серийный номер. Выпуск создаёт запись в реестре карточек.</p>
+            <form className="listing-form" onSubmit={issueCard}>
+              <label>UUID пользователя<input value={issueOwnerId} onChange={e => setIssueOwnerId(e.target.value)} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required /></label>
+              <label>Серийный номер<input value={issueSerial} onChange={e => setIssueSerial(e.target.value)} placeholder="VTX-000001" required /></label>
+              <button type="submit" className="primary" disabled={adminActionBusy}>{adminActionBusy ? 'Выполняется...' : 'Выпустить карточку'}</button>
+            </form>
+          </div>}
           {user && isAdmin && <div className="panel analytics-panel">
             <div className="admin-head"><Users /><h2>{t('Статистика посещаемости')}</h2></div>
             {analytics.error ? <p className="muted">{analytics.error}. Выполните SQL-файл настройки аналитики в Supabase.</p> : <div className="admin-stats-grid">
@@ -1056,6 +1074,17 @@ function App() {
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: true, p_note: 'Заявка одобрена. Выплата не произведена.' }, 'Заявка на выкуп одобрена без проведения выплаты.')}>Одобрить</button>
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: false, p_note: 'Заявка отклонена администратором.' }, 'Заявка на выкуп отклонена.')}>Отклонить</button>
                               </>}
+                              {table.name === 'card_inventory' && row.status !== 'sold' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_card_retired', { p_card_id: row.id, p_retired: row.status !== 'retired' }, row.status === 'retired' ? 'Карточка восстановлена.' : 'Карточка выведена из обращения.')}>{row.status === 'retired' ? 'Восстановить' : 'Вывести из обращения'}</button>}
+                              {table.name === 'market_listings' && row.status === 'active' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_cancel_listing', { p_listing_id: row.id }, 'Объявление снято с продажи.')}>Снять с продажи</button>}
+                              {table.name === 'crypto_deposit_requests' && ['pending','detected','confirming'].includes(row.status) && <>
+                                <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_deposit', { p_request_id: row.id, p_status: 'confirming', p_note: 'Проверяется подтверждение транзакции в сети. Средства не зачислены.' }, 'Заявка переведена на проверку сети.')}>Проверить</button>
+                                <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_deposit', { p_request_id: row.id, p_status: 'rejected', p_note: 'Отклонено администратором после проверки.' }, 'Заявка на пополнение отклонена.')}>Отклонить</button>
+                              </>}
+                              {table.name === 'crypto_withdrawal_requests' && ['pending','under_review'].includes(row.status) && <>
+                                {row.status === 'pending' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_withdrawal', { p_request_id: row.id, p_status: 'under_review', p_note: 'Заявка взята на проверку. Выплата не отправлена.' }, 'Заявка взята на проверку; выплата не отправлена.')}>На проверку</button>}
+                                <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_withdrawal', { p_request_id: row.id, p_status: 'rejected', p_note: 'Отклонено администратором.' }, 'Заявка на вывод отклонена.')}>Отклонить</button>
+                              </>}
+                              {table.name === 'exchange_requests' && ['pending','quoted'].includes(row.status) && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_reject_exchange', { p_request_id: row.id, p_note: 'Обмен отклонён администратором.' }, 'Заявка на обмен отклонена.')}>Отклонить</button>}
                             </td>
                           </tr>)}
                         </tbody>
