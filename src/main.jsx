@@ -140,12 +140,6 @@ function App() {
       supabase.from('site_visits').insert({ path: location.pathname, session_id: sessionId, language }).then(({ error }) => { if (error) console.warn('Не удалось записать посещение:', error.message) })
     } catch (error) { console.warn('Аналитика посещений недоступна:', error) }
 
-    try {
-      let sessionId = sessionStorage.getItem('vortex-visit-session')
-      if (!sessionId) { sessionId = crypto.randomUUID(); sessionStorage.setItem('vortex-visit-session', sessionId) }
-      supabase.from('site_visits').insert({ path: location.pathname, session_id: sessionId, language }).then(({ error }) => { if (error) console.warn('Не удалось записать посещение:', error.message) })
-    } catch (error) { console.warn('Аналитика посещений недоступна:', error) }
-
     supabase.auth.getSession()
       .then(({ data, error }) => {
         if (error) throw error
