@@ -1298,6 +1298,71 @@ function App() {
       </main>
     </div>
   </div>
+
+  if (authLoading) return <div className="public-loading"><div className="brand-mark"><span className="brand-gem">V</span><span>VORTEX <b>CARDS</b></span></div><p>Проверяем вход в аккаунт...</p></div>
+
+  if (!user) {
+    const openPublicAuth = mode => {
+      setAuthMode(mode)
+      setPublicAuthOpen(true)
+      setNotice('')
+    }
+    const publicPage = <div className="public-shell">
+      <header className="public-topbar">
+        <div className="brand-mark"><span className="brand-gem">V</span><span>VORTEX <b>CARDS</b></span></div>
+        <div className="public-top-actions">
+          <label className="language-picker" aria-label="Language"><span>🌐</span><select value={language} onChange={e => setLanguage(e.target.value)}><option value="uk">Українська</option><option value="ru">Русский</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option></select></label>
+          <button type="button" className="outline" onClick={() => openPublicAuth('login')}>Войти</button>
+          <button type="button" className="primary" onClick={() => openPublicAuth('signup')}>Зарегистрироваться</button>
+        </div>
+      </header>
+      <main className="public-main">
+        <section className="public-hero">
+          <div className="public-copy">
+            <div className="pill"><Sparkles size={14} /> DIGITAL CARD ECONOMY</div>
+            <h1>Твоя карточка.<br /><span>Твои правила.</span></h1>
+            <p>VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.</p>
+            <div className="public-cta">
+              <button type="button" className="primary" onClick={() => openPublicAuth('signup')}>Создать аккаунт</button>
+              <button type="button" className="outline" onClick={() => openPublicAuth('login')}>У меня уже есть аккаунт</button>
+            </div>
+          </div>
+          <div className="hero-card public-card">
+            <div className="card-top"><span>VORTEX</span><span>GENESIS / 001</span></div>
+            <div className="orb"><div /></div>
+            <div className="card-bottom"><b>VORTEX CARD</b><span>OWN THE DIGITAL FLOW</span></div>
+          </div>
+        </section>
+        <section className="public-features">
+          <article><CreditCard /><b>Цифровые карточки</b><span>Личный кабинет и управление карточками после входа.</span></article>
+          <article><Store /><b>P2P-маркетплейс</b><span>Просмотр предложений и торговые функции для пользователей.</span></article>
+          <article><Users /><b>Сообщество</b><span>Приглашайте друзей и развивайтесь вместе с VORTEX.</span></article>
+        </section>
+        {notice && <div className="notice" role="status"><span>{notice}</span><button type="button" aria-label="Закрыть" onClick={() => setNotice('')}>×</button></div>}
+        {publicAuthOpen && <section className="panel auth-panel public-auth-panel" id="public-auth">
+          <div className="public-auth-heading"><h2>{authMode === 'signup' ? 'Регистрация VORTEXCARDS' : authMode === 'forgot' ? 'Восстановление пароля' : authMode === 'reset' ? 'Новый пароль' : 'Вход в аккаунт'}</h2><button type="button" className="outline" onClick={() => { setPublicAuthOpen(false); setNotice('') }}>Закрыть</button></div>
+          {authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
+            <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
+            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Отправляем...' : 'Отправить ссылку'}</button>
+            <button type="button" className="outline full" onClick={() => setAuthMode('login')}>Вернуться ко входу</button>
+          </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
+            <label>Новый пароль<input type="password" value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /></label>
+            <label>Повторите новый пароль<input type="password" value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /></label>
+            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Сохраняем...' : 'Сохранить новый пароль'}</button>
+          </form> : <form onSubmit={authMode === 'signup' ? e => { e.preventDefault(); signUp() } : signIn}>
+            <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
+            <label>Пароль<input type="password" value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} /></label>
+            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : authMode === 'signup' ? 'Зарегистрироваться' : 'Войти'}</button>
+            {authMode === 'login' && <button type="button" className="outline full" disabled={busy} onClick={() => setAuthMode('forgot')}>Забыли пароль?</button>}
+            <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode(authMode === 'signup' ? 'login' : 'signup'); setNotice('') }}>{authMode === 'signup' ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}</button>
+          </form>}
+        </section>}
+      </main>
+      <footer className="public-footer">© 2026 VORTEX CARDS <span>Digital card platform</span></footer>
+    </div>
+    return translateTree(publicPage, language, translations)
+  }
+
   return translateTree(page, language, translations)
 }
 
