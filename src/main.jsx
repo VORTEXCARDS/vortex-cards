@@ -7,6 +7,8 @@ import {
 } from 'lucide-react'
 import './style.css'
 
+try { sessionStorage.removeItem('vortex-startup-reload') } catch (_) {}
+
 const supabaseUrl = 'https://rrpjzfaqmkrawvtvpqfm.supabase.co'
 const supabaseKey = 'sb_publishable_giHUqFHf-WWatUkS7AqNPA_UVkgA1ps'
 const supabase = createClient(supabaseUrl, supabaseKey)
