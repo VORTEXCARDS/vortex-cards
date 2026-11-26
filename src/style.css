@@ -222,6 +222,8 @@ body{
 
 
 .account-danger-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px}
+.account-danger-actions .delete-account-btn{background:linear-gradient(135deg,#211b31,#292036);border:1px solid #59466f;border-radius:9px;padding:10px 14px;color:#d9cbed;font:inherit;font-weight:600;min-height:40px;box-shadow:none;transition:border-color .2s,background .2s,color .2s}
+.account-danger-actions .delete-account-btn:hover:not(:disabled){background:linear-gradient(135deg,#2b203c,#33223b);border-color:#8b5cf6;color:#fff}
 .delete-account-btn{background:linear-gradient(135deg,#7d2438,#a52e45);border:1px solid #d45a70;border-radius:9px;padding:10px 14px;color:#fff;font-weight:700;cursor:pointer}
 .delete-account-btn:disabled{opacity:.45;cursor:not-allowed}
 .delete-dialog-backdrop{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:18px;background:#05040bd9;backdrop-filter:blur(7px)}
