@@ -23,11 +23,9 @@ function App() {
   const [notice, setNotice] = useState('')
   const [busy, setBusy] = useState(false)
   const [cards, setCards] = useState(1)
-  const [listings, setListings] = useState([
-    { id: 1, seller: 'VortexPilot', qty: 2, price: 10 },
-    { id: 2, seller: 'NeonFox', qty: 5, price: 11 },
-    { id: 3, seller: 'CryptoWave', qty: 1, price: 12 }
-  ])
+  const [listings, setListings] = useState([])
+  const [marketLoading, setMarketLoading] = useState(false)
+  const [marketError, setMarketError] = useState('')
   const [qty, setQty] = useState('1')
   const [price, setPrice] = useState('10')
   const [referrals] = useState(0)
@@ -137,6 +135,32 @@ function App() {
     } finally { setAdminActionBusy(false) }
   }
 
+  async function loadMarketplace() {
+    setMarketLoading(true)
+    setMarketError('')
+    try {
+      const { data, error } = await supabase
+        .from('market_listings')
+        .select('id, seller_id, quantity, price, status, created_at')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(100)
+      if (error) throw error
+      setListings((data || []).map(item => ({
+        id: item.id,
+        seller: String(item.seller_id || '').slice(0, 8),
+        qty: Number(item.quantity || 0),
+        price: Number(item.price || 0),
+        createdAt: item.created_at
+      })))
+    } catch (error) {
+      setListings([])
+      setMarketError(error.message || 'Не удалось загрузить объявления')
+    } finally {
+      setMarketLoading(false)
+    }
+  }
+
   async function loadAdminData() {
     setAdminDataLoading(true)
     const results = await Promise.all(adminTables.map(async table => {
@@ -155,6 +179,10 @@ function App() {
   useEffect(() => {
     if (tab === 'admin' && isAdmin) { loadAdminData(); loadAnalytics() }
   }, [tab, isAdmin])
+
+  useEffect(() => {
+    if (tab === 'market') loadMarketplace()
+  }, [tab])
 
   async function checkAdmin(currentUser) {
     if (!currentUser) {
@@ -870,16 +898,20 @@ function App() {
               <button className="primary" type="submit">Выставить</button>
             </form>
           </div>
-          <div className="section-title">АКТИВНЫЕ ОБЪЯВЛЕНИЯ</div>
+          <div className="section-title">КАРТОЧКИ В ПРОДАЖЕ</div>
           <div className="listing-list">
-            {listings.map(item => <div className="listing" key={item.id}>
-              <div className="listing-avatar">{item.seller[0].toUpperCase()}</div>
-              <div className="listing-info"><b>{item.seller}</b><span>{item.qty} карточек доступно</span></div>
-              <div className="listing-price"><b>{item.price} ₴</b><span>за карточку</span></div>
-              <button type="button" className="outline" onClick={() => buy(item)}>Купить</button>
-            </div>)}
+            {marketLoading ? <p className="muted">Загружаем предложения...</p>
+              : marketError ? <p className="muted">Не удалось загрузить предложения: {marketError}</p>
+              : listings.length === 0 ? <div className="panel"><h3>Пока нет карточек в продаже</h3><p className="muted">Когда пользователи разместят реальные карточки, предложения появятся здесь.</p></div>
+              : listings.map(item => <div className="listing market-card" key={item.id}>
+                <div className="listing-avatar"><CreditCard /></div>
+                <div className="listing-info"><b>VORTEX CARD</b><span>Продавец: {item.seller} · {item.qty} шт.</span></div>
+                <div className="listing-price"><b>{item.price.toLocaleString('uk-UA')} ₴</b><span>за карточку</span></div>
+                <div className="listing-price"><b>{(item.price * item.qty).toLocaleString('uk-UA')} ₴</b><span>за всё количество</span></div>
+              </div>)}
           </div>
-          <p className="disclaimer">Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.</p>
+          <button type="button" className="outline" onClick={loadMarketplace} disabled={marketLoading}>Обновить предложения</button>
+          <p className="disclaimer">В витрине отображаются только реальные активные объявления из базы данных. Покупка и расчёты будут доступны после подключения безопасного механизма сделки.</p>
         </>}
 
         {tab === 'referrals' && <>
