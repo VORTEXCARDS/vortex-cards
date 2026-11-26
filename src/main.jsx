@@ -730,7 +730,7 @@ function App() {
     e.preventDefault()
     if (busy) return
     const cleanEmail = email.trim()
-    if (!cleanEmail || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(cleanEmail)) {
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
       setNotice('Введите правильный адрес электронной почты.')
       return
     }
