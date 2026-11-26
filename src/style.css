@@ -94,3 +94,47 @@ body{
 .language-options{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .language-chip{padding:8px 12px;border-radius:9px;border:1px solid #51406f;background:linear-gradient(120deg,#211936,#102532);color:#e8e2fa;font-size:12px}
 @media(max-width:520px){.top-actions{gap:7px}.language-picker{padding:5px 6px}.language-picker select{max-width:88px;font-size:10px}.admin-stats-grid{grid-template-columns:1fr 1fr}.admin-stats-grid .stat{padding:10px}.admin-stats-grid .stat b{font-size:18px}}
+
+
+/* Profile: responsive two-column financial and card areas */
+.profile-dashboard{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);
+  grid-template-areas:"account account" "financial cards";
+  gap:16px;
+  align-items:start;
+  width:100%;
+  max-width:100%;
+}
+.profile-dashboard>.panel{min-width:0;margin:0}
+.profile-account{grid-area:account;max-width:none}
+.profile-financial{grid-area:financial;max-width:none}
+.profile-cards{grid-area:cards;max-width:none}
+.profile-financial .admin-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.profile-financial .listing{min-width:0;overflow-wrap:anywhere}
+.owned-card-count{font-size:34px;font-weight:800;margin:14px 0;color:var(--cyan)}
+.owned-card-count span{font-size:12px;color:var(--muted);font-weight:500}
+.owned-cards-grid{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0}
+.owned-card{
+  min-height:155px;border:1px solid #66529a;border-radius:14px;padding:14px;
+  background:radial-gradient(circle at 78% 48%,#15516a 0,transparent 36%),linear-gradient(135deg,#43216e,#121d31 72%,#0d3440);
+  box-shadow:0 12px 28px #0005;display:flex;flex-direction:column;justify-content:space-between;
+  overflow:hidden;position:relative;
+}
+.owned-card-top,.owned-card-bottom{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.owned-card-top{font-size:9px;letter-spacing:1.2px;color:#e7ddff}
+.owned-card-symbol{font-size:34px;font-weight:800;color:#25e3ef;text-shadow:0 0 22px #25e3ef77;align-self:center}
+.owned-card-bottom b{font-size:10px;overflow-wrap:anywhere}
+.owned-card-bottom span{font-size:9px;color:#bcb4d6;text-align:right}
+.empty-cards{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:30px 14px;margin:14px 0;border:1px dashed #51416f;border-radius:12px;color:var(--cyan)}
+.empty-cards b{color:#f4f2ff;font-size:13px}
+.empty-cards span{color:var(--muted);font-size:11px;line-height:1.6}
+@media(max-width:900px){
+  .profile-dashboard{grid-template-columns:minmax(0,1fr);grid-template-areas:"account" "financial" "cards"}
+  .profile-financial .admin-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+  .profile-dashboard{gap:12px}
+  .profile-dashboard>.panel{padding:16px}
+  .owned-cards-grid{grid-template-columns:1fr}
+}
