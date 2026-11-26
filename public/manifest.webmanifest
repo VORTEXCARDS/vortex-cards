@@ -6,8 +6,8 @@
   "scope": "/vortex-cards/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#111827",
-  "theme_color": "#111827",
+  "background_color": "#080615",
+  "theme_color": "#080615",
   "icons": [
     {
       "src": "/vortex-cards/icon.svg",
