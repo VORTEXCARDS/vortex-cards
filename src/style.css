@@ -173,7 +173,7 @@ body{
 .public-copy h1 span{color:var(--cyan);text-shadow:0 0 24px #19dcf244}
 .public-copy p{max-width:570px;color:var(--muted);font-size:15px;line-height:1.8}
 .public-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
-.public-card{margin:20px 12px;flex:0 0 240px}
+.public-card{margin:20px 12px;flex:0 0 240px;align-self:center}
 .public-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
 .public-features article{display:flex;flex-direction:column;gap:10px;padding:22px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(145deg,#121426,#0d1421)}
 .public-features article svg{color:var(--cyan);width:25px;height:25px}
