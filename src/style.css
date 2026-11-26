@@ -209,7 +209,7 @@ body{
 .support-form{display:grid;gap:15px}
 .support-form label{display:grid;gap:8px;color:#c9c4dc;font-size:12px;font-weight:700}
 .support-form input,.support-form select,.support-form textarea{width:100%;min-width:0;border:1px solid #383451;border-radius:10px;background:#090e1a;color:#f4f2ff;padding:13px 14px;font:inherit;font-size:13px;outline:none}
-.support-form textarea{resize:vertical;min-height:130px;line-height:1.6}
+.support-form textarea{resize:none;min-height:130px;line-height:1.6;-webkit-appearance:none;appearance:none}
 .support-form input:focus,.support-form select:focus,.support-form textarea:focus{border-color:#a34dff;box-shadow:0 0 0 3px #a34dff20}
 .support-form select option{background:#111321;color:#fff}
 .support-form .primary{min-height:48px}
