@@ -72,8 +72,8 @@ create table if not exists public.exchange_requests (
   from_asset text not null check (from_asset in ('USDT','BTC','ETH','TON','USDC')),
   to_asset text not null default 'VTX' check (to_asset = 'VTX'),
   amount_in numeric(38,18) not null check (amount_in > 0),
-  rate numeric(38,18) not null check (rate > 0),
-  amount_out numeric(38,18) not null check (amount_out > 0),
+  rate numeric(38,18) check (rate is null or rate > 0),
+  amount_out numeric(38,18) check (amount_out is null or amount_out > 0),
   fee numeric(38,18) not null default 0 check (fee >= 0),
   status text not null default 'pending'
     check (status in ('pending','quoted','completed','rejected','cancelled')),
@@ -140,6 +140,7 @@ drop policy if exists "Users create own exchange requests" on public.exchange_re
 create policy "Users create own exchange requests" on public.exchange_requests
   for insert to authenticated with check (
     user_id = auth.uid() and status = 'pending' and completed_at is null
+    and rate is null and amount_out is null and fee = 0
   );
 
 drop policy if exists "Users read own cards" on public.card_inventory;
