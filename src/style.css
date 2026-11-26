@@ -49,10 +49,19 @@ body{
 }
 .hero h2 span{color:var(--cyan);text-shadow:0 0 24px #19dcf244}
 .hero-card{
-  border-color:#6d62a6;
-  background:linear-gradient(135deg,#3d2365 0%,#17233a 72%,#102b38);
-  box-shadow:0 18px 45px #0009,0 0 24px #7841ca22;
+  border-color:#71649f;
+  background:
+    radial-gradient(ellipse at 50% 48%,#263b52 0%,#1c263e 42%,#151526 76%,#10121e 100%),
+    radial-gradient(circle at 18% 50%,#873cff38 0,transparent 42%),
+    radial-gradient(circle at 82% 50%,#19dcf238 0,transparent 42%);
+  box-shadow:0 18px 45px #0009,0 0 26px #7841ca26,inset 0 1px #ffffff18;
 }
+.hero-card:before{
+  content:"";position:absolute;inset:8px;border:1px solid #a99bd533;border-radius:10px;
+  background:linear-gradient(90deg,#873cff0b,transparent 35%,transparent 65%,#19dcf20b);
+  pointer-events:none;
+}
+.hero-card .card-top,.hero-card .card-bottom,.hero-card .card-unit{z-index:1}
 .orb{border-color:#19dcf2;box-shadow:0 0 25px #19dcf255,inset 0 0 18px #19dcf233}
 .orb div{border-color:#a34dff}
 .primary{
