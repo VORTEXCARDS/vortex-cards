@@ -51,13 +51,13 @@ function App() {
 
   const adminTables = [
     { name: 'user_accounts', label: 'Аккаунты пользователей' },
-    { name: 'card_balances', label: 'Баланс карточек' },
+    { name: 'card_balances', label: 'Баланс юнитов' },
     { name: 'market_listings', label: 'Объявления маркетплейса' },
     { name: 'complaints', label: 'Жалобы' },
     { name: 'disputes', label: 'Спорные сделки' },
     { name: 'buyback_requests', label: 'Заявки на выкуп' },
     { name: 'admin_audit_log', label: 'Журнал действий администратора' },
-    { name: 'card_inventory', label: 'Реестр выпущенных карточек' },
+    { name: 'card_inventory', label: 'Реестр выпущенных юнитов' },
     { name: 'wallet_ledger', label: 'Финансовый журнал' },
     { name: 'crypto_deposit_requests', label: 'Заявки на пополнение криптовалютой' },
     { name: 'crypto_withdrawal_requests', label: 'Заявки на вывод криптовалюты' },
@@ -116,7 +116,7 @@ function App() {
     if (!user) { setNotice('Сначала войдите в аккаунт.'); return }
     const quantity = Number(transferQuantity)
     if (!transferEmail.trim() || !Number.isInteger(quantity) || quantity < 1) {
-      setNotice('Укажите email получателя и целое количество карточек.'); return
+      setNotice('Укажите email получателя и целое количество юнитов.'); return
     }
     setBusy(true)
     try {
@@ -127,16 +127,16 @@ function App() {
       setTransferEmail('')
       setTransferQuantity('1')
       await loadFinancialData()
-      setNotice(`Успешно передано карточек: ${data?.transferred ?? quantity}.`)
+      setNotice(`Успешно передано юнитов: ${data?.transferred ?? quantity}.`)
     } catch (error) {
-      setNotice('Не удалось передать карточки: ' + (error.message || 'ошибка операции'))
+      setNotice('Не удалось передать юниты: ' + (error.message || 'ошибка операции'))
     } finally { setBusy(false) }
   }
 
   async function issueCard(e) {
     e.preventDefault()
     if (!isAdmin || !issueOwnerId.trim() || !issueSerial.trim()) return
-    await runAdminAction('admin_issue_card', { p_owner_id: issueOwnerId.trim(), p_serial_number: issueSerial.trim() }, 'Карточка выпущена и закреплена за пользователем.')
+    await runAdminAction('admin_issue_card', { p_owner_id: issueOwnerId.trim(), p_serial_number: issueSerial.trim() }, 'Юнит выпущена и закреплена за пользователем.')
     setIssueSerial('')
   }
 
@@ -382,50 +382,50 @@ function App() {
   const translations = {
   "uk": {
     "Обзор": "Огляд",
-    "Карточки": "Картки",
+    "Юниты": "Юніти",
     "Маркетплейс": "Маркетплейс",
     "Рефералы": "Реферали",
     "Профиль": "Профіль",
     "Администрирование": "Адміністрування",
     "МЕНЮ": "МЕНЮ",
     "Установить": "Встановити",
-    "DIGITAL CARD ECONOMY": "ЦИФРОВА ЕКОНОМІКА КАРТОК",
+    "NFT · DIGITAL UNITS": "ЦИФРОВА ЕКОНОМІКА КАРТОК",
     "Вход или регистрация": "Вхід або реєстрація",
     "Панель администратора": "Панель адміністратора",
     "Статистика посещаемости": "Статистика відвідуваності",
     "Языки сайта": "Мови сайту",
     "Администратор": "Адміністратор",
     "Закрыть": "Закрити",
-    "Твоя карточка.": "Твоя картка.",
-    "Твои правила.": "Твої правила.",
-    "Управляй карточками, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX.": "Керуй картками, запрошуй друзів і торгуй на P2P-маркетплейсі VORTEX.",
+    "Твой юнит.": "Твоя юнит.",
+    "Одна единица. Своя ценность.": "Твої правила.",
+    "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Керуй юнитми, запрошуй друзів і торгуй на P2P-маркетплейсі VORTEX.",
     "Открыть маркетплейс": "Відкрити маркетплейс",
-    "МОИ КАРТОЧКИ": "МОЇ КАРТКИ",
+    "МОИ ЮНИТЫ": "МОЇ КАРТКИ",
     "РЕФЕРАЛЫ": "РЕФЕРАЛИ",
     "ЦЕНА ВЫКУПА*": "ЦІНА ВИКУПУ*",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "ШВИДКІ ДІЇ",
-    "Мои карточки": "Мої картки",
+    "Мои юниты": "Мої юніти",
     "Баланс и переводы": "Баланс і перекази",
     "P2P-рынок": "P2P-ринок",
     "Покупка и продажа": "Купівля та продаж",
     "Пригласить друга": "Запросити друга",
-    "Получить карточку": "Отримати картку",
+    "Получить юнит": "Отримати юніт",
     "ДОСТУПНЫЙ БАЛАНС": "ДОСТУПНИЙ БАЛАНС",
-    "Передать карточки": "Передати картки",
+    "Передать юниты": "Передати юніти",
     "В демонстрационном режиме переводы не выполняются.": "У демонстраційному режимі перекази не виконуються.",
     "Email или ID получателя": "Email або ID отримувача",
-    "Количество карточек": "Кількість карток",
+    "Количество юнитов": "Кількість юнитів",
     "Передать": "Передати",
     "P2P маркетплейс": "P2P маркетплейс",
     "Пользователи устанавливают собственные цены.": "Користувачі встановлюють власні ціни.",
     "КОМИССИЯ 5%": "КОМІСІЯ 5%",
     "Создать объявление": "Створити оголошення",
     "Количество": "Кількість",
-    "Цена за карточку, ₴": "Ціна за картку, ₴",
+    "Цена за юнит, ₴": "Ціна за юніт, ₴",
     "Выставить": "Виставити",
     "АКТИВНЫЕ ОБЪЯВЛЕНИЯ": "АКТИВНІ ОГОЛОШЕННЯ",
-    "карточек доступно": "карток доступно",
-    "за карточку": "за картку",
+    "юнитов доступно": "юнитів доступно",
+    "за юнит": "за юніт",
     "Купить": "Купити",
     "Расти вместе с VORTEX": "Рости разом із VORTEX",
     "ПРИГЛАШЕНО": "ЗАПРОШЕНО",
@@ -445,11 +445,11 @@ function App() {
     "Заявки на обмен в VTX": "Заявки на обмін у VTX",
     "Заявок нет.": "Заявок немає.",
     "Обновить финансовые данные": "Оновити фінансові дані",
-    "Ваши карточки, зарегистрированные в реестре VORTEX.": "Ваші картки, зареєстровані в реєстрі VORTEX.",
-    "карточек": "карток",
-    "Пока нет карточек": "Поки немає карток",
-    "Когда карточки будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Коли картки буде випущено та закріплено за вашим обліковим записом, вони з’являться тут.",
-    "Обновить карточки": "Оновити картки",
+    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Ваші юніти, зареєстровані в реєстрі VORTEX.",
+    "юнитов": "юнитів",
+    "Пока нет юнитов": "Поки немає юнитів",
+    "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Коли юніти буде випущено та закріплено за вашим обліковим записом, вони з’являться тут.",
+    "Обновить юниты": "Оновити юніти",
     "На продаже": "На продажу",
     "Зарезервирована": "Зарезервована",
     "Продана": "Продана",
@@ -470,32 +470,31 @@ function App() {
     "Записей пока нет.": "Записів поки немає.",
     "Загружаем таблицы базы данных...": "Завантажуємо таблиці бази даних...",
 
-    "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "20 ₴ — затверджена цільова ціна викупу. Виплати можливі лише за наявності фінансування та після перевірки умов програми.",
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Для безпечних переказів потрібна підключена серверна операція Supabase.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Показано демонстраційні оголошення. Реальні розрахунки, резервування карток та утримання комісії поки не підключені.",
-    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "Той, хто запросив, отримує 1 додаткову картку після підтвердженої реєстрації реферала. Новий користувач отримує стартову картку.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование юнитов и удержание комиссии пока не подключены.": "Показано демонстраційні оголошення. Реальні розрахунки, резервування юнитів та утримання комісії поки не підключені.",
+    "Пригласивший получает 1 дополнительную юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовую юнит.": "Той, хто запросив, отримує 1 додаткову юніт після підтвердженої реєстрації реферала. Новий користувач отримує стартову юніт.",
     "Ссылка скопирована": "Посилання скопійовано",
     "Не удалось скопировать ссылку": "Не вдалося скопіювати посилання",
     "Загрузка данных...": "Завантаження даних...",
-    "Загрузка карточек...": "Завантаження карток...",
-    "Карточки пока не удалось загрузить.": "Не вдалося завантажити картки.",
+    "Загрузка юнитов...": "Завантаження юнитів...",
+    "Юниты пока не удалось загрузить.": "Не вдалося завантажити юніти.",
     "Ошибка загрузки:": "Помилка завантаження:",
     "Сумма не указана": "Суму не вказано",
     "Показано записей:": "Показано записів:",
-    "карточек доступно": "карток доступно",
-    "за карточку": "за картку",
+    "юнитов доступно": "юнитів доступно",
+    "за юнит": "за юніт",
     "ЦЕНА ВЫКУПА": "ЦІНА ВИКУПУ",
-    "Digital card platform": "Платформа цифрових карток",
+    "Digital card platform": "Платформа цифрових юнитів",
     "Зарегистрироваться": "Зареєструватися",
-    "VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEXCARDS — цифрова платформа карток. Створіть обліковий запис, керуйте своїми картками та відкривайте можливості платформи.",
+    "VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.": "VORTEXUNITS — цифрова платформа юнитів. Створіть обліковий запис, керуйте своїми юнитми та відкривайте можливості платформи.",
     "У меня уже есть аккаунт": "У мене вже є обліковий запис",
-    "Цифровые карточки": "Цифрові картки",
-    "Личный кабинет и управление карточками после входа.": "Особистий кабінет і керування картками після входу.",
+    "Юниты и NFT": "Цифрові юніти",
+    "Личный кабинет и управление юнитми после входа.": "Особистий кабінет і керування юнитми після входу.",
     "P2P-маркетплейс": "P2P-маркетплейс",
     "Просмотр предложений и торговые функции для пользователей.": "Перегляд пропозицій і торгові функції для користувачів.",
     "Сообщество": "Спільнота",
     "Приглашайте друзей и развивайтесь вместе с VORTEX.": "Запрошуйте друзів і розвивайтеся разом із VORTEX.",
-    "Регистрация VORTEXCARDS": "Реєстрація VORTEXCARDS",
+    "Регистрация VORTEX UNIT": "Реєстрація VORTEXUNITS",
     "Восстановление пароля": "Відновлення пароля",
     "Новый пароль": "Новий пароль",
     "Вход в аккаунт": "Вхід до облікового запису",
@@ -511,50 +510,50 @@ function App() {
   },
   "en": {
     "Обзор": "Overview",
-    "Карточки": "Cards",
+    "Юниты": "Units",
     "Маркетплейс": "Marketplace",
     "Рефералы": "Referrals",
     "Профиль": "Profile",
     "Администрирование": "Administration",
     "МЕНЮ": "MENU",
     "Установить": "Install",
-    "DIGITAL CARD ECONOMY": "DIGITAL CARD ECONOMY",
+    "DIGITAL UNIT ECONOMY": "DIGITAL UNIT ECONOMY",
     "Вход или регистрация": "Sign in or register",
     "Панель администратора": "Admin panel",
     "Статистика посещаемости": "Traffic statistics",
     "Языки сайта": "Website languages",
     "Администратор": "Administrator",
     "Закрыть": "Close",
-    "Твоя карточка.": "Your card.",
+    "Твой юнит.": "Your UNIT.",
     "Твои правила.": "Your rules.",
-    "Управляй карточками, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX.": "Manage cards, invite friends, and trade on the VORTEX P2P marketplace.",
+    "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Manage units, invite friends, and trade on the VORTEX P2P marketplace.",
     "Открыть маркетплейс": "Open marketplace",
-    "МОИ КАРТОЧКИ": "MY CARDS",
+    "МОИ ЮНИТЫ": "MY UNITS",
     "РЕФЕРАЛЫ": "REFERRALS",
     "ЦЕНА ВЫКУПА*": "BUYBACK PRICE*",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "QUICK ACTIONS",
-    "Мои карточки": "My cards",
+    "Мои юниты": "My units",
     "Баланс и переводы": "Balance and transfers",
     "P2P-рынок": "P2P market",
     "Покупка и продажа": "Buy and sell",
     "Пригласить друга": "Invite a friend",
-    "Получить карточку": "Get a card",
+    "Получить юнит": "Get a UNIT",
     "ДОСТУПНЫЙ БАЛАНС": "AVAILABLE BALANCE",
-    "Передать карточки": "Transfer cards",
+    "Передать юниты": "Transfer units",
     "В демонстрационном режиме переводы не выполняются.": "Transfers are disabled in demo mode.",
     "Email или ID получателя": "Recipient email or ID",
-    "Количество карточек": "Number of cards",
+    "Количество юнитов": "Number of units",
     "Передать": "Transfer",
     "P2P маркетплейс": "P2P marketplace",
     "Пользователи устанавливают собственные цены.": "Users set their own prices.",
     "КОМИССИЯ 5%": "5% FEE",
     "Создать объявление": "Create listing",
     "Количество": "Quantity",
-    "Цена за карточку, ₴": "Price per card, ₴",
+    "Цена за юнит, ₴": "Price per UNIT, ₴",
     "Выставить": "List for sale",
     "АКТИВНЫЕ ОБЪЯВЛЕНИЯ": "ACTIVE LISTINGS",
-    "карточек доступно": "cards available",
-    "за карточку": "per card",
+    "юнитов доступно": "units available",
+    "за юнит": "per UNIT",
     "Купить": "Buy",
     "Расти вместе с VORTEX": "Grow with VORTEX",
     "ПРИГЛАШЕНО": "INVITED",
@@ -574,11 +573,11 @@ function App() {
     "Заявки на обмен в VTX": "Exchange requests to VTX",
     "Заявок нет.": "No requests.",
     "Обновить финансовые данные": "Refresh financial data",
-    "Ваши карточки, зарегистрированные в реестре VORTEX.": "Your cards registered in the VORTEX registry.",
-    "карточек": "cards",
-    "Пока нет карточек": "No cards yet",
-    "Когда карточки будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Cards issued and assigned to your account will appear here.",
-    "Обновить карточки": "Refresh cards",
+    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Your units registered in the VORTEX registry.",
+    "юнитов": "units",
+    "Пока нет юнитов": "No units yet",
+    "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Units issued and assigned to your account will appear here.",
+    "Обновить юниты": "Refresh units",
     "На продаже": "Listed",
     "Зарезервирована": "Reserved",
     "Продана": "Sold",
@@ -599,15 +598,15 @@ function App() {
     "Записей пока нет.": "No records yet.",
     "Загружаем таблицы базы данных...": "Loading database tables...",
     "Зарегистрироваться": "Register",
-    "VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEXCARDS is a digital card platform. Create an account, manage your cards, and explore the platform.",
+    "VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.": "VORTEXUNITS is a digital UNIT platform. Create an account, manage your units, and explore the platform.",
     "У меня уже есть аккаунт": "I already have an account",
-    "Цифровые карточки": "Digital cards",
-    "Личный кабинет и управление карточками после входа.": "Personal dashboard and card management after signing in.",
+    "Цифровые юниты": "Digital units",
+    "Личный кабинет и управление юнитми после входа.": "Personal dashboard and UNIT management after signing in.",
     "P2P-маркетплейс": "P2P marketplace",
     "Просмотр предложений и торговые функции для пользователей.": "Browse listings and use trading features.",
     "Сообщество": "Community",
     "Приглашайте друзей и развивайтесь вместе с VORTEX.": "Invite friends and grow together with VORTEX.",
-    "Регистрация VORTEXCARDS": "VORTEXCARDS registration",
+    "Регистрация VORTEX UNIT": "VORTEXUNITS registration",
     "Восстановление пароля": "Password recovery",
     "Новый пароль": "New password",
     "Вход в аккаунт": "Sign in",
@@ -621,69 +620,68 @@ function App() {
     "Уже есть аккаунт? Войти": "Already have an account? Sign in",
     "Нет аккаунта? Зарегистрироваться": "No account? Register",
 
-    "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "₴20 is the approved target buyback price. Payouts are subject to available funding and program eligibility checks.",
-    "Для безопасных переводов требуется подключённая серверная операция Supabase.": "A secure Supabase server operation is required to transfer cards.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "These are sample listings. Real payments, card reservations, and fee collection are not connected yet.",
-    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "The inviter receives 1 extra card after the referral registration is confirmed. The new user receives a starter card.",
+    "Для безопасных переводов требуется подключённая серверная операция Supabase.": "A secure Supabase server operation is required to transfer units.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование юнитов и удержание комиссии пока не подключены.": "These are sample listings. Real payments, UNIT reservations, and fee collection are not connected yet.",
+    "Пригласивший получает 1 дополнительную юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовую юнит.": "The inviter receives 1 extra UNIT after the referral registration is confirmed. The new user receives a starter UNIT.",
     "Ссылка скопирована": "Link copied",
     "Не удалось скопировать ссылку": "Could not copy the link",
     "Загрузка данных...": "Loading data...",
-    "Загрузка карточек...": "Loading cards...",
-    "Карточки пока не удалось загрузить.": "Cards could not be loaded yet.",
+    "Загрузка юнитов...": "Loading units...",
+    "Юниты пока не удалось загрузить.": "Units could not be loaded yet.",
     "Ошибка загрузки:": "Loading error:",
     "Сумма не указана": "Amount not specified",
     "Показано записей:": "Records shown:",
-    "карточек доступно": "cards available",
-    "за карточку": "per card",
+    "юнитов доступно": "units available",
+    "за юнит": "per UNIT",
     "ЦЕНА ВЫКУПА": "BUYBACK PRICE",
-    "Digital card platform": "Digital card platform",
+    "Digital card platform": "Digital UNIT platform",
   },
   "de": {
     "Обзор": "Übersicht",
-    "Карточки": "Karten",
+    "Юниты": "Units",
     "Маркетплейс": "Marktplatz",
     "Рефералы": "Empfehlungen",
     "Профиль": "Profil",
     "Администрирование": "Administration",
     "МЕНЮ": "MENÜ",
     "Установить": "Installieren",
-    "DIGITAL CARD ECONOMY": "DIGITALE KARTENWIRTSCHAFT",
+    "DIGITAL UNIT ECONOMY": "DIGITALE KARTENWIRTSCHAFT",
     "Вход или регистрация": "Anmelden oder registrieren",
     "Панель администратора": "Adminbereich",
     "Статистика посещаемости": "Besucherstatistik",
     "Языки сайта": "Website-Sprachen",
     "Администратор": "Administrator",
     "Закрыть": "Schließen",
-    "Твоя карточка.": "Deine Karte.",
+    "Твой юнит.": "Deine UNIT.",
     "Твои правила.": "Deine Regeln.",
-    "Управляй карточками, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX.": "Verwalte Karten, lade Freunde ein und handle auf dem VORTEX-P2P-Marktplatz.",
+    "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Verwalte Units, lade Freunde ein und handle auf dem VORTEX-P2P-Marktplatz.",
     "Открыть маркетплейс": "Marktplatz öffnen",
-    "МОИ КАРТОЧКИ": "MEINE KARTEN",
+    "МОИ ЮНИТЫ": "MEINE KARTEN",
     "РЕФЕРАЛЫ": "EMPFEHLUNGEN",
     "ЦЕНА ВЫКУПА*": "RÜCKKAUFPREIS*",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "SCHNELLZUGRIFFE",
-    "Мои карточки": "Meine Karten",
+    "Мои юниты": "Meine Units",
     "Баланс и переводы": "Guthaben und Überweisungen",
     "P2P-рынок": "P2P-Markt",
     "Покупка и продажа": "Kaufen und verkaufen",
     "Пригласить друга": "Freund einladen",
-    "Получить карточку": "Karte erhalten",
+    "Получить юнит": "UNIT erhalten",
     "ДОСТУПНЫЙ БАЛАНС": "VERFÜGBARES GUTHABEN",
-    "Передать карточки": "Karten übertragen",
+    "Передать юниты": "Units übertragen",
     "В демонстрационном режиме переводы не выполняются.": "Im Demomodus sind Übertragungen deaktiviert.",
     "Email или ID получателя": "E-Mail oder Empfänger-ID",
-    "Количество карточек": "Anzahl der Karten",
+    "Количество юнитов": "Anzahl der Units",
     "Передать": "Übertragen",
     "P2P маркетплейс": "P2P-Marktplatz",
     "Пользователи устанавливают собственные цены.": "Nutzer legen ihre eigenen Preise fest.",
     "КОМИССИЯ 5%": "5 % GEBÜHR",
     "Создать объявление": "Anzeige erstellen",
     "Количество": "Menge",
-    "Цена за карточку, ₴": "Preis pro Karte, ₴",
+    "Цена за юнит, ₴": "Preis pro UNIT, ₴",
     "Выставить": "Einstellen",
     "АКТИВНЫЕ ОБЪЯВЛЕНИЯ": "AKTIVE ANGEBOTE",
-    "карточек доступно": "Karten verfügbar",
-    "за карточку": "pro Karte",
+    "юнитов доступно": "Units verfügbar",
+    "за юнит": "pro UNIT",
     "Купить": "Kaufen",
     "Расти вместе с VORTEX": "Wachse mit VORTEX",
     "ПРИГЛАШЕНО": "EINGELADEN",
@@ -703,11 +701,11 @@ function App() {
     "Заявки на обмен в VTX": "Tauschanfragen in VTX",
     "Заявок нет.": "Keine Anfragen.",
     "Обновить финансовые данные": "Finanzdaten aktualisieren",
-    "Ваши карточки, зарегистрированные в реестре VORTEX.": "Ihre im VORTEX-Register erfassten Karten.",
-    "карточек": "Karten",
-    "Пока нет карточек": "Noch keine Karten",
-    "Когда карточки будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Ausgestellte und Ihrem Konto zugewiesene Karten erscheinen hier.",
-    "Обновить карточки": "Karten aktualisieren",
+    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Ihre im VORTEX-Register erfassten Units.",
+    "юнитов": "Units",
+    "Пока нет юнитов": "Noch keine Units",
+    "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Ausgestellte und Ihrem Konto zugewiesene Units erscheinen hier.",
+    "Обновить юниты": "Units aktualisieren",
     "На продаже": "Im Angebot",
     "Зарезервирована": "Reserviert",
     "Продана": "Verkauft",
@@ -728,15 +726,15 @@ function App() {
     "Записей пока нет.": "Noch keine Einträge.",
     "Загружаем таблицы базы данных...": "Datenbanktabellen werden geladen...",
     "Зарегистрироваться": "Registrieren",
-    "VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEXCARDS ist eine digitale Kartenplattform. Erstelle ein Konto, verwalte deine Karten und entdecke die Möglichkeiten der Plattform.",
+    "VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.": "VORTEXUNITS ist eine digitale Unitsplattform. Erstelle ein Konto, verwalte deine Units und entdecke die Möglichkeiten der Plattform.",
     "У меня уже есть аккаунт": "Ich habe bereits ein Konto",
-    "Цифровые карточки": "Digitale Karten",
-    "Личный кабинет и управление карточками после входа.": "Persönlicher Bereich und Kartenverwaltung nach der Anmeldung.",
+    "Цифровые юниты": "Digitale Units",
+    "Личный кабинет и управление юнитми после входа.": "Persönlicher Bereich und Unitsverwaltung nach der Anmeldung.",
     "P2P-маркетплейс": "P2P-Marktplatz",
     "Просмотр предложений и торговые функции для пользователей.": "Angebote ansehen und Handelsfunktionen nutzen.",
     "Сообщество": "Community",
     "Приглашайте друзей и развивайтесь вместе с VORTEX.": "Lade Freunde ein und entwickle dich gemeinsam mit VORTEX weiter.",
-    "Регистрация VORTEXCARDS": "VORTEXCARDS-Registrierung",
+    "Регистрация VORTEX UNIT": "VORTEXUNITS-Registrierung",
     "Восстановление пароля": "Passwort wiederherstellen",
     "Новый пароль": "Neues Passwort",
     "Вход в аккаунт": "Anmelden",
@@ -750,69 +748,68 @@ function App() {
     "Уже есть аккаунт? Войти": "Du hast bereits ein Konto? Anmelden",
     "Нет аккаунта? Зарегистрироваться": "Noch kein Konto? Registrieren",
 
-    "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "20 ₴ ist der festgelegte Ziel-Rückkaufpreis. Auszahlungen sind nur bei ausreichender Finanzierung und nach Prüfung der Programmregeln möglich.",
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Für sichere Übertragungen ist eine serverseitige Supabase-Funktion erforderlich.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Dies sind Demo-Angebote. Echte Zahlungen, Kartenreservierungen und Gebühreneinzug sind noch nicht aktiviert.",
-    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "Der Einladende erhält nach bestätigter Registrierung des geworbenen Nutzers eine zusätzliche Karte. Der neue Nutzer erhält eine Starterkarte.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование юнитов и удержание комиссии пока не подключены.": "Dies sind Demo-Angebote. Echte Zahlungen, Unitsreservierungen und Gebühreneinzug sind noch nicht aktiviert.",
+    "Пригласивший получает 1 дополнительную юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовую юнит.": "Der Einladende erhält nach bestätigter Registrierung des geworbenen Nutzers eine zusätzliche UNIT. Der neue Nutzer erhält eine StarterUNIT.",
     "Ссылка скопирована": "Link kopiert",
     "Не удалось скопировать ссылку": "Link konnte nicht kopiert werden",
     "Загрузка данных...": "Daten werden geladen...",
-    "Загрузка карточек...": "Karten werden geladen...",
-    "Карточки пока не удалось загрузить.": "Karten konnten noch nicht geladen werden.",
+    "Загрузка юнитов...": "Units werden geladen...",
+    "Юниты пока не удалось загрузить.": "Units konnten noch nicht geladen werden.",
     "Ошибка загрузки:": "Ladefehler:",
     "Сумма не указана": "Betrag nicht angegeben",
     "Показано записей:": "Angezeigte Einträge:",
-    "карточек доступно": "Karten verfügbar",
-    "за карточку": "pro Karte",
+    "юнитов доступно": "Units verfügbar",
+    "за юнит": "pro UNIT",
     "ЦЕНА ВЫКУПА": "RÜCKKAUFPREIS",
-    "Digital card platform": "Digitale Kartenplattform",
+    "Digital card platform": "Digitale Unitsplattform",
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
-    "Карточки": "Cartes",
+    "Юниты": "UNITs",
     "Маркетплейс": "Marché",
     "Рефералы": "Parrainages",
     "Профиль": "Profil",
     "Администрирование": "Administration",
     "МЕНЮ": "MENU",
     "Установить": "Installer",
-    "DIGITAL CARD ECONOMY": "ÉCONOMIE DES CARTES NUMÉRIQUES",
+    "DIGITAL UNIT ECONOMY": "ÉCONOMIE DES CARTES NUMÉRIQUES",
     "Вход или регистрация": "Connexion ou inscription",
     "Панель администратора": "Panneau administrateur",
     "Статистика посещаемости": "Statistiques de fréquentation",
     "Языки сайта": "Langues du site",
     "Администратор": "Administrateur",
     "Закрыть": "Fermer",
-    "Твоя карточка.": "Votre carte.",
+    "Твой юнит.": "Votre UNIT.",
     "Твои правила.": "Vos règles.",
-    "Управляй карточками, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX.": "Gérez vos cartes, invitez vos amis et échangez sur la place de marché P2P VORTEX.",
+    "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Gérez vos UNITs, invitez vos amis et échangez sur la place de marché P2P VORTEX.",
     "Открыть маркетплейс": "Ouvrir la marketplace",
-    "МОИ КАРТОЧКИ": "MES CARTES",
+    "МОИ ЮНИТЫ": "MES CARTES",
     "РЕФЕРАЛЫ": "PARRAINAGES",
     "ЦЕНА ВЫКУПА*": "PRIX DE RACHAT*",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "ACTIONS RAPIDES",
-    "Мои карточки": "Mes cartes",
+    "Мои юниты": "Mes UNITs",
     "Баланс и переводы": "Solde et transferts",
     "P2P-рынок": "Marché P2P",
     "Покупка и продажа": "Acheter et vendre",
     "Пригласить друга": "Inviter un ami",
-    "Получить карточку": "Obtenir une carte",
+    "Получить юнит": "Obtenir une UNIT",
     "ДОСТУПНЫЙ БАЛАНС": "SOLDE DISPONIBLE",
-    "Передать карточки": "Transférer des cartes",
+    "Передать юниты": "Transférer des UNITs",
     "В демонстрационном режиме переводы не выполняются.": "Les transferts sont désactivés en mode démo.",
     "Email или ID получателя": "E-mail ou identifiant du destinataire",
-    "Количество карточек": "Nombre de cartes",
+    "Количество юнитов": "Nombre de UNITs",
     "Передать": "Transférer",
     "P2P маркетплейс": "Marketplace P2P",
     "Пользователи устанавливают собственные цены.": "Les utilisateurs fixent leurs propres prix.",
     "КОМИССИЯ 5%": "FRAIS DE 5 %",
     "Создать объявление": "Créer une annonce",
     "Количество": "Quantité",
-    "Цена за карточку, ₴": "Prix par carte, ₴",
+    "Цена за юнит, ₴": "Prix par UNIT, ₴",
     "Выставить": "Mettre en vente",
     "АКТИВНЫЕ ОБЪЯВЛЕНИЯ": "ANNONCES ACTIVES",
-    "карточек доступно": "cartes disponibles",
-    "за карточку": "par carte",
+    "юнитов доступно": "UNITs disponibles",
+    "за юнит": "par UNIT",
     "Купить": "Acheter",
     "Расти вместе с VORTEX": "Grandissez avec VORTEX",
     "ПРИГЛАШЕНО": "INVITÉS",
@@ -832,11 +829,11 @@ function App() {
     "Заявки на обмен в VTX": "Demandes de conversion en VTX",
     "Заявок нет.": "Aucune demande.",
     "Обновить финансовые данные": "Actualiser les données financières",
-    "Ваши карточки, зарегистрированные в реестре VORTEX.": "Vos cartes enregistrées dans le registre VORTEX.",
-    "карточек": "cartes",
-    "Пока нет карточек": "Aucune carte pour le moment",
-    "Когда карточки будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Les cartes émises et associées à votre compte apparaîtront ici.",
-    "Обновить карточки": "Actualiser les cartes",
+    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Vos UNITs enregistrées dans le registre VORTEX.",
+    "юнитов": "UNITs",
+    "Пока нет юнитов": "Aucune UNIT pour le moment",
+    "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Les UNITs émises et associées à votre compte apparaîtront ici.",
+    "Обновить юниты": "Actualiser les UNITs",
     "На продаже": "En vente",
     "Зарезервирована": "Réservée",
     "Продана": "Vendue",
@@ -857,15 +854,15 @@ function App() {
     "Записей пока нет.": "Aucun enregistrement pour le moment.",
     "Загружаем таблицы базы данных...": "Chargement des tables de la base de données...",
     "Зарегистрироваться": "S’inscrire",
-    "VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEXCARDS est une plateforme de cartes numériques. Créez un compte, gérez vos cartes et découvrez les possibilités de la plateforme.",
+    "VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.": "VORTEXUNITS est une plateforme de UNITs numériques. Créez un compte, gérez vos UNITs et découvrez les possibilités de la plateforme.",
     "У меня уже есть аккаунт": "J’ai déjà un compte",
-    "Цифровые карточки": "Cartes numériques",
-    "Личный кабинет и управление карточками после входа.": "Espace personnel et gestion des cartes après connexion.",
+    "Цифровые юниты": "UNITs numériques",
+    "Личный кабинет и управление юнитми после входа.": "Espace personnel et gestion des UNITs après connexion.",
     "P2P-маркетплейс": "Marché P2P",
     "Просмотр предложений и торговые функции для пользователей.": "Consultez les offres et utilisez les fonctions de trading.",
     "Сообщество": "Communauté",
     "Приглашайте друзей и развивайтесь вместе с VORTEX.": "Invitez vos amis et évoluez avec VORTEX.",
-    "Регистрация VORTEXCARDS": "Inscription à VORTEXCARDS",
+    "Регистрация VORTEX UNIT": "Inscription à VORTEXUNITS",
     "Восстановление пароля": "Récupération du mot de passe",
     "Новый пароль": "Nouveau mot de passe",
     "Вход в аккаунт": "Connexion au compte",
@@ -1021,11 +1018,11 @@ function App() {
 
   async function addListing(e) {
     e.preventDefault()
-    if (!user) { setNotice('Чтобы выставить карточку, войдите в аккаунт.'); return }
+    if (!user) { setNotice('Чтобы выставить юнит, войдите в аккаунт.'); return }
     const q = Number(qty)
     const p = Number(price)
     if (!Number.isInteger(q) || q < 1 || !Number.isFinite(p) || p <= 0) {
-      setNotice('Укажите корректное количество карточек и цену.')
+      setNotice('Укажите корректное количество юнитов и цену.')
       return
     }
     setBusy(true)
@@ -1034,10 +1031,10 @@ function App() {
         p_quantity: q, p_price: p
       })
       if (error) throw error
-      setNotice(`Объявление создано. Выставлено карточек: ${data?.quantity ?? q}. Пока объявление активно, эти карточки нельзя перевести другому пользователю.`)
+      setNotice(`Объявление создано. Выставлено юнитов: ${data?.quantity ?? q}. Пока объявление активно, эти юниты нельзя перевести другому пользователю.`)
       await Promise.all([loadMarketplace(), loadFinancialData()])
     } catch (error) {
-      setNotice('Не удалось выставить карточки: ' + (error.message || 'ошибка операции'))
+      setNotice('Не удалось выставить юниты: ' + (error.message || 'ошибка операции'))
     } finally {
       setBusy(false)
     }
@@ -1049,7 +1046,7 @@ function App() {
     try {
       const { error } = await supabase.rpc('cancel_own_market_listing', { p_listing_id: item.id })
       if (error) throw error
-      setNotice('Объявление снято с продажи. Карточки снова доступны для перевода.')
+      setNotice('Объявление снято с продажи. Юниты снова доступны для перевода.')
       await Promise.all([loadMarketplace(), loadFinancialData()])
     } catch (error) {
       setNotice('Не удалось снять объявление: ' + (error.message || 'ошибка операции'))
@@ -1060,7 +1057,7 @@ function App() {
 
   const nav = [
     ['home', t('Обзор'), Home],
-    ['cards', t('Карточки'), CreditCard],
+    ['cards', t('Юниты'), CreditCard],
     ['market', t('Маркетплейс'), Store],
     ['referrals', t('Рефералы'), Users],
     ['profile', t('Профиль'), UserRound]
@@ -1074,7 +1071,7 @@ function App() {
       </button>
       <div className="brand-mark">
         <span className="brand-gem">V</span>
-        <span>VORTEX <b>CARDS</b></span>
+        <span>VORTEX <b>UNIT</b></span>
       </div>
       <div className="top-actions">
         <label className="language-picker" aria-label="Language"><span>🌐</span><select value={language} onChange={e => setLanguage(e.target.value)}><option value="uk">Українська</option><option value="ru">Русский</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option></select></label>
@@ -1104,12 +1101,12 @@ function App() {
           onClick={() => { setTab('admin'); setMenu(false) }}>
           <Shield size={19} /> {t('Администрирование')}
         </button>
-        <div className="sidebar-foot">VORTEX CARDS <span>v1.0 PWA</span></div>
+        <div className="sidebar-foot">VORTEX UNIT <span>v1.0 PWA</span></div>
       </aside>
 
       <main className="main">
         <div className="page-head">
-          <div><div className="eyebrow">{t('DIGITAL CARD ECONOMY')}</div><h1>{title}</h1></div>
+          <div><div className="eyebrow">{t('DIGITAL UNIT ECONOMY')}</div><h1>{title}</h1></div>
           <div className="avatar">{user?.email?.[0]?.toUpperCase() || 'G'}</div>
         </div>
 
@@ -1121,8 +1118,8 @@ function App() {
           <section className="hero">
             <div className="hero-copy">
               <div className="pill"><Sparkles size={13} /> YOUR DIGITAL ASSET</div>
-              <h2>Твоя карточка.<br /><span>Твои правила.</span></h2>
-              <p>Управляй карточками, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX.</p>
+              <h2>Одна единица.<br /><span>Своя ценность.</span></h2>
+              <p>Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.</p>
               <button type="button" className="primary" onClick={() => setTab('market')}>
                 Открыть маркетплейс <ArrowLeftRight size={17} />
               </button>
@@ -1130,35 +1127,33 @@ function App() {
             <div className="hero-card">
               <div className="card-top"><span>VORTEX</span><span>GENESIS / 001</span></div>
               <div className="orb"><div /></div>
-              <div className="card-bottom"><b>VORTEX CARD</b><span>OWN THE DIGITAL FLOW</span></div>
+              <div className="card-bottom"><b>VORTEX UNIT</b><span>OWN THE DIGITAL FLOW</span></div>
             </div>
           </section>
           <div className="stats">
-            <Stat label="МОИ КАРТОЧКИ" value={cards} icon={<CreditCard />} />
+            <Stat label="МОИ ЮНИТЫ" value={cards} icon={<CreditCard />} />
             <Stat label="РЕФЕРАЛЫ" value={referrals} icon={<Users />} />
-            <Stat label="ЦЕНА ВЫКУПА*" value="20 ₴" icon={<Wallet />} />
           </div>
           <div className="section-title">БЫСТРЫЕ ДЕЙСТВИЯ</div>
           <div className="quick-grid">
-            <Quick icon={<CreditCard />} title="Мои карточки" desc="Баланс и переводы" click={() => setTab('cards')} />
+            <Quick icon={<CreditCard />} title="Мои юниты" desc="Баланс и переводы" click={() => setTab('cards')} />
             <Quick icon={<Store />} title="P2P-рынок" desc="Покупка и продажа" click={() => setTab('market')} />
-            <Quick icon={<Users />} title="Пригласить друга" desc="Получить карточку" click={() => setTab('referrals')} />
+            <Quick icon={<Users />} title="Пригласить друга" desc="Получить юнит" click={() => setTab('referrals')} />
           </div>
-          <p className="disclaimer">* 20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.</p>
         </>}
 
         {tab === 'cards' && <>
           <div className="balance-panel">
-            <div><span className="muted">ДОСТУПНЫЙ БАЛАНС</span><div className="big-number">{cards} <small>VORTEX CARD</small></div></div>
+            <div><span className="muted">ДОСТУПНЫЙ БАЛАНС</span><div className="big-number">{cards} <small>VORTEX UNIT</small></div></div>
             <div className="balance-icon"><CreditCard /></div>
           </div>
           <div className="panel">
-            <h3>Передать карточки</h3>
-            <p className="muted">Передать можно только свободные карточки. Карточки, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.</p>
+            <h3>Передать юниты</h3>
+            <p className="muted">Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.</p>
             <form onSubmit={transferCards}>
               <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
-              <label>Количество карточек<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
-              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : 'Передать карточки'}</button>
+              <label>Количество юнитов<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
+              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : 'Передать юниты'}</button>
             </form>
           </div>
         </>}
@@ -1172,7 +1167,7 @@ function App() {
             <h3><Plus size={18} /> Создать объявление</h3>
             <form className="listing-form" onSubmit={addListing}>
               <label>Количество<input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} /></label>
-              <label>Цена за карточку, ₴<input type="number" min="1" value={price} onChange={e => setPrice(e.target.value)} /></label>
+              <label>Цена за юнит, ₴<input type="number" min="1" value={price} onChange={e => setPrice(e.target.value)} /></label>
               <button className="primary" type="submit" disabled={busy}>{busy ? 'Выставляем...' : 'Выставить'}</button>
             </form>
           </div>
@@ -1180,11 +1175,11 @@ function App() {
           <div className="listing-list">
             {marketLoading ? <p className="muted">Загружаем предложения...</p>
               : marketError ? <p className="muted">Не удалось загрузить предложения: {marketError}</p>
-              : listings.length === 0 ? <div className="panel"><h3>Пока нет карточек в продаже</h3><p className="muted">Когда пользователи разместят реальные карточки, предложения появятся здесь.</p></div>
-              : listings.map(item => <div className="listing market-card" key={item.id}>
+              : listings.length === 0 ? <div className="panel"><h3>Пока нет юнитов в продаже</h3><p className="muted">Когда пользователи разместят реальные юниты, предложения появятся здесь.</p></div>
+              : listings.map(item => <div className="listing market-UNIT" key={item.id}>
                 <div className="listing-avatar"><CreditCard /></div>
-                <div className="listing-info"><b>VORTEX CARD</b><span>Продавец: {item.seller} · {item.qty} шт.</span></div>
-                <div className="listing-price"><b>{item.price.toLocaleString('uk-UA')} ₴</b><span>за карточку</span></div>
+                <div className="listing-info"><b>VORTEX UNIT</b><span>Продавец: {item.seller} · {item.qty} шт.</span></div>
+                <div className="listing-price"><b>{item.price.toLocaleString('uk-UA')} ₴</b><span>за юнит</span></div>
                 <div className="listing-price"><b>{(item.price * item.qty).toLocaleString('uk-UA')} ₴</b><span>за всё количество</span></div>
                 {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>Снять с продажи</button>}
               </div>)}
@@ -1197,14 +1192,14 @@ function App() {
           <div className="panel referral-panel">
             <div className="ref-icon"><Users /></div>
             <h2>Расти вместе с VORTEX</h2>
-            <p className="muted">Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.</p>
+            <p className="muted">Пригласивший получает 1 дополнительную юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовую юнит.</p>
             <div className="ref-link">
               <span>{referralLink}</span>
               <button type="button" onClick={() => navigator.clipboard?.writeText(referralLink).then(() => setNotice('Ссылка скопирована')).catch(() => setNotice('Не удалось скопировать ссылку'))}><Copy size={17} /></button>
             </div>
             <div className="stats mini">
               <Stat label="ПРИГЛАШЕНО" value={referrals} icon={<Users />} />
-              <Stat label="НАГРАДА" value="+1 CARD" icon={<CreditCard />} />
+              <Stat label="НАГРАДА" value="+1 UNIT" icon={<CreditCard />} />
             </div>
           </div>
         </>}
@@ -1217,7 +1212,7 @@ function App() {
               <div className="push-settings-row">
                 <div className="push-settings-copy">
                   <b>Push-уведомления</b>
-                  <span>{pushServerReady ? 'Получать важные сообщения VORTEXCARDS на этом устройстве.' : 'Разрешение сохраняется. Сервер отправки будет подключён отдельно.'}</span>
+                  <span>{pushServerReady ? 'Получать важные сообщения VORTEX UNIT на этом устройстве.' : 'Разрешение сохраняется. Сервер отправки будет подключён отдельно.'}</span>
                 </div>
                 <label className="push-switch" aria-label="Получать push-уведомления">
                   <input type="checkbox" checked={pushEnabled} disabled={pushBusy} onChange={event => savePushPreference(event.target.checked)} />
@@ -1245,11 +1240,11 @@ function App() {
           </section>
           {user && <>
             <section className="panel">
-              <h3>Перевести карточки другому пользователю</h3>
-              <p className="muted">Укажите email получателя и количество свободных карточек. Карточки, выставленные на маркетплейс, передать нельзя.</p>
+              <h3>Перевести юниты другому пользователю</h3>
+              <p className="muted">Укажите email получателя и количество свободных юнитов. Юниты, выставленные на маркетплейс, передать нельзя.</p>
               <form onSubmit={transferCards}>
                 <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
-                <label>Количество карточек<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
+                <label>Количество юнитов<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
                 <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : 'Перевести другому пользователю'}</button>
               </form>
             </section>
@@ -1279,19 +1274,19 @@ function App() {
               <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>Обновить финансовые данные</button>
             </section>
             <section className="panel profile-cards">
-              <div className="admin-head"><CreditCard /><h3>Мои карточки</h3></div>
-              <p className="muted">Ваши карточки, зарегистрированные в реестре VORTEX.</p>
-              <div className="owned-card-count">{financial.cards.filter(card => card.status !== 'retired').length} <span>карточек</span></div>
-              {financial.loading ? <p className="muted">Загрузка карточек...</p> : financial.error ? <p className="muted">Карточки пока не удалось загрузить.</p> : financial.cards.filter(card => card.status !== 'retired').length === 0
-                ? <div className="empty-cards"><CreditCard size={30} /><b>Пока нет карточек</b><span>Когда карточки будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.</span></div>
-                : <div className="owned-cards-grid">
+              <div className="admin-head"><CreditCard /><h3>Мои юниты</h3></div>
+              <p className="muted">Ваши юниты, зарегистрированные в реестре VORTEX UNIT.</p>
+              <div className="owned-card-count">{financial.cards.filter(card => card.status !== 'retired').length} <span>юнитов</span></div>
+              {financial.loading ? <p className="muted">Загрузка юнитов...</p> : financial.error ? <p className="muted">Юниты пока не удалось загрузить.</p> : financial.units.filter(UNIT => UNIT.status !== 'retired').length === 0
+                ? <div className="empty-cards"><CreditCard size={30} /><b>Пока нет юнитов</b><span>Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.</span></div>
+                : <div className="owned-units-grid">
                   {financial.cards.filter(card => card.status !== 'retired').map((card, index) => <div className="owned-card" key={card.id}>
                     <div className="owned-card-top"><span>VORTEX</span><span>№ {String(index + 1).padStart(3, '0')}</span></div>
                     <div className="owned-card-symbol">V</div>
-                    <div className="owned-card-bottom"><b>{card.serial_number}</b><span>{card.status === 'listed' ? 'На продаже' : card.status === 'reserved' ? 'Зарезервирована' : card.status === 'sold' ? 'Продана' : 'Владелец'}</span></div>
+                    <div className="owned-card-bottom"><b>{card.serial_number}</b><span>{card.status === 'listed' ? 'На продаже' : UNIT.status === 'reserved' ? 'Зарезервирована' : UNIT.status === 'sold' ? 'Продана' : 'Владелец'}</span></div>
                   </div>)}
                 </div>}
-              <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>Обновить карточки</button>
+              <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>Обновить юниты</button>
             </section>
           </>}
         </div>}
@@ -1310,12 +1305,12 @@ function App() {
               </>}
           </div>
           {user && isAdmin && <div className="panel">
-            <h3>Выпустить карточку пользователю</h3>
-            <p className="muted">Укажите UUID пользователя из таблицы user_accounts и уникальный серийный номер. Выпуск создаёт запись в реестре карточек.</p>
+            <h3>Выпустить юнит пользователю</h3>
+            <p className="muted">Укажите UUID пользователя из таблицы user_accounts и уникальный серийный номер. Выпуск создаёт запись в реестре юнитов.</p>
             <form className="listing-form" onSubmit={issueCard}>
               <label>UUID пользователя<input value={issueOwnerId} onChange={e => setIssueOwnerId(e.target.value)} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required /></label>
               <label>Серийный номер<input value={issueSerial} onChange={e => setIssueSerial(e.target.value)} placeholder="VTX-000001" required /></label>
-              <button type="submit" className="primary" disabled={adminActionBusy}>{adminActionBusy ? 'Выполняется...' : 'Выпустить карточку'}</button>
+              <button type="submit" className="primary" disabled={adminActionBusy}>{adminActionBusy ? 'Выполняется...' : 'Выпустить юнит'}</button>
             </form>
           </div>}
           {user && isAdmin && <div className="panel analytics-panel">
@@ -1360,12 +1355,12 @@ function App() {
                             <td style={{ padding: '9px', borderBottom: '1px solid #252438', whiteSpace: 'nowrap' }}>
                               {table.name === 'user_accounts' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_user_block', { p_user_id: row.user_id, p_blocked: !row.is_blocked, p_reason: row.is_blocked ? null : 'Блокировка администратором' }, row.is_blocked ? 'Аккаунт разблокирован.' : 'Аккаунт заблокирован.')}>{row.is_blocked ? 'Разблокировать' : 'Заблокировать'}</button>}
                               {table.name === 'complaints' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_complaint', { p_complaint_id: row.id }, 'Жалоба отмечена как рассмотренная.')}>Рассмотреть</button>}
-                              {table.name === 'disputes' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_dispute', { p_dispute_id: row.id, p_resolution: 'Решено администратором VORTEXCARDS' }, 'Спор закрыт. Решение записано.')}>Закрыть спор</button>}
+                              {table.name === 'disputes' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_dispute', { p_dispute_id: row.id, p_resolution: 'Решено администратором VORTEXUNITS' }, 'Спор закрыт. Решение записано.')}>Закрыть спор</button>}
                               {table.name === 'buyback_requests' && !['approved','rejected'].includes(row.status) && <>
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: true, p_note: 'Заявка одобрена. Выплата не произведена.' }, 'Заявка на выкуп одобрена без проведения выплаты.')}>Одобрить</button>
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: false, p_note: 'Заявка отклонена администратором.' }, 'Заявка на выкуп отклонена.')}>Отклонить</button>
                               </>}
-                              {table.name === 'card_inventory' && row.status !== 'sold' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_card_retired', { p_card_id: row.id, p_retired: row.status !== 'retired' }, row.status === 'retired' ? 'Карточка восстановлена.' : 'Карточка выведена из обращения.')}>{row.status === 'retired' ? 'Восстановить' : 'Вывести из обращения'}</button>}
+                              {table.name === 'card_inventory' && row.status !== 'sold' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_card_retired', { p_card_id: row.id, p_retired: row.status !== 'retired' }, row.status === 'retired' ? 'Юнит восстановлена.' : 'Юнит выведена из обращения.')}>{row.status === 'retired' ? 'Восстановить' : 'Вывести из обращения'}</button>}
                               {table.name === 'market_listings' && row.status === 'active' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_cancel_listing', { p_listing_id: row.id }, 'Объявление снято с продажи.')}>Снять с продажи</button>}
                               {table.name === 'crypto_deposit_requests' && ['pending','detected','confirming'].includes(row.status) && <>
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_deposit', { p_request_id: row.id, p_status: 'confirming', p_note: 'Проверяется подтверждение транзакции в сети. Средства не зачислены.' }, 'Заявка переведена на проверку сети.')}>Проверить</button>
@@ -1390,18 +1385,18 @@ function App() {
         {pushPromptOpen && user && <div className="push-consent-backdrop" role="dialog" aria-modal="true" aria-labelledby="push-consent-title">
           <section className="push-consent-panel">
             <div className="push-consent-icon">♢</div>
-            <h2 id="push-consent-title">Разрешить уведомления VORTEXCARDS?</h2>
+            <h2 id="push-consent-title">Разрешить уведомления VORTEX UNIT?</h2>
             <p>Будем присылать важные сообщения о вашем аккаунте и работе платформы. Вы сможете в любой момент отключить их в настройках профиля.</p>
             <button type="button" className="primary full" disabled={pushBusy} onClick={() => savePushPreference(true)}>{pushBusy ? 'Сохраняем...' : 'Согласен получать'}</button>
             <button type="button" className="outline full" disabled={pushBusy} onClick={() => savePushPreference(false)}>Не согласен</button>
           </section>
         </div>}
-        <footer>© 2026 VORTEX CARDS <span>Digital card platform</span></footer>
+        <footer>© 2026 VORTEX UNIT <span>Digital card platform</span></footer>
       </main>
     </div>
   </div>
 
-  if (authLoading) return <div className="public-loading"><div className="brand-mark"><span className="brand-gem">V</span><span>VORTEX <b>CARDS</b></span></div><p>Проверяем вход в аккаунт...</p></div>
+  if (authLoading) return <div className="public-loading"><div className="brand-mark"><span className="brand-gem">V</span><span>VORTEX <b>UNIT</b></span></div><p>Проверяем вход в аккаунт...</p></div>
 
   if (!user) {
     const openPublicAuth = mode => {
@@ -1411,7 +1406,7 @@ function App() {
     }
     const publicPage = <div className="public-shell">
       <header className="public-topbar">
-        <div className="brand-mark"><span className="brand-gem">V</span><span>VORTEX <b>CARDS</b></span></div>
+        <div className="brand-mark"><span className="brand-gem">V</span><span>VORTEX <b>UNIT</b></span></div>
         <div className="public-top-actions">
           <label className="language-picker" aria-label="Language"><span>🌐</span><select value={language} onChange={e => setLanguage(e.target.value)}><option value="uk">Українська</option><option value="ru">Русский</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option></select></label>
           <button type="button" className="outline" onClick={() => openPublicAuth('login')}>Войти</button>
@@ -1421,9 +1416,9 @@ function App() {
       <main className="public-main">
         <section className="public-hero">
           <div className="public-copy">
-            <div className="pill"><Sparkles size={14} /> DIGITAL CARD ECONOMY</div>
-            <h1>Твоя карточка.<br /><span>Твои правила.</span></h1>
-            <p>VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.</p>
+            <div className="pill"><Sparkles size={14} /> DIGITAL UNIT ECONOMY</div>
+            <h1>Твой юнит.<br /><span>Твои правила.</span></h1>
+            <p>VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.</p>
             <div className="public-cta">
               <button type="button" className="primary" onClick={() => openPublicAuth('signup')}>Создать аккаунт</button>
               <button type="button" className="outline" onClick={() => openPublicAuth('login')}>У меня уже есть аккаунт</button>
@@ -1432,17 +1427,17 @@ function App() {
           <div className="hero-card public-card">
             <div className="card-top"><span>VORTEX</span><span>GENESIS / 001</span></div>
             <div className="orb"><div /></div>
-            <div className="card-bottom"><b>VORTEX CARD</b><span>OWN THE DIGITAL FLOW</span></div>
+            <div className="card-bottom"><b>VORTEX UNIT</b><span>OWN THE DIGITAL FLOW</span></div>
           </div>
         </section>
         <section className="public-features">
-          <article><CreditCard /><b>Цифровые карточки</b><span>Личный кабинет и управление карточками после входа.</span></article>
+          <article><CreditCard /><b>Цифровые юниты</b><span>Личный кабинет и управление юнитми после входа.</span></article>
           <article><Store /><b>P2P-маркетплейс</b><span>Просмотр предложений и торговые функции для пользователей.</span></article>
           <article><Users /><b>Сообщество</b><span>Приглашайте друзей и развивайтесь вместе с VORTEX.</span></article>
         </section>
         {notice && <div className="notice" role="status"><span>{notice}</span><button type="button" aria-label="Закрыть" onClick={() => setNotice('')}>×</button></div>}
         {publicAuthOpen && <section className="panel auth-panel public-auth-panel" id="public-auth">
-          <div className="public-auth-heading"><h2>{authMode === 'signup' ? 'Регистрация VORTEXCARDS' : authMode === 'forgot' ? 'Восстановление пароля' : authMode === 'reset' ? 'Новый пароль' : 'Вход в аккаунт'}</h2><button type="button" className="outline" onClick={() => { setPublicAuthOpen(false); setNotice('') }}>Закрыть</button></div>
+          <div className="public-auth-heading"><h2>{authMode === 'signup' ? 'Регистрация VORTEX UNIT' : authMode === 'forgot' ? 'Восстановление пароля' : authMode === 'reset' ? 'Новый пароль' : 'Вход в аккаунт'}</h2><button type="button" className="outline" onClick={() => { setPublicAuthOpen(false); setNotice('') }}>Закрыть</button></div>
           {authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
             <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
             <button type="submit" className="primary full" disabled={busy}>{busy ? 'Отправляем...' : 'Отправить ссылку'}</button>
@@ -1460,7 +1455,7 @@ function App() {
           </form>}
         </section>}
       </main>
-      <footer className="public-footer">© 2026 VORTEX CARDS <span>Digital card platform</span></footer>
+      <footer className="public-footer">© 2026 VORTEX UNIT <span>Digital card platform</span></footer>
     </div>
     return translateTree(publicPage, language, translations)
   }
