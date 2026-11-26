@@ -51,13 +51,13 @@ function App() {
 
   const adminTables = [
     { name: 'user_accounts', label: 'Аккаунты пользователей' },
-    { name: 'card_balances', label: 'Баланс карточек' },
+    { name: 'card_balances', label: 'Баланс юнитов' },
     { name: 'market_listings', label: 'Объявления маркетплейса' },
     { name: 'complaints', label: 'Жалобы' },
     { name: 'disputes', label: 'Спорные сделки' },
     { name: 'buyback_requests', label: 'Заявки на выкуп' },
     { name: 'admin_audit_log', label: 'Журнал действий администратора' },
-    { name: 'card_inventory', label: 'Реестр выпущенных карточек' },
+    { name: 'card_inventory', label: 'Реестр выпущенных юнитов' },
     { name: 'wallet_ledger', label: 'Финансовый журнал' },
     { name: 'crypto_deposit_requests', label: 'Заявки на пополнение криптовалютой' },
     { name: 'crypto_withdrawal_requests', label: 'Заявки на вывод криптовалюты' },
