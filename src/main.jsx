@@ -447,13 +447,23 @@ function App() {
           </div>
         </>}
 
-        {tab === 'profile' && <div className="panel auth-panel">
-          <h2>{user ? 'Аккаунт' : 'Вход или регистрация'}</h2>
-          {user ? <>
-            <p className="muted">{user.email}</p>
-            <div className="panel">
+        {tab === 'profile' && <div className="profile-dashboard">
+          <section className="panel auth-panel profile-account">
+            <h2>{user ? 'Аккаунт' : 'Вход или регистрация'}</h2>
+            {user ? <>
+              <p className="muted">{user.email}</p>
+              <button type="button" className="outline" onClick={logout} disabled={busy}>Выйти</button>
+            </> : <form onSubmit={signIn}>
+              <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
+              <label>Пароль<input type="password" value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /></label>
+              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : 'Войти'}</button>
+              <button type="button" className="outline full" disabled={busy} onClick={signUp}>{busy ? 'Подождите...' : 'Создать аккаунт'}</button>
+            </form>}
+          </section>
+          {user && <>
+            <section className="panel profile-financial">
               <div className="admin-head"><Wallet /><h3>Финансовый кабинет</h3></div>
-              <p className="muted">Данные загружаются из Supabase. Балансы рассчитываются по подтверждённым записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.</p>
+              <p className="muted">Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.</p>
               {financial.loading ? <p className="muted">Загрузка данных...</p> : financial.error ? <p className="muted">Ошибка загрузки: {financial.error}</p> : <>
                 <h3>Баланс по активам</h3>
                 <div className="admin-stats-grid">
@@ -462,9 +472,6 @@ function App() {
                     return <Stat key={asset} label={asset} value={total.toFixed(6)} icon={<Wallet />} />
                   })}
                 </div>
-                <h3>Мои выпущенные карточки</h3>
-                <p className="big-number">{financial.cards.filter(card => card.status !== 'retired').length} <small>карточек</small></p>
-                <p className="muted">Отображаются только карточки, реально внесённые администратором в реестр.</p>
                 <h3>Последние финансовые операции</h3>
                 {financial.ledger.length === 0 ? <p className="muted">Финансовых операций пока нет.</p> : financial.ledger.slice(0,10).map(entry => <div className="listing" key={entry.id}>
                   <div className="listing-info"><b>{entry.entry_type} · {entry.asset_code}</b><span>{entry.description || new Date(entry.created_at).toLocaleString()}</span></div>
@@ -478,16 +485,23 @@ function App() {
                 {financial.exchanges.length === 0 ? <p className="muted">Заявок нет.</p> : financial.exchanges.map(item => <p className="muted" key={item.id}>{item.amount_in} {item.from_asset} → VTX · {item.status}</p>)}
               </>}
               <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>Обновить финансовые данные</button>
-            </div>
-            <button type="button" className="outline" onClick={logout} disabled={busy}>Выйти</button>
-          </> : <form onSubmit={signIn}>
-            <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
-            <label>Пароль<input type="password" value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /></label>
-            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : 'Войти'}</button>
-            <button type="button" className="outline full" disabled={busy} onClick={signUp}>
-              {busy ? 'Подождите...' : 'Создать аккаунт'}
-            </button>
-          </form>}
+            </section>
+            <section className="panel profile-cards">
+              <div className="admin-head"><CreditCard /><h3>Мои карточки</h3></div>
+              <p className="muted">Ваши карточки, зарегистрированные в реестре VORTEX.</p>
+              <div className="owned-card-count">{financial.cards.filter(card => card.status !== 'retired').length} <span>карточек</span></div>
+              {financial.loading ? <p className="muted">Загрузка карточек...</p> : financial.error ? <p className="muted">Карточки пока не удалось загрузить.</p> : financial.cards.filter(card => card.status !== 'retired').length === 0
+                ? <div className="empty-cards"><CreditCard size={30} /><b>Пока нет карточек</b><span>Когда карточки будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.</span></div>
+                : <div className="owned-cards-grid">
+                  {financial.cards.filter(card => card.status !== 'retired').map((card, index) => <div className="owned-card" key={card.id}>
+                    <div className="owned-card-top"><span>VORTEX</span><span>№ {String(index + 1).padStart(3, '0')}</span></div>
+                    <div className="owned-card-symbol">V</div>
+                    <div className="owned-card-bottom"><b>{card.serial_number}</b><span>{card.status === 'listed' ? 'На продаже' : card.status === 'reserved' ? 'Зарезервирована' : card.status === 'sold' ? 'Продана' : 'Владелец'}</span></div>
+                  </div>)}
+                </div>}
+              <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>Обновить карточки</button>
+            </section>
+          </>}
         </div>}
 
         {tab === 'admin' && <div>
