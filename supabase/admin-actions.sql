@@ -252,3 +252,87 @@ grant execute on function public.admin_cancel_listing(uuid) to authenticated;
 grant execute on function public.admin_review_deposit(uuid,text,text) to authenticated;
 grant execute on function public.admin_review_withdrawal(uuid,text,text) to authenticated;
 grant execute on function public.admin_reject_exchange(uuid,text) to authenticated;
+
+
+-- Marketplace listing lifecycle: lock listed cards against transfers and allow seller cancellation.
+create or replace function public.create_market_listing(p_quantity integer, p_price numeric)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+declare
+  v_card_ids uuid[];
+  v_count integer;
+  v_listing_id uuid;
+begin
+  if auth.uid() is null then raise exception 'Необходимо войти в аккаунт'; end if;
+  if p_quantity is null or p_quantity < 1 or p_quantity > 100 then
+    raise exception 'Количество карточек должно быть от 1 до 100';
+  end if;
+  if p_price is null or p_price <= 0 then raise exception 'Цена должна быть больше нуля'; end if;
+
+  select array_agg(id) into v_card_ids
+  from (
+    select id
+    from public.card_inventory
+    where owner_id = auth.uid() and status = 'owned'
+    order by issued_at, id
+    limit p_quantity
+    for update
+  ) available_cards;
+
+  v_count := coalesce(array_length(v_card_ids, 1), 0);
+  if v_count <> p_quantity then
+    raise exception 'Недостаточно свободных карточек. Карточки в активных объявлениях нельзя выставить повторно или перевести.';
+  end if;
+
+  insert into public.market_listings(seller_id, quantity, price, status)
+  values (auth.uid(), p_quantity, p_price, 'active')
+  returning id into v_listing_id;
+
+  update public.card_inventory
+  set status = 'listed', listing_id = v_listing_id, updated_at = now()
+  where id = any(v_card_ids) and owner_id = auth.uid() and status = 'owned';
+
+  get diagnostics v_count = row_count;
+  if v_count <> p_quantity then raise exception 'Не удалось закрепить все карточки за объявлением'; end if;
+
+  return jsonb_build_object('listing_id', v_listing_id, 'quantity', v_count, 'status', 'active');
+end;
+$$;
+
+create or replace function public.cancel_own_market_listing(p_listing_id uuid)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+declare
+  v_quantity integer;
+begin
+  if auth.uid() is null then raise exception 'Необходимо войти в аккаунт'; end if;
+
+  select quantity into v_quantity
+  from public.market_listings
+  where id = p_listing_id and seller_id = auth.uid() and status = 'active'
+  for update;
+
+  if not found then raise exception 'Активное объявление не найдено или оно принадлежит другому пользователю'; end if;
+
+  update public.market_listings
+  set status = 'cancelled'
+  where id = p_listing_id and seller_id = auth.uid() and status = 'active';
+
+  update public.card_inventory
+  set status = 'owned', listing_id = null, updated_at = now()
+  where listing_id = p_listing_id and owner_id = auth.uid() and status = 'listed';
+
+  return jsonb_build_object('listing_id', p_listing_id, 'status', 'cancelled', 'quantity_released', v_quantity);
+end;
+$$;
+
+revoke all on function public.create_market_listing(integer, numeric) from public;
+revoke all on function public.cancel_own_market_listing(uuid) from public;
+grant execute on function public.create_market_listing(integer, numeric) to authenticated;
+grant execute on function public.cancel_own_market_listing(uuid) to authenticated;
