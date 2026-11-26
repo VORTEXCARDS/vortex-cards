@@ -27,6 +27,8 @@ function App() {
   const [pushPromptOpen, setPushPromptOpen] = useState(false)
   const [pushBusy, setPushBusy] = useState(false)
   const pushServerReady = Boolean(import.meta.env.VITE_VAPID_PUBLIC_KEY)
+  const [username, setUsername] = useState('')
+  const [usernameBusy, setUsernameBusy] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
@@ -171,7 +173,7 @@ function App() {
         id: item.id,
         sellerId: item.seller_id,
         isMine: item.seller_id === user?.id,
-        seller: String(item.seller_id || '').slice(0, 8),
+        seller: item.seller_id === user?.id ? (user?.user_metadata?.username || 'Вы') : 'Пользователь',
         qty: Number(item.quantity || 0),
         price: Number(item.price || 0),
         createdAt: item.created_at
@@ -243,6 +245,10 @@ function App() {
   }, [language])
 
   useEffect(() => {
+    setUsername(user?.user_metadata?.username || '')
+  }, [user?.id, user?.user_metadata?.username])
+
+  useEffect(() => {
     if (!user) {
       setPushEnabled(false)
       setPushPromptOpen(false)
@@ -252,6 +258,31 @@ function App() {
     setPushEnabled(metadata.push_notifications_enabled === true)
     setPushPromptOpen(!metadata.push_consent_status || metadata.push_consent_status === 'pending')
   }, [user?.id, user?.user_metadata?.push_consent_status, user?.user_metadata?.push_notifications_enabled])
+
+  async function saveUsername(e) {
+    e.preventDefault()
+    if (!user || usernameBusy) return
+    const clean = username.trim()
+    if (clean.length < 2 || clean.length > 24) {
+      setNotice('Имя пользователя должно содержать от 2 до 24 символов.')
+      return
+    }
+    if (!/^[\p{L}\p{N}_ .-]+$/u.test(clean)) {
+      setNotice('Используйте буквы, цифры, пробел, точку, дефис или подчёркивание.')
+      return
+    }
+    setUsernameBusy(true)
+    try {
+      const { data, error } = await supabase.auth.updateUser({ data: { username: clean } })
+      if (error) throw error
+      setUser(data.user)
+      setNotice('Имя пользователя сохранено.')
+    } catch (error) {
+      setNotice('Не удалось сохранить имя: ' + (error.message || 'ошибка'))
+    } finally {
+      setUsernameBusy(false)
+    }
+  }
 
   async function savePushPreference(enabled) {
     if (!user || pushBusy) return
@@ -1275,7 +1306,14 @@ function App() {
           <section className="panel auth-panel profile-account">
             <h2>{user ? t('Аккаунт') : t('Вход или регистрация')}</h2>
             {user && authMode !== 'reset' ? <>
-              <p className="muted">{user.email}</p>
+              <form className="username-settings" onSubmit={saveUsername}>
+                <label>Имя пользователя (псевдоним)
+                  <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Например, Танос" minLength="2" maxLength="24" autoComplete="nickname" />
+                </label>
+                <p className="muted">Придумайте любое имя. Не указывайте здесь email или настоящее имя, если хотите сохранить приватность.</p>
+                <button type="submit" className="primary full" disabled={usernameBusy}>{usernameBusy ? 'Сохраняем...' : 'Сохранить имя пользователя'}</button>
+              </form>
+              <p className="muted">Email аккаунта (виден только вам): {user.email}</p>
               <div className="push-settings-row">
                 <div className="push-settings-copy">
                   <b>{t('Push-уведомления')}</b>
