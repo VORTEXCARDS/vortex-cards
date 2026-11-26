@@ -605,24 +605,7 @@ function App() {
     "Записей пока нет.": "Aucun enregistrement pour le moment.",
     "Загружаем таблицы базы данных...": "Chargement des tables de la base de données..."
   }
-}
-    "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "20 ₴ est le prix cible de rachat approuvé. Les paiements dépendent des fonds disponibles et de la vérification des conditions du programme.",
-    "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Une opération serveur Supabase est nécessaire pour transférer les cartes en toute sécurité.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Ces annonces sont des exemples. Les paiements réels, la réservation des cartes et la perception des frais ne sont pas encore activés.",
-    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "La personne qui invite reçoit une carte supplémentaire après confirmation de l’inscription du filleul. Le nouvel utilisateur reçoit une carte de départ.",
-    "Ссылка скопирована": "Lien copié",
-    "Не удалось скопировать ссылку": "Impossible de copier le lien",
-    "Загрузка данных...": "Chargement des données...",
-    "Загрузка карточек...": "Chargement des cartes...",
-    "Карточки пока не удалось загрузить.": "Impossible de charger les cartes pour le moment.",
-    "Ошибка загрузки:": "Erreur de chargement :",
-    "Сумма не указана": "Montant non indiqué",
-    "Показано записей:": "Enregistrements affichés :",
-    "карточек доступно": "cartes disponibles",
-    "за карточку": "par carte",
-    "ЦЕНА ВЫКУПА": "PRIX DE RACHAT",
-    "Digital card platform": "Plateforme de cartes numériques",
-  const t = value => translations[language]?.[value] || value
+}  const t = value => translations[language]?.[value] || value
 
   const referralLink = useMemo(
     () => `${location.origin}${import.meta.env.BASE_URL}?ref=${user?.id || 'YOUR_CODE'}`,
