@@ -129,14 +129,14 @@ function App() {
       await loadFinancialData()
       setNotice(`Успешно передано карточек: ${data?.transferred ?? quantity}.`)
     } catch (error) {
-      setNotice('Не удалось передать карточки: ' + (error.message || 'ошибка операции'))
+      setNotice('Не удалось передать юниты: ' + (error.message || 'ошибка операции'))
     } finally { setBusy(false) }
   }
 
   async function issueCard(e) {
     e.preventDefault()
     if (!isAdmin || !issueOwnerId.trim() || !issueSerial.trim()) return
-    await runAdminAction('admin_issue_card', { p_owner_id: issueOwnerId.trim(), p_serial_number: issueSerial.trim() }, 'Карточка выпущена и закреплена за пользователем.')
+    await runAdminAction('admin_issue_card', { p_owner_id: issueOwnerId.trim(), p_serial_number: issueSerial.trim() }, 'Юнит выпущен и закреплён за пользователем.')
     setIssueSerial('')
   }
 
@@ -389,7 +389,7 @@ function App() {
     "Администрирование": "Адміністрування",
     "МЕНЮ": "МЕНЮ",
     "Установить": "Встановити",
-    "NFT · DIGITAL UNITS": "ЦИФРОВА ЕКОНОМІКА КАРТОК",
+    "NFT · DIGITAL UNITS": "NFT · ЦИФРОВІ ЮНІТИ",
     "Вход или регистрация": "Вхід або реєстрація",
     "Панель администратора": "Панель адміністратора",
     "Статистика посещаемости": "Статистика відвідуваності",
@@ -398,11 +398,11 @@ function App() {
     "Закрыть": "Закрити",
     "Одна единица.": "Твоя юнит.",
     "Своя ценность.": "Твої правила.",
-    "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Керуй юнитми, запрошуй друзів і торгуй на P2P-маркетплейсі VORTEX.",
+    "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Керуй юнітами, запрошуй друзів і торгуй на P2P-маркетплейсі VORTEX UNIT.",
     "Открыть маркетплейс": "Відкрити маркетплейс",
     "МОИ ЮНИТЫ": "МОЇ КАРТКИ",
     "РЕФЕРАЛЫ": "РЕФЕРАЛИ",
-    "ЦЕНА ВЫКУПА*": "ЦІНА ВИКУПУ*",
+    "": "ЦІНА ВИКУПУ*",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "ШВИДКІ ДІЇ",
     "Мои юниты": "Мої юніти",
     "Баланс и переводы": "Баланс і перекази",
@@ -471,8 +471,8 @@ function App() {
     "Загружаем таблицы базы данных...": "Завантажуємо таблиці бази даних...",
 
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Для безпечних переказів потрібна підключена серверна операція Supabase.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Показано демонстраційні оголошення. Реальні розрахунки, резервування юнитів та утримання комісії поки не підключені.",
-    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "Той, хто запросив, отримує 1 додаткову юнит після підтвердженої реєстрації реферала. Новий користувач отримує стартову юнит.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование юнитов и удержание комиссии пока не подключены.": "Показано демонстраційні оголошення. Реальні розрахунки, резервування юнитів та утримання комісії поки не підключені.",
+    "Пригласивший получает 1 дополнительный юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовый юнит.": "Той, хто запросив, отримує 1 додатковий юніт після підтвердженої реєстрації реферала. Новий користувач отримує стартовий юніт.",
     "Ссылка скопирована": "Посилання скопійовано",
     "Не удалось скопировать ссылку": "Не вдалося скопіювати посилання",
     "Загрузка данных...": "Завантаження даних...",
@@ -483,13 +483,13 @@ function App() {
     "Показано записей:": "Показано записів:",
     "юнитов доступно": "юнитів доступно",
     "за юнит": "за юнит",
-    "ЦЕНА ВЫКУПА": "ЦІНА ВИКУПУ",
+    "": "ЦІНА ВИКУПУ",
     "Digital card platform": "Платформа цифрових юнитів",
     "Зарегистрироваться": "Зареєструватися",
-    "VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEX UNIT — цифрова платформа юнитів. Створіть обліковий запис, керуйте своїми юнитми та відкривайте можливості платформи.",
+    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT — цифрова платформа юнитів. Створіть обліковий запис, керуйте своїми юнітами та відкривайте можливості платформи.",
     "У меня уже есть аккаунт": "У мене вже є обліковий запис",
     "Юниты и NFT": "Цифрові юніти",
-    "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Особистий кабінет і керування юнитми після входу.",
+    "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Особистий кабінет і керування юнітами після входу.",
     "P2P-маркетплейс": "P2P-маркетплейс",
     "Просмотр предложений и торговые функции для пользователей.": "Перегляд пропозицій і торгові функції для користувачів.",
     "Сообщество": "Спільнота",
@@ -530,7 +530,7 @@ function App() {
     "Открыть маркетплейс": "Open marketplace",
     "МОИ ЮНИТЫ": "MY CARDS",
     "РЕФЕРАЛЫ": "REFERRALS",
-    "ЦЕНА ВЫКУПА*": "BUYBACK PRICE*",
+    "": "",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "QUICK ACTIONS",
     "Мои юниты": "My units",
     "Баланс и переводы": "Balance and transfers",
@@ -598,7 +598,7 @@ function App() {
     "Записей пока нет.": "No records yet.",
     "Загружаем таблицы базы данных...": "Loading database tables...",
     "Зарегистрироваться": "Register",
-    "VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEX UNIT is a digital UNIT platform. Create an account, manage your units, and explore the platform.",
+    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT is a digital UNIT platform. Create an account, manage your units, and explore the platform.",
     "У меня уже есть аккаунт": "I already have an account",
     "Юниты и NFT": "Digital units",
     "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Personal dashboard and UNIT management after signing in.",
@@ -621,8 +621,8 @@ function App() {
     "Нет аккаунта? Зарегистрироваться": "No account? Register",
 
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "A secure Supabase server operation is required to transfer units.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "These are sample listings. Real payments, UNIT reservations, and fee collection are not connected yet.",
-    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "The inviter receives 1 extra UNIT after the referral registration is confirmed. The new user receives a starter UNIT.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование юнитов и удержание комиссии пока не подключены.": "These are sample listings. Real payments, UNIT reservations, and fee collection are not connected yet.",
+    "Пригласивший получает 1 дополнительный юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовый юнит.": "The inviter receives 1 extra UNIT after the referral registration is confirmed. The new user receives a starter UNIT.",
     "Ссылка скопирована": "Link copied",
     "Не удалось скопировать ссылку": "Could not copy the link",
     "Загрузка данных...": "Loading data...",
@@ -633,7 +633,7 @@ function App() {
     "Показано записей:": "Records shown:",
     "юнитов доступно": "units available",
     "за юнит": "per UNIT",
-    "ЦЕНА ВЫКУПА": "BUYBACK PRICE",
+    "": "",
     "Digital card platform": "Digital UNIT platform",
   },
   "de": {
@@ -645,7 +645,7 @@ function App() {
     "Администрирование": "Administration",
     "МЕНЮ": "MENÜ",
     "Установить": "Installieren",
-    "NFT · DIGITAL UNITS": "DIGITALE KARTENWIRTSCHAFT",
+    "NFT · DIGITAL UNITS": "NFT · DIGITALE UNITS",
     "Вход или регистрация": "Anmelden oder registrieren",
     "Панель администратора": "Adminbereich",
     "Статистика посещаемости": "Besucherstatistik",
@@ -658,7 +658,7 @@ function App() {
     "Открыть маркетплейс": "Marktplatz öffnen",
     "МОИ ЮНИТЫ": "MEINE KARTEN",
     "РЕФЕРАЛЫ": "EMPFEHLUNGEN",
-    "ЦЕНА ВЫКУПА*": "RÜCKKAUFPREIS*",
+    "": "",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "SCHNELLZUGRIFFE",
     "Мои юниты": "Meine Units",
     "Баланс и переводы": "Guthaben und Überweisungen",
@@ -726,7 +726,7 @@ function App() {
     "Записей пока нет.": "Noch keine Einträge.",
     "Загружаем таблицы базы данных...": "Datenbanktabellen werden geladen...",
     "Зарегистрироваться": "Registrieren",
-    "VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEX UNIT ist eine digitale Unitsplattform. Erstelle ein Konto, verwalte deine Units und entdecke die Möglichkeiten der Plattform.",
+    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT ist eine digitale Unitsplattform. Erstelle ein Konto, verwalte deine Units und entdecke die Möglichkeiten der Plattform.",
     "У меня уже есть аккаунт": "Ich habe bereits ein Konto",
     "Юниты и NFT": "Digitale Units",
     "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Persönlicher Bereich und Unitsverwaltung nach der Anmeldung.",
@@ -749,8 +749,8 @@ function App() {
     "Нет аккаунта? Зарегистрироваться": "Noch kein Konto? Registrieren",
 
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Für sichere Übertragungen ist eine serverseitige Supabase-Funktion erforderlich.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Dies sind Demo-Angebote. Echte Zahlungen, Unitsreservierungen und Gebühreneinzug sind noch nicht aktiviert.",
-    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "Der Einladende erhält nach bestätigter Registrierung des geworbenen Nutzers eine zusätzliche UNIT. Der neue Nutzer erhält eine StarterUNIT.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование юнитов и удержание комиссии пока не подключены.": "Dies sind Demo-Angebote. Echte Zahlungen, Unitsreservierungen und Gebühreneinzug sind noch nicht aktiviert.",
+    "Пригласивший получает 1 дополнительный юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовый юнит.": "Der Einladende erhält nach bestätigter Registrierung des geworbenen Nutzers eine zusätzliche UNIT. Der neue Nutzer erhält eine StarterUNIT.",
     "Ссылка скопирована": "Link kopiert",
     "Не удалось скопировать ссылку": "Link konnte nicht kopiert werden",
     "Загрузка данных...": "Daten werden geladen...",
@@ -761,7 +761,7 @@ function App() {
     "Показано записей:": "Angezeigte Einträge:",
     "юнитов доступно": "Units verfügbar",
     "за юнит": "pro UNIT",
-    "ЦЕНА ВЫКУПА": "RÜCKKAUFPREIS",
+    "": "",
     "Digital card platform": "Digitale Unitsplattform",
   },
   "fr": {
@@ -773,7 +773,7 @@ function App() {
     "Администрирование": "Administration",
     "МЕНЮ": "MENU",
     "Установить": "Installer",
-    "NFT · DIGITAL UNITS": "ÉCONOMIE DES CARTES NUMÉRIQUES",
+    "NFT · DIGITAL UNITS": "NFT · UNITÉS NUMÉRIQUES",
     "Вход или регистрация": "Connexion ou inscription",
     "Панель администратора": "Panneau administrateur",
     "Статистика посещаемости": "Statistiques de fréquentation",
@@ -786,7 +786,7 @@ function App() {
     "Открыть маркетплейс": "Ouvrir la marketplace",
     "МОИ ЮНИТЫ": "MES CARTES",
     "РЕФЕРАЛЫ": "PARRAINAGES",
-    "ЦЕНА ВЫКУПА*": "PRIX DE RACHAT*",
+    "": "",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "ACTIONS RAPIDES",
     "Мои юниты": "Mes units",
     "Баланс и переводы": "Solde et transferts",
@@ -854,7 +854,7 @@ function App() {
     "Записей пока нет.": "Aucun enregistrement pour le moment.",
     "Загружаем таблицы базы данных...": "Chargement des tables de la base de données...",
     "Зарегистрироваться": "S’inscrire",
-    "VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEX UNIT est une plateforme de units numériques. Créez un compte, gérez vos units et découvrez les possibilités de la plateforme.",
+    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT est une plateforme de units numériques. Créez un compte, gérez vos units et découvrez les possibilités de la plateforme.",
     "У меня уже есть аккаунт": "J’ai déjà un compte",
     "Юниты и NFT": "Units numériques",
     "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Espace personnel et gestion des units après connexion.",
@@ -1018,7 +1018,7 @@ function App() {
 
   async function addListing(e) {
     e.preventDefault()
-    if (!user) { setNotice('Чтобы выставить карточку, войдите в аккаунт.'); return }
+    if (!user) { setNotice('Чтобы выставить юнит, войдите в аккаунт.'); return }
     const q = Number(qty)
     const p = Number(price)
     if (!Number.isInteger(q) || q < 1 || !Number.isFinite(p) || p <= 0) {
@@ -1031,10 +1031,10 @@ function App() {
         p_quantity: q, p_price: p
       })
       if (error) throw error
-      setNotice(`Объявление создано. Выставлено карточек: ${data?.quantity ?? q}. Пока объявление активно, эти карточки нельзя перевести другому пользователю.`)
+      setNotice(`Объявление создано. Выставлено юнитов: ${data?.quantity ?? q}. Пока объявление активно, эти юниты нельзя перевести другому пользователю.`)
       await Promise.all([loadMarketplace(), loadFinancialData()])
     } catch (error) {
-      setNotice('Не удалось выставить карточки: ' + (error.message || 'ошибка операции'))
+      setNotice('Не удалось выставить юниты: ' + (error.message || 'ошибка операции'))
     } finally {
       setBusy(false)
     }
@@ -1046,7 +1046,7 @@ function App() {
     try {
       const { error } = await supabase.rpc('cancel_own_market_listing', { p_listing_id: item.id })
       if (error) throw error
-      setNotice('Объявление снято с продажи. Карточки снова доступны для перевода.')
+      setNotice('Объявление снято с продажи. Юниты снова доступны для перевода.')
       await Promise.all([loadMarketplace(), loadFinancialData()])
     } catch (error) {
       setNotice('Не удалось снять объявление: ' + (error.message || 'ошибка операции'))
@@ -1149,7 +1149,7 @@ function App() {
           </div>
           <div className="panel">
             <h3>Передать юниты</h3>
-            <p className="muted">Передать можно только свободные карточки. Карточки, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.</p>
+            <p className="muted">Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.</p>
             <form onSubmit={transferCards}>
               <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
               <label>Количество юнитов<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
@@ -1192,7 +1192,7 @@ function App() {
           <div className="panel referral-panel">
             <div className="ref-icon"><Users /></div>
             <h2>Расти вместе с VORTEX</h2>
-            <p className="muted">Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.</p>
+            <p className="muted">Пригласивший получает 1 дополнительный юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовый юнит.</p>
             <div className="ref-link">
               <span>{referralLink}</span>
               <button type="button" onClick={() => navigator.clipboard?.writeText(referralLink).then(() => setNotice('Ссылка скопирована')).catch(() => setNotice('Не удалось скопировать ссылку'))}><Copy size={17} /></button>
@@ -1240,8 +1240,8 @@ function App() {
           </section>
           {user && <>
             <section className="panel">
-              <h3>Перевести карточки другому пользователю</h3>
-              <p className="muted">Укажите email получателя и количество свободных карточек. Карточки, выставленные на маркетплейс, передать нельзя.</p>
+              <h3>Перевести юниты другому пользователю</h3>
+              <p className="muted">Укажите email получателя и количество свободных юнитов. Юниты, выставленные на маркетплейс, передать нельзя.</p>
               <form onSubmit={transferCards}>
                 <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
                 <label>Количество юнитов<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
@@ -1305,12 +1305,12 @@ function App() {
               </>}
           </div>
           {user && isAdmin && <div className="panel">
-            <h3>Выпустить карточку пользователю</h3>
+            <h3>Выпустить юнит пользователю</h3>
             <p className="muted">Укажите UUID пользователя из таблицы user_accounts и уникальный серийный номер. Выпуск создаёт запись в реестре карточек.</p>
             <form className="listing-form" onSubmit={issueCard}>
               <label>UUID пользователя<input value={issueOwnerId} onChange={e => setIssueOwnerId(e.target.value)} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required /></label>
               <label>Серийный номер<input value={issueSerial} onChange={e => setIssueSerial(e.target.value)} placeholder="VTX-000001" required /></label>
-              <button type="submit" className="primary" disabled={adminActionBusy}>{adminActionBusy ? 'Выполняется...' : 'Выпустить карточку'}</button>
+              <button type="submit" className="primary" disabled={adminActionBusy}>{adminActionBusy ? 'Выполняется...' : 'Выпустить юнит'}</button>
             </form>
           </div>}
           {user && isAdmin && <div className="panel analytics-panel">
@@ -1360,7 +1360,7 @@ function App() {
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: true, p_note: 'Заявка одобрена. Выплата не произведена.' }, 'Заявка на выкуп одобрена без проведения выплаты.')}>Одобрить</button>
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: false, p_note: 'Заявка отклонена администратором.' }, 'Заявка на выкуп отклонена.')}>Отклонить</button>
                               </>}
-                              {table.name === 'card_inventory' && row.status !== 'sold' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_card_retired', { p_card_id: row.id, p_retired: row.status !== 'retired' }, row.status === 'retired' ? 'Карточка восстановлена.' : 'Карточка выведена из обращения.')}>{row.status === 'retired' ? 'Восстановить' : 'Вывести из обращения'}</button>}
+                              {table.name === 'card_inventory' && row.status !== 'sold' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_card_retired', { p_card_id: row.id, p_retired: row.status !== 'retired' }, row.status === 'retired' ? 'Юнит восстановлен.' : 'Юнит выведен из обращения.')}>{row.status === 'retired' ? 'Восстановить' : 'Вывести из обращения'}</button>}
                               {table.name === 'market_listings' && row.status === 'active' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_cancel_listing', { p_listing_id: row.id }, 'Объявление снято с продажи.')}>Снять с продажи</button>}
                               {table.name === 'crypto_deposit_requests' && ['pending','detected','confirming'].includes(row.status) && <>
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_deposit', { p_request_id: row.id, p_status: 'confirming', p_note: 'Проверяется подтверждение транзакции в сети. Средства не зачислены.' }, 'Заявка переведена на проверку сети.')}>Проверить</button>
@@ -1418,7 +1418,7 @@ function App() {
           <div className="public-copy">
             <div className="pill"><Sparkles size={14} /> NFT · DIGITAL UNITS</div>
             <h1>Одна единица.<br /><span>Своя ценность.</span></h1>
-            <p>VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.</p>
+            <p>VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.</p>
             <div className="public-cta">
               <button type="button" className="primary" onClick={() => openPublicAuth('signup')}>Создать аккаунт</button>
               <button type="button" className="outline" onClick={() => openPublicAuth('login')}>У меня уже есть аккаунт</button>
