@@ -19,6 +19,7 @@ function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [notice, setNotice] = useState('')
+  const [busy, setBusy] = useState(false)
   const [cards, setCards] = useState(1)
   const [listings, setListings] = useState([
     { id: 1, seller: 'VortexPilot', qty: 2, price: 10 },
@@ -38,13 +39,20 @@ function App() {
       return
     }
     setAdminLoading(true)
-    const { data, error } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', currentUser.id)
-      .maybeSingle()
-    setIsAdmin(!error && data?.role === 'admin')
-    setAdminLoading(false)
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', currentUser.id)
+        .maybeSingle()
+      if (error) console.error('Ошибка проверки администратора:', error)
+      setIsAdmin(!error && data?.role === 'admin')
+    } catch (error) {
+      console.error('Ошибка проверки администратора:', error)
+      setIsAdmin(false)
+    } finally {
+      setAdminLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -60,27 +68,36 @@ function App() {
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations()
-        .then(registrations => {
-          registrations.forEach(registration => registration.unregister())
-        })
+        .then(registrations => registrations.forEach(registration => registration.unregister()))
         .catch(error => console.error('Ошибка удаления Service Worker:', error))
     }
 
     if ('caches' in window) {
       caches.keys()
         .then(keys => Promise.all(
-          keys
-            .filter(key => key.startsWith('vortex-cards-'))
-            .map(key => caches.delete(key))
+          keys.filter(key => key.startsWith('vortex-cards-')).map(key => caches.delete(key))
         ))
         .catch(error => console.error('Ошибка очистки кэша:', error))
     }
 
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user || null)
-    }).catch(error => console.error('Ошибка получения сессии:', error))
+    supabase.auth.getSession()
+      .then(({ data, error }) => {
+        if (error) throw error
+        setUser(data.session?.user || null)
+      })
+      .catch(error => {
+        console.error('Ошибка получения сессии:', error)
+        setNotice('Не удалось проверить вход: ' + (error.message || 'ошибка соединения'))
+      })
 
-    return () => window.removeEventListener('beforeinstallprompt', handler)
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null)
+    })
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler)
+      authListener.subscription.unsubscribe()
+    }
   }, [])
 
   const referralLink = useMemo(
@@ -90,34 +107,75 @@ function App() {
 
   async function signIn(e) {
     e.preventDefault()
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) setNotice(error.message)
-    else {
+    if (busy) return
+    setBusy(true)
+    setNotice('')
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password
+      })
+      if (error) throw error
       setUser(data.user)
-      setNotice('Вход выполнен')
+      setNotice('Вход выполнен.')
+    } catch (error) {
+      console.error('Ошибка входа:', error)
+      setNotice('Ошибка входа: ' + (error.message || 'проверьте интернет-соединение'))
+    } finally {
+      setBusy(false)
     }
   }
 
   async function signUp() {
-    if (!email || password.length < 6) {
-      setNotice('Укажи email и пароль не короче 6 символов.')
+    if (busy) return
+    const cleanEmail = email.trim()
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setNotice('Введите правильный адрес электронной почты.')
       return
     }
-    const ref = new URLSearchParams(location.search).get('ref')
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { referral_code: ref } }
-    })
-    if (error) setNotice(error.message)
-    else setNotice('Проверь почту для подтверждения регистрации.')
+    if (password.length < 6) {
+      setNotice('Пароль должен содержать не менее 6 символов.')
+      return
+    }
+
+    setBusy(true)
+    setNotice('Отправляем запрос на регистрацию...')
+    try {
+      const ref = new URLSearchParams(location.search).get('ref')
+      const { data, error } = await supabase.auth.signUp({
+        email: cleanEmail,
+        password,
+        options: { data: { referral_code: ref } }
+      })
+      if (error) throw error
+
+      if (data.session) {
+        setUser(data.user)
+        setNotice('Регистрация успешна. Вы вошли в аккаунт.')
+      } else {
+        setNotice('Запрос принят. Проверьте почту и подтвердите регистрацию, затем войдите.')
+      }
+    } catch (error) {
+      console.error('Ошибка регистрации:', error)
+      setNotice('Регистрация не выполнена: ' + (error.message || 'не удалось связаться с сервером'))
+    } finally {
+      setBusy(false)
+    }
   }
 
   async function logout() {
-    await supabase.auth.signOut()
-    setUser(null)
-    setIsAdmin(false)
-    setNotice('Вы вышли из аккаунта')
+    setBusy(true)
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      setUser(null)
+      setIsAdmin(false)
+      setNotice('Вы вышли из аккаунта.')
+    } catch (error) {
+      setNotice('Ошибка выхода: ' + (error.message || 'неизвестная ошибка'))
+    } finally {
+      setBusy(false)
+    }
   }
 
   function addListing(e) {
@@ -125,7 +183,7 @@ function App() {
     const q = Math.max(1, Number(qty))
     const p = Math.max(1, Number(price))
     if (q > cards) {
-      setNotice('Недостаточно карточек для объявления')
+      setNotice('Недостаточно карточек для объявления.')
       return
     }
     setCards(v => v - q)
@@ -149,11 +207,11 @@ function App() {
     ['referrals', 'Рефералы', Users],
     ['profile', 'Профиль', UserRound]
   ]
-  const title = nav.find(x => x[0] === tab)?.[1] || 'Обзор'
+  const title = nav.find(x => x[0] === tab)?.[1] || (tab === 'admin' ? 'Администратор' : 'Обзор')
 
   return <div className="app-shell">
     <header className="topbar">
-      <button className="icon-btn mobile-only" onClick={() => setMenu(!menu)}>
+      <button className="icon-btn mobile-only" type="button" onClick={() => setMenu(!menu)}>
         {menu ? <X /> : <Menu />}
       </button>
       <div className="brand-mark">
@@ -162,9 +220,13 @@ function App() {
       </div>
       <div className="top-actions">
         <span className="status"><i /> ONLINE</span>
-        {installPrompt && <button className="install-btn" onClick={async () => {
-          await installPrompt.prompt()
-          setInstallPrompt(null)
+        {installPrompt && <button className="install-btn" type="button" onClick={async () => {
+          try {
+            await installPrompt.prompt()
+            setInstallPrompt(null)
+          } catch (error) {
+            setNotice('Не удалось установить приложение: ' + error.message)
+          }
         }}><Download size={16} /> Установить</button>}
       </div>
     </header>
@@ -173,13 +235,13 @@ function App() {
       <aside className={`sidebar ${menu ? 'open' : ''}`}>
         <div className="side-label">МЕНЮ</div>
         {nav.map(([id, label, Icon]) => (
-          <button key={id} className={`nav-item ${tab === id ? 'active' : ''}`}
+          <button key={id} type="button" className={`nav-item ${tab === id ? 'active' : ''}`}
             onClick={() => { setTab(id); setMenu(false) }}>
             <Icon size={19} />{label}
           </button>
         ))}
         <div className="side-spacer" />
-        <button className={`nav-item ${tab === 'admin' ? 'active' : ''}`}
+        <button type="button" className={`nav-item ${tab === 'admin' ? 'active' : ''}`}
           onClick={() => { setTab('admin'); setMenu(false) }}>
           <Shield size={19} /> Администрирование
         </button>
@@ -192,8 +254,8 @@ function App() {
           <div className="avatar">{user?.email?.[0]?.toUpperCase() || 'G'}</div>
         </div>
 
-        {notice && <div className="notice" onClick={() => setNotice('')}>
-          {notice}<button>×</button>
+        {notice && <div className="notice" role="status">
+          <span>{notice}</span><button type="button" aria-label="Закрыть" onClick={() => setNotice('')}>×</button>
         </div>}
 
         {tab === 'home' && <>
@@ -202,7 +264,7 @@ function App() {
               <div className="pill"><Sparkles size={13} /> YOUR DIGITAL ASSET</div>
               <h2>Твоя карточка.<br /><span>Твои правила.</span></h2>
               <p>Управляй карточками, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX.</p>
-              <button className="primary" onClick={() => setTab('market')}>
+              <button type="button" className="primary" onClick={() => setTab('market')}>
                 Открыть маркетплейс <ArrowLeftRight size={17} />
               </button>
             </div>
@@ -236,7 +298,7 @@ function App() {
             <p className="muted">В демонстрационном режиме переводы не выполняются.</p>
             <input placeholder="Email или ID получателя" />
             <input type="number" min="1" placeholder="Количество карточек" />
-            <button className="primary full" onClick={() => setNotice('Для безопасных переводов требуется подключённая серверная операция Supabase.')}>Передать</button>
+            <button type="button" className="primary full" onClick={() => setNotice('Для безопасных переводов требуется подключённая серверная операция Supabase.')}>Передать</button>
           </div>
         </>}
 
@@ -250,7 +312,7 @@ function App() {
             <form className="listing-form" onSubmit={addListing}>
               <label>Количество<input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} /></label>
               <label>Цена за карточку, ₴<input type="number" min="1" value={price} onChange={e => setPrice(e.target.value)} /></label>
-              <button className="primary">Выставить</button>
+              <button className="primary" type="submit">Выставить</button>
             </form>
           </div>
           <div className="section-title">АКТИВНЫЕ ОБЪЯВЛЕНИЯ</div>
@@ -259,7 +321,7 @@ function App() {
               <div className="listing-avatar">{item.seller[0].toUpperCase()}</div>
               <div className="listing-info"><b>{item.seller}</b><span>{item.qty} карточек доступно</span></div>
               <div className="listing-price"><b>{item.price} ₴</b><span>за карточку</span></div>
-              <button className="outline" onClick={() => buy(item)}>Купить</button>
+              <button type="button" className="outline" onClick={() => buy(item)}>Купить</button>
             </div>)}
           </div>
           <p className="disclaimer">Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.</p>
@@ -272,7 +334,7 @@ function App() {
             <p className="muted">Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.</p>
             <div className="ref-link">
               <span>{referralLink}</span>
-              <button onClick={() => navigator.clipboard?.writeText(referralLink).then(() => setNotice('Ссылка скопирована')).catch(() => setNotice('Не удалось скопировать ссылку'))}><Copy size={17} /></button>
+              <button type="button" onClick={() => navigator.clipboard?.writeText(referralLink).then(() => setNotice('Ссылка скопирована')).catch(() => setNotice('Не удалось скопировать ссылку'))}><Copy size={17} /></button>
             </div>
             <div className="stats mini">
               <Stat label="ПРИГЛАШЕНО" value={referrals} icon={<Users />} />
@@ -285,12 +347,14 @@ function App() {
           <h2>{user ? 'Аккаунт' : 'Вход или регистрация'}</h2>
           {user ? <>
             <p className="muted">{user.email}</p>
-            <button className="outline" onClick={logout}>Выйти</button>
+            <button type="button" className="outline" onClick={logout} disabled={busy}>Выйти</button>
           </> : <form onSubmit={signIn}>
-            <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></label>
-            <label>Пароль<input type="password" value={password} onChange={e => setPassword(e.target.value)} minLength="6" required /></label>
-            <button className="primary full">Войти</button>
-            <button type="button" className="outline full" onClick={signUp}>Создать аккаунт</button>
+            <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
+            <label>Пароль<input type="password" value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /></label>
+            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : 'Войти'}</button>
+            <button type="button" className="outline full" disabled={busy} onClick={signUp}>
+              {busy ? 'Подождите...' : 'Создать аккаунт'}
+            </button>
           </form>}
         </div>}
 
@@ -298,7 +362,7 @@ function App() {
           <div className="admin-head"><Shield /><h2>Панель администратора</h2></div>
           {adminLoading ? <p className="muted">Проверка прав доступа...</p>
             : !user ? <p className="muted">Войдите в аккаунт</p>
-            : !isAdmin ? <p className="muted">Доступ закрыт. У вас нет прав администратора</p>
+            : !isAdmin ? <p className="muted">Доступ закрыт. У вас нет прав администратора.</p>
             : <>
               <p className="muted">Права администратора подтверждены</p>
               <div className="admin-grid">
@@ -322,7 +386,7 @@ function Stat({ label, value, icon }) {
 }
 
 function Quick({ icon, title, desc, click }) {
-  return <button className="quick" onClick={click}>
+  return <button type="button" className="quick" onClick={click}>
     <div className="quick-icon">{icon}</div>
     <div><b>{title}</b><span>{desc}</span></div>
     <span className="arrow">↗</span>
@@ -330,4 +394,4 @@ function Quick({ icon, title, desc, click }) {
 }
 
 createRoot(document.getElementById('root')).render(<App />)
-    
+              
