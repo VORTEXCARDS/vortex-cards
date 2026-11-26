@@ -36,6 +36,9 @@ function App() {
   const [adminData, setAdminData] = useState([])
   const [adminDataLoading, setAdminDataLoading] = useState(false)
   const [financial, setFinancial] = useState({ ledger: [], cards: [], deposits: [], withdrawals: [], exchanges: [], error: '', loading: false })
+  const [transferEmail, setTransferEmail] = useState('')
+  const [transferQuantity, setTransferQuantity] = useState('1')
+  const [adminActionBusy, setAdminActionBusy] = useState(false)
 
   const adminTables = [
     { name: 'user_accounts', label: 'Аккаунты пользователей' },
@@ -44,7 +47,12 @@ function App() {
     { name: 'complaints', label: 'Жалобы' },
     { name: 'disputes', label: 'Спорные сделки' },
     { name: 'buyback_requests', label: 'Заявки на выкуп' },
-    { name: 'admin_audit_log', label: 'Журнал действий администратора' }
+    { name: 'admin_audit_log', label: 'Журнал действий администратора' },
+    { name: 'card_inventory', label: 'Реестр выпущенных карточек' },
+    { name: 'wallet_ledger', label: 'Финансовый журнал' },
+    { name: 'crypto_deposit_requests', label: 'Заявки на пополнение криптовалютой' },
+    { name: 'crypto_withdrawal_requests', label: 'Заявки на вывод криптовалюты' },
+    { name: 'exchange_requests', label: 'Заявки на обмен в VTX' }
   ]
 
   async function loadAnalytics() {
@@ -92,6 +100,41 @@ function App() {
     } catch (error) {
       setFinancial(v => ({ ...v, loading: false, error: error.message || 'Не удалось загрузить финансовые данные' }))
     }
+  }
+
+  async function transferCards(e) {
+    e.preventDefault()
+    if (!user) { setNotice('Сначала войдите в аккаунт.'); return }
+    const quantity = Number(transferQuantity)
+    if (!transferEmail.trim() || !Number.isInteger(quantity) || quantity < 1) {
+      setNotice('Укажите email получателя и целое количество карточек.'); return
+    }
+    setBusy(true)
+    try {
+      const { data, error } = await supabase.rpc('transfer_cards', {
+        p_recipient_email: transferEmail.trim(), p_quantity: quantity
+      })
+      if (error) throw error
+      setTransferEmail('')
+      setTransferQuantity('1')
+      await loadFinancialData()
+      setNotice(`Успешно передано карточек: ${data?.transferred ?? quantity}.`)
+    } catch (error) {
+      setNotice('Не удалось передать карточки: ' + (error.message || 'ошибка операции'))
+    } finally { setBusy(false) }
+  }
+
+  async function runAdminAction(rpcName, args, successMessage) {
+    if (!isAdmin || adminActionBusy) return
+    setAdminActionBusy(true)
+    try {
+      const { error } = await supabase.rpc(rpcName, args)
+      if (error) throw error
+      setNotice(successMessage)
+      await loadAdminData()
+    } catch (error) {
+      setNotice('Действие не выполнено: ' + (error.message || 'ошибка сервера'))
+    } finally { setAdminActionBusy(false) }
   }
 
   async function loadAdminData() {
@@ -805,10 +848,12 @@ function App() {
           </div>
           <div className="panel">
             <h3>Передать карточки</h3>
-            <p className="muted">В демонстрационном режиме переводы не выполняются.</p>
-            <input placeholder="Email или ID получателя" />
-            <input type="number" min="1" placeholder="Количество карточек" />
-            <button type="button" className="primary full" onClick={() => setNotice('Для безопасных переводов требуется подключённая серверная операция Supabase.')}>Передать</button>
+            <p className="muted">Передача изменяет владельца выбранных свободных карточек в реестре. Получатель должен иметь подтверждённый аккаунт.</p>
+            <form onSubmit={transferCards}>
+              <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
+              <label>Количество карточек<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
+              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : 'Передать карточки'}</button>
+            </form>
           </div>
         </>}
 
@@ -961,6 +1006,15 @@ function App() {
                               const display = value == null ? '—' : typeof value === 'object' ? JSON.stringify(value) : String(value)
                               return <td key={column} style={{ padding: '9px', borderBottom: '1px solid #252438', verticalAlign: 'top', maxWidth: '260px', overflowWrap: 'anywhere' }}>{display}</td>
                             })}
+                            <td style={{ padding: '9px', borderBottom: '1px solid #252438', whiteSpace: 'nowrap' }}>
+                              {table.name === 'user_accounts' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_user_block', { p_user_id: row.user_id, p_blocked: !row.is_blocked, p_reason: row.is_blocked ? null : 'Блокировка администратором' }, row.is_blocked ? 'Аккаунт разблокирован.' : 'Аккаунт заблокирован.')}>{row.is_blocked ? 'Разблокировать' : 'Заблокировать'}</button>}
+                              {table.name === 'complaints' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_complaint', { p_complaint_id: row.id }, 'Жалоба отмечена как рассмотренная.')}>Рассмотреть</button>}
+                              {table.name === 'disputes' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_dispute', { p_dispute_id: row.id, p_resolution: 'Решено администратором VORTEXCARDS' }, 'Спор закрыт. Решение записано.')}>Закрыть спор</button>}
+                              {table.name === 'buyback_requests' && !['approved','rejected'].includes(row.status) && <>
+                                <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: true, p_note: 'Заявка одобрена. Выплата не произведена.' }, 'Заявка на выкуп одобрена без проведения выплаты.')}>Одобрить</button>
+                                <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: false, p_note: 'Заявка отклонена администратором.' }, 'Заявка на выкуп отклонена.')}>Отклонить</button>
+                              </>}
+                            </td>
                           </tr>)}
                         </tbody>
                       </table>
