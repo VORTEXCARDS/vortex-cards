@@ -1709,7 +1709,14 @@ function App() {
           </div>
           <div className="hero-card public-card">
             <div className="card-top"><span>VORTEX</span><span>GENESIS / 001</span></div>
-            <div className="card-geometry" aria-hidden="true"><span /></div>
+            <div className="card-geometry" aria-hidden="true">
+              <svg viewBox="0 0 64 64" focusable="false">
+                <path d="M32 4 54 17v30L32 60 10 47V17L32 4Z" />
+                <path d="M32 4v27m22-14L32 31 10 17m44 30L32 31 10 47m22-16v29" />
+                <path d="m20 23 12-7 12 7v18l-12 7-12-7V23Z" />
+                <path d="m20 23 12 8 12-8M32 31v17" />
+              </svg>
+            </div>
             <div className="card-bottom"><b>VORTEX UNIT</b><span>OWN THE DIGITAL FLOW</span></div>
           </div>
         </section>
