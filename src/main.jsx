@@ -1024,7 +1024,7 @@ function App() {
         {tab === 'profile' && <div className="profile-dashboard">
           <section className="panel auth-panel profile-account">
             <h2>{user ? 'Аккаунт' : 'Вход или регистрация'}</h2>
-            {user ? <>
+            {user && authMode !== 'reset' ? <>
               <p className="muted">{user.email}</p>
               <button type="button" className="outline" onClick={logout} disabled={busy}>Выйти</button>
             </> : authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
