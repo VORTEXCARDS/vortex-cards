@@ -396,8 +396,8 @@ function App() {
     "Языки сайта": "Мови сайту",
     "Администратор": "Адміністратор",
     "Закрыть": "Закрити",
-    "Одна единица.": "Твоя юнит.",
-    "Своя ценность.": "Твої правила.",
+    "Одна единица.": "Один юніт.",
+    "Своя ценность.": "Власна цінність.",
     "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Керуй юнітами, запрошуй друзів і торгуй на P2P-маркетплейсі VORTEX UNIT.",
     "Открыть маркетплейс": "Відкрити маркетплейс",
     "МОИ ЮНИТЫ": "МОЇ КАРТКИ",
@@ -484,7 +484,7 @@ function App() {
     "юнитов доступно": "юнитів доступно",
     "за юнит": "за юнит",
     "": "ЦІНА ВИКУПУ",
-    "Digital card platform": "Платформа цифрових юнитів",
+    "NFT · DIGITAL UNITS": "Платформа цифрових юнитів",
     "Зарегистрироваться": "Зареєструватися",
     "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT — цифрова платформа юнитів. Створіть обліковий запис, керуйте своїми юнітами та відкривайте можливості платформи.",
     "У меня уже есть аккаунт": "У мене вже є обліковий запис",
@@ -524,8 +524,8 @@ function App() {
     "Языки сайта": "Website languages",
     "Администратор": "Administrator",
     "Закрыть": "Close",
-    "Одна единица.": "Your UNIT.",
-    "Своя ценность.": "Your rules.",
+    "Одна единица.": "One unit.",
+    "Своя ценность.": "Its own value.",
     "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Manage units, invite friends, and trade on the VORTEX P2P marketplace.",
     "Открыть маркетплейс": "Open marketplace",
     "МОИ ЮНИТЫ": "MY CARDS",
@@ -634,7 +634,7 @@ function App() {
     "юнитов доступно": "units available",
     "за юнит": "per UNIT",
     "": "",
-    "Digital card platform": "Digital UNIT platform",
+    "NFT · DIGITAL UNITS": "Digital UNIT platform",
   },
   "de": {
     "Обзор": "Übersicht",
@@ -652,8 +652,8 @@ function App() {
     "Языки сайта": "Website-Sprachen",
     "Администратор": "Administrator",
     "Закрыть": "Schließen",
-    "Одна единица.": "Deine UNIT.",
-    "Своя ценность.": "Deine Regeln.",
+    "Одна единица.": "Eine Einheit.",
+    "Своя ценность.": "Eigener Wert.",
     "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Verwalte Units, lade Freunde ein und handle auf dem VORTEX-P2P-Marktplatz.",
     "Открыть маркетплейс": "Marktplatz öffnen",
     "МОИ ЮНИТЫ": "MEINE KARTEN",
@@ -762,7 +762,7 @@ function App() {
     "юнитов доступно": "Units verfügbar",
     "за юнит": "pro UNIT",
     "": "",
-    "Digital card platform": "Digitale Unitsplattform",
+    "NFT · DIGITAL UNITS": "Digitale Unitsplattform",
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
@@ -780,8 +780,8 @@ function App() {
     "Языки сайта": "Langues du site",
     "Администратор": "Administrateur",
     "Закрыть": "Fermer",
-    "Одна единица.": "Votre UNIT.",
-    "Своя ценность.": "Vos règles.",
+    "Одна единица.": "Une unité.",
+    "Своя ценность.": "Sa propre valeur.",
     "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Gérez vos units, invitez vos amis et échangez sur la place de marché P2P VORTEX.",
     "Открыть маркетплейс": "Ouvrir la marketplace",
     "МОИ ЮНИТЫ": "MES CARTES",
@@ -1117,7 +1117,7 @@ function App() {
         {tab === 'home' && <>
           <section className="hero">
             <div className="hero-copy">
-              <div className="pill"><Sparkles size={13} /> YOUR DIGITAL ASSET</div>
+              <div className="pill"><Sparkles size={13} /> NFT · DIGITAL UNITS</div>
               <h2>Одна единица.<br /><span>Своя ценность.</span></h2>
               <p>Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.</p>
               <button type="button" className="primary" onClick={() => setTab('market')}>
@@ -1391,7 +1391,7 @@ function App() {
             <button type="button" className="outline full" disabled={pushBusy} onClick={() => savePushPreference(false)}>Не согласен</button>
           </section>
         </div>}
-        <footer>© 2026 VORTEX UNIT <span>Digital card platform</span></footer>
+        <footer>© 2026 VORTEX UNIT <span>NFT · DIGITAL UNITS</span></footer>
       </main>
     </div>
   </div>
@@ -1455,7 +1455,7 @@ function App() {
           </form>}
         </section>}
       </main>
-      <footer className="public-footer">© 2026 VORTEX UNIT <span>Digital card platform</span></footer>
+      <footer className="public-footer">© 2026 VORTEX UNIT <span>NFT · DIGITAL UNITS</span></footer>
     </div>
     return translateTree(publicPage, language, translations)
   }
