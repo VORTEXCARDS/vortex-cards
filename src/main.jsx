@@ -18,6 +18,10 @@ function App() {
   const [menu, setMenu] = useState(false)
   const [installPrompt, setInstallPrompt] = useState(null)
   const [user, setUser] = useState(null)
+  const [pushEnabled, setPushEnabled] = useState(false)
+  const [pushPromptOpen, setPushPromptOpen] = useState(false)
+  const [pushBusy, setPushBusy] = useState(false)
+  const pushServerReady = Boolean(import.meta.env.VITE_VAPID_PUBLIC_KEY)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
@@ -233,6 +237,89 @@ function App() {
   }, [language])
 
   useEffect(() => {
+    if (!user) {
+      setPushEnabled(false)
+      setPushPromptOpen(false)
+      return
+    }
+    const metadata = user.user_metadata || {}
+    setPushEnabled(metadata.push_notifications_enabled === true)
+    setPushPromptOpen(!metadata.push_consent_status || metadata.push_consent_status === 'pending')
+  }, [user?.id, user?.user_metadata?.push_consent_status, user?.user_metadata?.push_notifications_enabled])
+
+  async function savePushPreference(enabled) {
+    if (!user || pushBusy) return
+    setPushBusy(true)
+    try {
+      if (enabled) {
+        if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+          throw new Error('Этот браузер не поддерживает push-уведомления. Попробуйте установить приложение и открыть его в Chrome.')
+        }
+        let permission = Notification.permission
+        if (permission !== 'granted') permission = await Notification.requestPermission()
+        if (permission !== 'granted') {
+          const { data, error } = await supabase.auth.updateUser({ data: {
+            push_notifications_enabled: false,
+            push_consent_status: 'declined',
+            push_consent_at: new Date().toISOString()
+          } })
+          if (error) throw error
+          setUser(data.user)
+          setPushEnabled(false)
+          setPushPromptOpen(false)
+          setNotice('Разрешение на уведомления не выдано. Вы сможете изменить выбор в настройках профиля.')
+          return
+        }
+        if (pushServerReady) {
+          const registration = await navigator.serviceWorker.ready
+          let subscription = await registration.pushManager.getSubscription()
+          if (!subscription) {
+            subscription = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY)
+            })
+          }
+          const { error: saveError } = await supabase.from('push_subscriptions').upsert({
+            user_id: user.id,
+            endpoint: subscription.endpoint,
+            subscription: subscription.toJSON(),
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'user_id,endpoint' })
+          if (saveError) throw saveError
+        }
+      } else {
+        if (pushServerReady && user) {
+          const { error } = await supabase.from('push_subscriptions').delete().eq('user_id', user.id)
+          if (error) console.warn('Не удалось удалить подписки push:', error.message)
+        }
+        if ('serviceWorker' in navigator) {
+          const registration = await navigator.serviceWorker.getRegistration(`${import.meta.env.BASE_URL}`)
+          const subscription = await registration?.pushManager?.getSubscription()
+          if (subscription) await subscription.unsubscribe()
+        }
+      }
+
+      const { data, error } = await supabase.auth.updateUser({ data: {
+        push_notifications_enabled: enabled,
+        push_consent_status: enabled ? 'accepted' : 'declined',
+        push_consent_at: new Date().toISOString()
+      } })
+      if (error) throw error
+      setUser(data.user)
+      setPushEnabled(enabled)
+      setPushPromptOpen(false)
+      setNotice(enabled
+        ? (pushServerReady ? 'Push-уведомления включены на этом устройстве.' : 'Согласие сохранено. Сервер отправки push-уведомлений ещё не настроен; получение сообщений начнёт работать после его подключения.')
+        : 'Push-уведомления отключены.')
+    } catch (error) {
+      console.error('Ошибка настройки push-уведомлений:', error)
+      setNotice('Не удалось изменить настройки уведомлений: ' + (error.message || 'ошибка'))
+    } finally {
+      setPushBusy(false)
+    }
+  }
+
+  useEffect(() => {
     const handler = e => {
       e.preventDefault()
       setInstallPrompt(e)
@@ -240,9 +327,8 @@ function App() {
     window.addEventListener('beforeinstallprompt', handler)
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations()
-        .then(registrations => registrations.forEach(registration => registration.unregister()))
-        .catch(error => console.error('Ошибка удаления Service Worker:', error))
+      navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL })
+        .catch(error => console.error('Не удалось зарегистрировать Service Worker:', error))
     }
 
     if ('caches' in window) {
@@ -798,7 +884,7 @@ function App() {
       const { data, error } = await supabase.auth.signUp({
         email: cleanEmail,
         password,
-        options: { data: { referral_code: ref } }
+        options: { data: { referral_code: ref, push_consent_status: 'pending', push_notifications_enabled: false } }
       })
       if (error) throw error
 
@@ -1026,6 +1112,16 @@ function App() {
             <h2>{user ? 'Аккаунт' : 'Вход или регистрация'}</h2>
             {user && authMode !== 'reset' ? <>
               <p className="muted">{user.email}</p>
+              <div className="push-settings-row">
+                <div className="push-settings-copy">
+                  <b>Push-уведомления</b>
+                  <span>{pushServerReady ? 'Получать важные сообщения VORTEXCARDS на этом устройстве.' : 'Разрешение сохраняется. Сервер отправки будет подключён отдельно.'}</span>
+                </div>
+                <label className="push-switch" aria-label="Получать push-уведомления">
+                  <input type="checkbox" checked={pushEnabled} disabled={pushBusy} onChange={event => savePushPreference(event.target.checked)} />
+                  <span className="push-switch-track"></span>
+                </label>
+              </div>
               <button type="button" className="outline" onClick={logout} disabled={busy}>Выйти</button>
             </> : authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
               <p className="muted">Укажите email, который использовали при регистрации. Мы отправим на него ссылку для восстановления доступа.</p>
@@ -1189,11 +1285,27 @@ function App() {
           {user && isAdmin && adminDataLoading && adminData.length === 0 && <p className="muted">Загружаем таблицы базы данных...</p>}
         </div>}
 
+        {pushPromptOpen && user && <div className="push-consent-backdrop" role="dialog" aria-modal="true" aria-labelledby="push-consent-title">
+          <section className="push-consent-panel">
+            <div className="push-consent-icon">♢</div>
+            <h2 id="push-consent-title">Разрешить уведомления VORTEXCARDS?</h2>
+            <p>Будем присылать важные сообщения о вашем аккаунте и работе платформы. Вы сможете в любой момент отключить их в настройках профиля.</p>
+            <button type="button" className="primary full" disabled={pushBusy} onClick={() => savePushPreference(true)}>{pushBusy ? 'Сохраняем...' : 'Согласен получать'}</button>
+            <button type="button" className="outline full" disabled={pushBusy} onClick={() => savePushPreference(false)}>Не согласен</button>
+          </section>
+        </div>}
         <footer>© 2026 VORTEX CARDS <span>Digital card platform</span></footer>
       </main>
     </div>
   </div>
   return translateTree(page, language, translations)
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = window.atob(base64)
+  return Uint8Array.from(rawData, character => character.charCodeAt(0))
 }
 
 function translateTree(node, language, translations) {
