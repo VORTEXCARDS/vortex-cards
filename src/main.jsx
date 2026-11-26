@@ -1356,7 +1356,7 @@ function App() {
             </div>
             <div className="hero-card">
               <div className="card-top"><span>VORTEX</span><span>GENESIS / 001</span></div>
-              <div className="card-unit" aria-label="UNIT">UNIT</div>
+              <div className="card-geometry" aria-hidden="true"><span /></div>
               <div className="card-bottom"><b>VORTEX UNIT</b><span>OWN THE DIGITAL FLOW</span></div>
             </div>
           </section>
@@ -1702,7 +1702,7 @@ function App() {
           </div>
           <div className="hero-card public-card">
             <div className="card-top"><span>VORTEX</span><span>GENESIS / 001</span></div>
-            <div className="card-unit" aria-label="UNIT">UNIT</div>
+            <div className="card-geometry" aria-hidden="true"><span /></div>
             <div className="card-bottom"><b>VORTEX UNIT</b><span>OWN THE DIGITAL FLOW</span></div>
           </div>
         </section>
