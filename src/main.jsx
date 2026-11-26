@@ -13,6 +13,8 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 function App() {
   const [tab, setTab] = useState('home')
+  const [language, setLanguage] = useState(() => localStorage.getItem('vortex-language') || 'ru')
+  const [analytics, setAnalytics] = useState({ total: 0, today: 0, week: 0, unique: 0, error: '' })
   const [menu, setMenu] = useState(false)
   const [installPrompt, setInstallPrompt] = useState(null)
   const [user, setUser] = useState(null)
@@ -44,6 +46,23 @@ function App() {
     { name: 'admin_audit_log', label: 'Журнал действий администратора' }
   ]
 
+  async function loadAnalytics() {
+    const since = new Date(); since.setDate(since.getDate() - 7); since.setHours(0,0,0,0)
+    const todayStart = new Date(); todayStart.setHours(0,0,0,0)
+    try {
+      const [all, today, recent] = await Promise.all([
+        supabase.from('site_visits').select('*', { count: 'exact', head: true }),
+        supabase.from('site_visits').select('*', { count: 'exact', head: true }).gte('visited_at', todayStart.toISOString()),
+        supabase.from('site_visits').select('session_id, visited_at').gte('visited_at', since.toISOString()).limit(5000)
+      ])
+      const failed = all.error || today.error || recent.error
+      if (failed) throw failed
+      setAnalytics({ total: all.count || 0, today: today.count || 0, week: recent.data?.length || 0, unique: new Set((recent.data || []).map(x => x.session_id)).size, error: '' })
+    } catch (error) {
+      setAnalytics(v => ({ ...v, error: error.message || 'Не удалось загрузить статистику' }))
+    }
+  }
+
   async function loadAdminData() {
     setAdminDataLoading(true)
     const results = await Promise.all(adminTables.map(async table => {
@@ -60,7 +79,7 @@ function App() {
   }
 
   useEffect(() => {
-    if (tab === 'admin' && isAdmin) loadAdminData()
+    if (tab === 'admin' && isAdmin) { loadAdminData(); loadAnalytics() }
   }, [tab, isAdmin])
 
   async function checkAdmin(currentUser) {
@@ -111,7 +130,7 @@ function App() {
         .catch(error => console.error('Ошибка очистки кэша:', error))
     }
 
-    supabase.auth.getSession()
+    try {\n      let sessionId = sessionStorage.getItem('vortex-visit-session')\n      if (!sessionId) { sessionId = crypto.randomUUID(); sessionStorage.setItem('vortex-visit-session', sessionId) }\n      supabase.from('site_visits').insert({ path: location.pathname, session_id: sessionId, language }).then(({ error }) => { if (error) console.warn('Не удалось записать посещение:', error.message) })\n    } catch (error) { console.warn('Аналитика посещений недоступна:', error) }\n\n    supabase.auth.getSession()
       .then(({ data, error }) => {
         if (error) throw error
         setUser(data.session?.user || null)
@@ -131,7 +150,7 @@ function App() {
     }
   }, [])
 
-  const referralLink = useMemo(
+  const translations = {\n    uk: { 'Обзор':'Огляд', 'Карточки':'Картки', 'Маркетплейс':'Маркетплейс', 'Рефералы':'Реферали', 'Профиль':'Профіль', 'Администрирование':'Адміністрування', 'МЕНЮ':'МЕНЮ', 'Установить':'Встановити', 'DIGITAL CARD ECONOMY':'ЦИФРОВА ЕКОНОМІКА КАРТОК', 'Вход или регистрация':'Вхід або реєстрація', 'Панель администратора':'Панель адміністратора', 'Статистика посещаемости':'Статистика відвідуваності', 'Языки сайта':'Мови сайту' },\n    en: { 'Обзор':'Overview', 'Карточки':'Cards', 'Маркетплейс':'Marketplace', 'Рефералы':'Referrals', 'Профиль':'Profile', 'Администрирование':'Administration', 'МЕНЮ':'MENU', 'Установить':'Install', 'DIGITAL CARD ECONOMY':'DIGITAL CARD ECONOMY', 'Вход или регистрация':'Sign in or register', 'Панель администратора':'Admin panel', 'Статистика посещаемости':'Traffic statistics', 'Языки сайта':'Website languages' },\n    de: { 'Обзор':'Übersicht', 'Карточки':'Karten', 'Маркетплейс':'Marktplatz', 'Рефералы':'Empfehlungen', 'Профиль':'Profil', 'Администрирование':'Administration', 'МЕНЮ':'MENÜ', 'Установить':'Installieren', 'DIGITAL CARD ECONOMY':'DIGITALE KARTENWIRTSCHAFT', 'Вход или регистрация':'Anmelden oder registrieren', 'Панель администратора':'Admin-Bereich', 'Статистика посещаемости':'Besuchsstatistik', 'Языки сайта':'Website-Sprachen' },\n    fr: { 'Обзор':'Vue d’ensemble', 'Карточки':'Cartes', 'Маркетплейс':'Marché', 'Рефералы':'Parrainages', 'Профиль':'Profil', 'Администрирование':'Administration', 'МЕНЮ':'MENU', 'Установить':'Installer', 'DIGITAL CARD ECONOMY':'ÉCONOMIE DES CARTES NUMÉRIQUES', 'Вход или регистрация':'Connexion ou inscription', 'Панель администратора':'Administration', 'Статистика посещаемости':'Statistiques de fréquentation', 'Языки сайта':'Langues du site' }\n  }\n  const t = value => translations[language]?.[value] || value\n\n  const referralLink = useMemo(
     () => `${location.origin}${import.meta.env.BASE_URL}?ref=${user?.id || 'YOUR_CODE'}`,
     [user]
   )
@@ -249,7 +268,7 @@ function App() {
         <span className="brand-gem">V</span>
         <span>VORTEX <b>CARDS</b></span>
       </div>
-      <div className="top-actions">
+      <div className="top-actions">\n        <label className="language-picker" aria-label="Language"><span>🌐</span><select value={language} onChange={e => setLanguage(e.target.value)}><option value="uk">Українська</option><option value="ru">Русский</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option></select></label>
         <span className="status"><i /> ONLINE</span>
         {installPrompt && <button className="install-btn" type="button" onClick={async () => {
           try {
@@ -264,7 +283,7 @@ function App() {
 
     <div className="layout">
       <aside className={`sidebar ${menu ? 'open' : ''}`}>
-        <div className="side-label">МЕНЮ</div>
+        <div className="side-label">{t('МЕНЮ')}</div>
         {nav.map(([id, label, Icon]) => (
           <button key={id} type="button" className={`nav-item ${tab === id ? 'active' : ''}`}
             onClick={() => { setTab(id); setMenu(false) }}>
@@ -274,14 +293,14 @@ function App() {
         <div className="side-spacer" />
         <button type="button" className={`nav-item ${tab === 'admin' ? 'active' : ''}`}
           onClick={() => { setTab('admin'); setMenu(false) }}>
-          <Shield size={19} /> Администрирование
+          <Shield size={19} /> {t('Администрирование')}
         </button>
         <div className="sidebar-foot">VORTEX CARDS <span>v1.0 PWA</span></div>
       </aside>
 
       <main className="main">
         <div className="page-head">
-          <div><div className="eyebrow">DIGITAL CARD ECONOMY</div><h1>{title}</h1></div>
+          <div><div className="eyebrow">{t('DIGITAL CARD ECONOMY')}</div><h1>{title}</h1></div>
           <div className="avatar">{user?.email?.[0]?.toUpperCase() || 'G'}</div>
         </div>
 
@@ -402,7 +421,7 @@ function App() {
                 </button>
               </>}
           </div>
-          {user && isAdmin && adminData.map(table => {
+          {user && isAdmin && <div className="panel analytics-panel">\n            <div className="admin-head"><Users /><h2>{t('Статистика посещаемости')}</h2></div>\n            {analytics.error ? <p className="muted">{analytics.error}. Выполните SQL-файл настройки аналитики в Supabase.</p> : <div className="admin-stats-grid">\n              <Stat label="ВСЕ ПОСЕЩЕНИЯ" value={analytics.total} icon={<Users />} />\n              <Stat label="СЕГОДНЯ" value={analytics.today} icon={<Home />} />\n              <Stat label="ЗА 7 ДНЕЙ" value={analytics.week} icon={<CreditCard />} />\n              <Stat label="УНИКАЛЬНЫЕ СЕССИИ · 7 ДНЕЙ" value={analytics.unique} icon={<UserRound />} />\n            </div>}\n            <button type="button" className="outline" onClick={loadAnalytics}>Обновить статистику</button>\n            <p className="muted">Считаются посещения страниц и анонимные сессии. IP-адреса и личные данные посетителей не сохраняются.</p>\n          </div>}\n          {user && isAdmin && <div className="panel language-admin">\n            <div className="admin-head"><Sparkles /><h2>{t('Языки сайта')}</h2></div>\n            <p className="muted">Доступные языки интерфейса. Посетитель может выбрать язык в верхней панели; выбор сохраняется на его устройстве.</p>\n            <div className="language-options">{[['uk','Українська'],['ru','Русский'],['en','English'],['de','Deutsch'],['fr','Français']].map(([code,name]) => <span className="language-chip" key={code}>{name}</span>)}</div>\n          </div>}\n          {user && isAdmin && adminData.map(table => {
             const columns = table.rows.length ? Object.keys(table.rows[0]) : []
             return <div className="panel" key={table.name}>
               <h3>{table.label}</h3>
