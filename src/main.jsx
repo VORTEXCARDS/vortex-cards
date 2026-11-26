@@ -29,6 +29,9 @@ function App() {
   const pushServerReady = Boolean(import.meta.env.VITE_VAPID_PUBLIC_KEY)
   const [username, setUsername] = useState('')
   const [usernameBusy, setUsernameBusy] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [deletePhrase, setDeletePhrase] = useState('')
+  const [deleteBusy, setDeleteBusy] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
@@ -1117,6 +1120,37 @@ function App() {
     }
   }
 
+  async function deleteAccount(e) {
+    e.preventDefault()
+    if (!user || deleteBusy) return
+    if (deletePhrase.trim().toUpperCase() !== 'УДАЛИТЬ') {
+      setNotice('Для подтверждения введите слово УДАЛИТЬ.')
+      return
+    }
+    setDeleteBusy(true)
+    try {
+      const { error } = await supabase.rpc('delete_my_account')
+      if (error) throw error
+      await supabase.auth.signOut({ scope: 'local' })
+      setUser(null)
+      setIsAdmin(false)
+      setPushEnabled(false)
+      setDeleteDialogOpen(false)
+      setDeletePhrase('')
+      setEmail('')
+      setPassword('')
+      setPasswordConfirm('')
+      setAuthMode('login')
+      setTab('home')
+      setNotice('Аккаунт и связанные с ним данные удалены.')
+    } catch (error) {
+      setNotice('Не удалось удалить аккаунт: ' + (error.message || 'серверная операция не настроена'))
+    } finally {
+      setDeleteBusy(false)
+    }
+  }
+
+
   async function addListing(e) {
     e.preventDefault()
     if (!user) { setNotice('Чтобы выставить юнит, войдите в аккаунт.'); return }
@@ -1324,7 +1358,26 @@ function App() {
                   <span className="push-switch-track"></span>
                 </label>
               </div>
-              <button type="button" className="outline" onClick={logout} disabled={busy}>{t('Выйти')}</button>
+              <div className="account-danger-actions">
+                <button type="button" className="outline" onClick={logout} disabled={busy || deleteBusy}>{t('Выйти')}</button>
+                <button type="button" className="delete-account-btn" onClick={() => { setDeleteDialogOpen(true); setDeletePhrase('') }} disabled={busy || deleteBusy}>Удалить аккаунт</button>
+              </div>
+              {deleteDialogOpen && <div className="delete-dialog-backdrop" role="presentation">
+                <section className="delete-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
+                  <h3 id="delete-account-title">Удалить аккаунт навсегда?</h3>
+                  <p>Будет удалена ваша учётная запись VORTEX UNIT и связанные с ней данные. Доступ к аккаунту с сайта и установленного приложения прекратится. Это действие нельзя отменить.</p>
+                  <p className="delete-dialog-warning">Если у вас есть юниты, объявления или финансовая история, они также могут быть удалены вместе с аккаунтом.</p>
+                  <form onSubmit={deleteAccount}>
+                    <label>Для подтверждения напишите УДАЛИТЬ
+                      <input value={deletePhrase} onChange={event => setDeletePhrase(event.target.value)} autoComplete="off" placeholder="УДАЛИТЬ" />
+                    </label>
+                    <div className="delete-dialog-actions">
+                      <button type="button" className="outline" disabled={deleteBusy} onClick={() => { setDeleteDialogOpen(false); setDeletePhrase('') }}>Отмена</button>
+                      <button type="submit" className="delete-account-btn" disabled={deleteBusy || deletePhrase.trim().toUpperCase() !== 'УДАЛИТЬ'}>{deleteBusy ? 'Удаляем...' : 'Удалить навсегда'}</button>
+                    </div>
+                  </form>
+                </section>
+              </div>}
             </> : authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
               <p className="muted">Укажите email, который использовали при регистрации. Мы отправим на него ссылку для восстановления доступа.</p>
               <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
