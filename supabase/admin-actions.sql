@@ -167,7 +167,7 @@ begin
     set status = case when p_retired then 'retired' else 'owned' end,
         listing_id = case when p_retired then null else listing_id end,
         updated_at = now()
-    where id = p_card_id and (p_retired or status = 'retired');
+    where id = p_card_id and ((p_retired and status = 'owned') or (not p_retired and status = 'retired'));
   if not found then raise exception 'Карточка не найдена или её нельзя восстановить в текущем статусе'; end if;
   insert into public.admin_audit_log(admin_id, action, entity_type, entity_id, details)
   values (auth.uid(), case when p_retired then 'card_retired' else 'card_restored' end,
