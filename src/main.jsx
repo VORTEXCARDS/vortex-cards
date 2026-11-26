@@ -596,7 +596,7 @@ function App() {
     "Считаются посещения страниц и анонимные сессии. IP-адреса и личные данные посетителей не сохраняются.": "Page visits and anonymous sessions are counted. IP addresses and personal visitor data are not stored.",
     "Доступные языки интерфейса. Посетитель может выбрать язык в верхней панели; выбор сохраняется на его устройстве.": "Available interface languages. Visitors can choose a language in the top bar; the choice is saved on their device.",
     "Записей пока нет.": "No records yet.",
-    "Загружаем таблицы базы данных...": "Loading database tables..."
+    "Загружаем таблицы базы данных...": "Loading database tables...",
     "Зарегистрироваться": "Register",
     "VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEXCARDS is a digital card platform. Create an account, manage your cards, and explore the platform.",
     "У меня уже есть аккаунт": "I already have an account",
@@ -725,7 +725,7 @@ function App() {
     "Считаются посещения страниц и анонимные сессии. IP-адреса и личные данные посетителей не сохраняются.": "Seitenaufrufe und anonyme Sitzungen werden gezählt. IP-Adressen und persönliche Besucherdaten werden nicht gespeichert.",
     "Доступные языки интерфейса. Посетитель может выбрать язык в верхней панели; выбор сохраняется на его устройстве.": "Verfügbare Oberflächensprachen. Besucher können oben eine Sprache auswählen; die Auswahl wird auf ihrem Gerät gespeichert.",
     "Записей пока нет.": "Noch keine Einträge.",
-    "Загружаем таблицы базы данных...": "Datenbanktabellen werden geladen..."
+    "Загружаем таблицы базы данных...": "Datenbanktabellen werden geladen...",
     "Зарегистрироваться": "Registrieren",
     "VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEXCARDS ist eine digitale Kartenplattform. Erstelle ein Konto, verwalte deine Karten und entdecke die Möglichkeiten der Plattform.",
     "У меня уже есть аккаунт": "Ich habe bereits ein Konto",
@@ -854,7 +854,7 @@ function App() {
     "Считаются посещения страниц и анонимные сессии. IP-адреса и личные данные посетителей не сохраняются.": "Les visites de pages et les sessions anonymes sont comptabilisées. Les adresses IP et données personnelles ne sont pas enregistrées.",
     "Доступные языки интерфейса. Посетитель может выбрать язык в верхней панели; выбор сохраняется на его устройстве.": "Langues disponibles. Le visiteur peut choisir une langue dans la barre supérieure ; son choix est mémorisé sur son appareil.",
     "Записей пока нет.": "Aucun enregistrement pour le moment.",
-    "Загружаем таблицы базы данных...": "Chargement des tables de la base de données..."
+    "Загружаем таблицы базы данных...": "Chargement des tables de la base de données...",
     "Зарегистрироваться": "S’inscrire",
     "VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEXCARDS est une plateforme de cartes numériques. Créez un compte, gérez vos cartes et découvrez les possibilités de la plateforme.",
     "У меня уже есть аккаунт": "J’ai déjà un compte",
