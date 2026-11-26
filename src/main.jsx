@@ -484,7 +484,7 @@ function App() {
     "карточек доступно": "карток доступно",
     "за карточку": "за картку",
     "ЦЕНА ВЫКУПА": "ЦІНА ВИКУПУ",
-    "Digital card platform": "Платформа цифрових карток"
+    "Digital card platform": "Платформа цифрових карток",
     "Зарегистрироваться": "Зареєструватися",
     "VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEXCARDS — цифрова платформа карток. Створіть обліковий запис, керуйте своїми картками та відкривайте можливості платформи.",
     "У меня уже есть аккаунт": "У мене вже є обліковий запис",
@@ -619,7 +619,6 @@ function App() {
     "Забыли пароль?": "Forgot password?",
     "Уже есть аккаунт? Войти": "Already have an account? Sign in",
     "Нет аккаунта? Зарегистрироваться": "No account? Register",
-  },
 
     "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "₴20 is the approved target buyback price. Payouts are subject to available funding and program eligibility checks.",
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "A secure Supabase server operation is required to transfer cards.",
@@ -636,7 +635,9 @@ function App() {
     "карточек доступно": "cards available",
     "за карточку": "per card",
     "ЦЕНА ВЫКУПА": "BUYBACK PRICE",
-    "Digital card platform": "Digital card platform",  "de": {
+    "Digital card platform": "Digital card platform",
+  },
+  "de": {
     "Обзор": "Übersicht",
     "Карточки": "Karten",
     "Маркетплейс": "Marktplatz",
@@ -747,7 +748,6 @@ function App() {
     "Забыли пароль?": "Passwort vergessen?",
     "Уже есть аккаунт? Войти": "Du hast bereits ein Konto? Anmelden",
     "Нет аккаунта? Зарегистрироваться": "Noch kein Konto? Registrieren",
-  },
 
     "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "20 ₴ ist der festgelegte Ziel-Rückkaufpreis. Auszahlungen sind nur bei ausreichender Finanzierung und nach Prüfung der Programmregeln möglich.",
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Für sichere Übertragungen ist eine serverseitige Supabase-Funktion erforderlich.",
@@ -764,7 +764,9 @@ function App() {
     "карточек доступно": "Karten verfügbar",
     "за карточку": "pro Karte",
     "ЦЕНА ВЫКУПА": "RÜCKKAUFPREIS",
-    "Digital card platform": "Digitale Kartenplattform",  "fr": {
+    "Digital card platform": "Digitale Kartenplattform",
+  },
+  "fr": {
     "Обзор": "Vue d’ensemble",
     "Карточки": "Cartes",
     "Маркетплейс": "Marché",
@@ -853,7 +855,6 @@ function App() {
     "Доступные языки интерфейса. Посетитель может выбрать язык в верхней панели; выбор сохраняется на его устройстве.": "Langues disponibles. Le visiteur peut choisir une langue dans la barre supérieure ; son choix est mémorisé sur son appareil.",
     "Записей пока нет.": "Aucun enregistrement pour le moment.",
     "Загружаем таблицы базы данных...": "Chargement des tables de la base de données..."
-  }
     "Зарегистрироваться": "S’inscrire",
     "VORTEXCARDS — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEXCARDS est une plateforme de cartes numériques. Créez un compte, gérez vos cartes et découvrez les possibilités de la plateforme.",
     "У меня уже есть аккаунт": "J’ai déjà un compte",
@@ -876,6 +877,7 @@ function App() {
     "Забыли пароль?": "Mot de passe oublié ?",
     "Уже есть аккаунт? Войти": "Vous avez déjà un compte ? Se connecter",
     "Нет аккаунта? Зарегистрироваться": "Pas de compte ? S’inscrire",
+  },
 }
 
   const t = value => translations[language]?.[value] || value
