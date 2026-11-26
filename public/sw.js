@@ -14,8 +14,8 @@ self.addEventListener('push', event => {
   const title = payload.title || 'VORTEX UNIT';
   const options = {
     body: payload.body || 'У вас новое уведомление.',
-    icon: '/vortex-cards/icon.svg',
-    badge: '/vortex-cards/icon.svg',
+    icon: '/vortex-cards/icon-vortex-unit-20261126-v2.svg',
+    badge: '/vortex-cards/icon-vortex-unit-20261126-v2.svg',
     data: { url: payload.url || '/vortex-cards/' },
     tag: payload.tag || 'vortex-unit-notification'
   };
