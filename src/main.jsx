@@ -286,7 +286,23 @@ function App() {
     "Записей пока нет.": "Записів поки немає.",
     "Загружаем таблицы базы данных...": "Завантажуємо таблиці бази даних..."
   },
-  "en": {
+
+    "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "20 ₴ — затверджена цільова ціна викупу. Виплати можливі лише за наявності фінансування та після перевірки умов програми.",
+    "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Для безпечних переказів потрібна підключена серверна операція Supabase.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Показано демонстраційні оголошення. Реальні розрахунки, резервування карток та утримання комісії поки не підключені.",
+    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "Той, хто запросив, отримує 1 додаткову картку після підтвердженої реєстрації реферала. Новий користувач отримує стартову картку.",
+    "Ссылка скопирована": "Посилання скопійовано",
+    "Не удалось скопировать ссылку": "Не вдалося скопіювати посилання",
+    "Загрузка данных...": "Завантаження даних...",
+    "Загрузка карточек...": "Завантаження карток...",
+    "Карточки пока не удалось загрузить.": "Не вдалося завантажити картки.",
+    "Ошибка загрузки:": "Помилка завантаження:",
+    "Сумма не указана": "Суму не вказано",
+    "Показано записей:": "Показано записів:",
+    "карточек доступно": "карток доступно",
+    "за карточку": "за картку",
+    "ЦЕНА ВЫКУПА": "ЦІНА ВИКУПУ",
+    "Digital card platform": "Платформа цифрових карток",  "en": {
     "Обзор": "Overview",
     "Карточки": "Cards",
     "Маркетплейс": "Marketplace",
@@ -376,7 +392,23 @@ function App() {
     "Записей пока нет.": "No records yet.",
     "Загружаем таблицы базы данных...": "Loading database tables..."
   },
-  "de": {
+
+    "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "₴20 is the approved target buyback price. Payouts are subject to available funding and program eligibility checks.",
+    "Для безопасных переводов требуется подключённая серверная операция Supabase.": "A secure Supabase server operation is required to transfer cards.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "These are sample listings. Real payments, card reservations, and fee collection are not connected yet.",
+    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "The inviter receives 1 extra card after the referral registration is confirmed. The new user receives a starter card.",
+    "Ссылка скопирована": "Link copied",
+    "Не удалось скопировать ссылку": "Could not copy the link",
+    "Загрузка данных...": "Loading data...",
+    "Загрузка карточек...": "Loading cards...",
+    "Карточки пока не удалось загрузить.": "Cards could not be loaded yet.",
+    "Ошибка загрузки:": "Loading error:",
+    "Сумма не указана": "Amount not specified",
+    "Показано записей:": "Records shown:",
+    "карточек доступно": "cards available",
+    "за карточку": "per card",
+    "ЦЕНА ВЫКУПА": "BUYBACK PRICE",
+    "Digital card platform": "Digital card platform",  "de": {
     "Обзор": "Übersicht",
     "Карточки": "Karten",
     "Маркетплейс": "Marktplatz",
@@ -466,7 +498,23 @@ function App() {
     "Записей пока нет.": "Noch keine Einträge.",
     "Загружаем таблицы базы данных...": "Datenbanktabellen werden geladen..."
   },
-  "fr": {
+
+    "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "20 ₴ ist der festgelegte Ziel-Rückkaufpreis. Auszahlungen sind nur bei ausreichender Finanzierung und nach Prüfung der Programmregeln möglich.",
+    "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Für sichere Übertragungen ist eine serverseitige Supabase-Funktion erforderlich.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Dies sind Demo-Angebote. Echte Zahlungen, Kartenreservierungen und Gebühreneinzug sind noch nicht aktiviert.",
+    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "Der Einladende erhält nach bestätigter Registrierung des geworbenen Nutzers eine zusätzliche Karte. Der neue Nutzer erhält eine Starterkarte.",
+    "Ссылка скопирована": "Link kopiert",
+    "Не удалось скопировать ссылку": "Link konnte nicht kopiert werden",
+    "Загрузка данных...": "Daten werden geladen...",
+    "Загрузка карточек...": "Karten werden geladen...",
+    "Карточки пока не удалось загрузить.": "Karten konnten noch nicht geladen werden.",
+    "Ошибка загрузки:": "Ladefehler:",
+    "Сумма не указана": "Betrag nicht angegeben",
+    "Показано записей:": "Angezeigte Einträge:",
+    "карточек доступно": "Karten verfügbar",
+    "за карточку": "pro Karte",
+    "ЦЕНА ВЫКУПА": "RÜCKKAUFPREIS",
+    "Digital card platform": "Digitale Kartenplattform",  "fr": {
     "Обзор": "Vue d’ensemble",
     "Карточки": "Cartes",
     "Маркетплейс": "Marché",
@@ -557,6 +605,22 @@ function App() {
     "Загружаем таблицы базы данных...": "Chargement des tables de la base de données..."
   }
 }
+    "20 ₴ — утверждённая целевая цена выкупа. Выплаты возможны только при наличии финансирования и после проверки условий программы.": "20 ₴ est le prix cible de rachat approuvé. Les paiements dépendent des fonds disponibles et de la vérification des conditions du programme.",
+    "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Une opération serveur Supabase est nécessaire pour transférer les cartes en toute sécurité.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Ces annonces sont des exemples. Les paiements réels, la réservation des cartes et la perception des frais ne sont pas encore activés.",
+    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "La personne qui invite reçoit une carte supplémentaire après confirmation de l’inscription du filleul. Le nouvel utilisateur reçoit une carte de départ.",
+    "Ссылка скопирована": "Lien copié",
+    "Не удалось скопировать ссылку": "Impossible de copier le lien",
+    "Загрузка данных...": "Chargement des données...",
+    "Загрузка карточек...": "Chargement des cartes...",
+    "Карточки пока не удалось загрузить.": "Impossible de charger les cartes pour le moment.",
+    "Ошибка загрузки:": "Erreur de chargement :",
+    "Сумма не указана": "Montant non indiqué",
+    "Показано записей:": "Enregistrements affichés :",
+    "карточек доступно": "cartes disponibles",
+    "за карточку": "par carte",
+    "ЦЕНА ВЫКУПА": "PRIX DE RACHAT",
+    "Digital card platform": "Plateforme de cartes numériques",
   const t = value => translations[language]?.[value] || value
 
   const referralLink = useMemo(
@@ -932,8 +996,10 @@ function translateTree(node, language, translations) {
   if (node == null || typeof node === 'boolean') return node
   if (typeof node === 'string') {
     const trimmed = node.trim()
-    const translated = translations[language]?.[trimmed]
-    return translated ? node.replace(trimmed, translated) : node
+    const dictionary = translations[language] || {}
+    const translated = dictionary[trimmed]
+    if (translated) return node.replace(trimmed, translated)
+    return Object.keys(dictionary).sort((a, b) => b.length - a.length).reduce((result, key) => result.includes(key) ? result.replaceAll(key, dictionary[key]) : result, node)
   }
   if (Array.isArray(node)) return node.map(child => translateTree(child, language, translations))
   if (!React.isValidElement(node)) return node
