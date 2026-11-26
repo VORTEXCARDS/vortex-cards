@@ -605,7 +605,9 @@ function App() {
     "Записей пока нет.": "Aucun enregistrement pour le moment.",
     "Загружаем таблицы базы данных...": "Chargement des tables de la base de données..."
   }
-}  const t = value => translations[language]?.[value] || value
+}
+
+  const t = value => translations[language]?.[value] || value
 
   const referralLink = useMemo(
     () => `${location.origin}${import.meta.env.BASE_URL}?ref=${user?.id || 'YOUR_CODE'}`,
