@@ -5,7 +5,7 @@
 @media(max-width:420px){.hero-card{display:none}.hero h2{font-size:32px}.stats{grid-template-columns:1fr}.stat{padding:13px}.stat span{font-size:9px}.stat b{font-size:20px}.listing{flex-wrap:wrap}.listing-info{min-width:90px}}
 
 
-/* VORTEXCARDS unified violet-cyan premium theme */
+/* VORTEX UNIT unified violet-cyan premium theme */
 :root{
   color-scheme:dark;
   --purple:#a34dff;
