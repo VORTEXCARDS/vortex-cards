@@ -885,6 +885,7 @@ function App() {
     "Перевести другому пользователю": "Transférer à un autre utilisateur",
     "Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.": "Les données sont chargées depuis Supabase. Les soldes sont calculés à partir du journal financier ; les demandes ne signifient pas à elles seules qu'un dépôt ou un paiement a eu lieu.",
     "Push-уведомления": "Notifications push",
+    "Выполняется...": "Transfert en cours…",
     "Получать важные сообщения VORTEX UNIT на этом устройстве.": "Recevoir les messages importants de VORTEX UNIT sur cet appareil.",
     "Разрешение сохраняется. Сервер отправки будет подключён отдельно.": "Votre autorisation est enregistrée. Le serveur d’envoi sera connecté séparément.",
     "Получать push-уведомления": "Recevoir les notifications push",
@@ -1168,7 +1169,7 @@ function App() {
             <form onSubmit={transferCards}>
               <label>{t('Email получателя')}<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
               <label>{t('Количество юнитов')}<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
-              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : 'Передать юниты'}</button>
+              <button type="submit" className="primary full" disabled={busy}>{busy ? t('Выполняется...') : t('Передать юниты')}</button>
             </form>
           </div>
         </>}
@@ -1255,12 +1256,12 @@ function App() {
           </section>
           {user && <>
             <section className="panel">
-              <h3>{t('Перевести юниты другому пользователю')}</h3>
+              <h3>{t('Передать юниты')}</h3>
               <p className="muted">{t('Укажите email получателя и количество свободных юнитов. Юниты, выставленные на маркетплейс, передать нельзя.')}</p>
               <form onSubmit={transferCards}>
                 <label>{t('Email получателя')}<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
                 <label>{t('Количество юнитов')}<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
-                <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : t('Перевести другому пользователю')}</button>
+                <button type="submit" className="primary full" disabled={busy}>{busy ? t('Выполняется...') : t('Передать юниты')}</button>
               </form>
             </section>
             <section className="panel profile-financial">
