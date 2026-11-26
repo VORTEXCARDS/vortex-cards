@@ -31,6 +31,37 @@ function App() {
   const [referrals] = useState(0)
   const [isAdmin, setIsAdmin] = useState(false)
   const [adminLoading, setAdminLoading] = useState(false)
+  const [adminData, setAdminData] = useState([])
+  const [adminDataLoading, setAdminDataLoading] = useState(false)
+
+  const adminTables = [
+    { name: 'user_accounts', label: 'Аккаунты пользователей' },
+    { name: 'card_balances', label: 'Баланс карточек' },
+    { name: 'market_listings', label: 'Объявления маркетплейса' },
+    { name: 'complaints', label: 'Жалобы' },
+    { name: 'disputes', label: 'Спорные сделки' },
+    { name: 'buyback_requests', label: 'Заявки на выкуп' },
+    { name: 'admin_audit_log', label: 'Журнал действий администратора' }
+  ]
+
+  async function loadAdminData() {
+    setAdminDataLoading(true)
+    const results = await Promise.all(adminTables.map(async table => {
+      try {
+        const { data, error } = await supabase.from(table.name).select('*').limit(50)
+        if (error) return { ...table, rows: [], error: error.message }
+        return { ...table, rows: data || [], error: '' }
+      } catch (error) {
+        return { ...table, rows: [], error: error.message || 'Не удалось загрузить данные' }
+      }
+    }))
+    setAdminData(results)
+    setAdminDataLoading(false)
+  }
+
+  useEffect(() => {
+    if (tab === 'admin' && isAdmin) loadAdminData()
+  }, [tab, isAdmin])
 
   async function checkAdmin(currentUser) {
     if (!currentUser) {
@@ -358,18 +389,49 @@ function App() {
           </form>}
         </div>}
 
-        {tab === 'admin' && <div className="panel">
-          <div className="admin-head"><Shield /><h2>Панель администратора</h2></div>
-          {adminLoading ? <p className="muted">Проверка прав доступа...</p>
-            : !user ? <p className="muted">Войдите в аккаунт</p>
-            : !isAdmin ? <p className="muted">Доступ закрыт. У вас нет прав администратора.</p>
-            : <>
-              <p className="muted">Права администратора подтверждены</p>
-              <div className="admin-grid">
-                <Stat label="ЗАЯВКИ НА ВЫКУП" value="Подключим позже" icon={<Wallet />} />
-                <Stat label="СПОРНЫЕ СДЕЛКИ" value="Подключим позже" icon={<Shield />} />
-              </div>
-            </>}
+        {tab === 'admin' && <div>
+          <div className="panel">
+            <div className="admin-head"><Shield /><h2>Панель администратора</h2></div>
+            {adminLoading ? <p className="muted">Проверка прав доступа...</p>
+              : !user ? <p className="muted">Войдите в аккаунт</p>
+              : !isAdmin ? <p className="muted">Доступ закрыт. У вас нет прав администратора.</p>
+              : <>
+                <p className="muted">Права администратора подтверждены. Ниже отображаются данные из базы Supabase.</p>
+                <button type="button" className="primary" onClick={loadAdminData} disabled={adminDataLoading}>
+                  {adminDataLoading ? 'Обновление...' : 'Обновить данные'}
+                </button>
+              </>}
+          </div>
+          {user && isAdmin && adminData.map(table => {
+            const columns = table.rows.length ? Object.keys(table.rows[0]) : []
+            return <div className="panel" key={table.name}>
+              <h3>{table.label}</h3>
+              {table.error
+                ? <p className="muted">Ошибка загрузки: {table.error}</p>
+                : table.rows.length === 0
+                  ? <p className="muted">Записей пока нет.</p>
+                  : <>
+                    <p className="muted">Показано записей: {table.rows.length} (максимум 50)</p>
+                    <div style={{ overflowX: 'auto', width: '100%' }}>
+                      <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '520px', fontSize: '11px', textAlign: 'left' }}>
+                        <thead><tr>
+                          {columns.map(column => <th key={column} style={{ padding: '9px', borderBottom: '1px solid #51416f', color: '#27e5d2', whiteSpace: 'nowrap' }}>{column}</th>)}
+                        </tr></thead>
+                        <tbody>
+                          {table.rows.map((row, rowIndex) => <tr key={row.id || rowIndex}>
+                            {columns.map(column => {
+                              const value = row[column]
+                              const display = value == null ? '—' : typeof value === 'object' ? JSON.stringify(value) : String(value)
+                              return <td key={column} style={{ padding: '9px', borderBottom: '1px solid #252438', verticalAlign: 'top', maxWidth: '260px', overflowWrap: 'anywhere' }}>{display}</td>
+                            })}
+                          </tr>)}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>}
+            </div>
+          })}
+          {user && isAdmin && adminDataLoading && adminData.length === 0 && <p className="muted">Загружаем таблицы базы данных...</p>}
         </div>}
 
         <footer>© 2026 VORTEX CARDS <span>Digital card platform</span></footer>
