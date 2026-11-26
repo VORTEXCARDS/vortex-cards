@@ -938,7 +938,7 @@ function translateTree(node, language, translations) {
   if (Array.isArray(node)) return node.map(child => translateTree(child, language, translations))
   if (!React.isValidElement(node)) return node
   const props = { ...node.props }
-  for (const key of ['placeholder', 'aria-label', 'title']) {
+  for (const key of ['placeholder', 'aria-label', 'title', 'label', 'desc']) {
     if (typeof props[key] === 'string') props[key] = translateTree(props[key], language, translations)
   }
   if (props.children !== undefined) props.children = translateTree(props.children, language, translations)
