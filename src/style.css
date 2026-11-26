@@ -83,3 +83,14 @@ body{
 .sidebar{border-right-color:#292641}
 .sidebar-foot,footer{border-color:#292641}
 @media(max-width:800px){.sidebar{background:#0a0e1b}}
+
+
+/* Language selector and admin modules */
+.language-picker{display:flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid #51406f;border-radius:9px;background:linear-gradient(120deg,#211936,#102532);color:#dcd7ef;font-size:11px}
+.language-picker select{max-width:118px;background:transparent;border:0;color:#f4f2ff;outline:none;font:inherit}
+.language-picker option{background:#111321;color:#fff}
+.admin-stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}
+.admin-stats-grid .stat{min-width:0}
+.language-options{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.language-chip{padding:8px 12px;border-radius:9px;border:1px solid #51406f;background:linear-gradient(120deg,#211936,#102532);color:#e8e2fa;font-size:12px}
+@media(max-width:520px){.top-actions{gap:7px}.language-picker{padding:5px 6px}.language-picker select{max-width:88px;font-size:10px}.admin-stats-grid{grid-template-columns:1fr 1fr}.admin-stats-grid .stat{padding:10px}.admin-stats-grid .stat b{font-size:18px}}
