@@ -338,3 +338,29 @@ body{
 .card-geometry path:nth-child(4){stroke:#38cfc9;opacity:.42}
 @media(max-width:800px){.card-geometry{width:42px;height:42px;top:31px;opacity:.44}}
 @media(max-width:420px){.card-geometry{width:34px;height:34px;top:28px}}
+
+
+/* Subtle central crystal watermark across the signed-in site */
+.main{
+  position:relative;
+  isolation:isolate;
+}
+.main::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  pointer-events:none;
+  width:min(42vw,390px);
+  aspect-ratio:1;
+  left:50%;
+  top:48%;
+  transform:translate(-50%,-50%);
+  opacity:.075;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%2319dcf2' stroke-width='.8'%3E%3Cpath d='M32 4 54 17v30L32 60 10 47V17L32 4Z'/%3E%3Cpath d='M32 4v27m22-14L32 31 10 17m44 30L32 31 10 47m22-16v29'/%3E%3Cpath d='m20 23 12-7 12 7v18l-12 7-12-7V23Z' stroke='%23a34dff'/%3E%3Cpath d='m20 23 12 8 12-8M32 31v17'/%3E%3C/svg%3E");
+}
+@media(max-width:800px){
+  .main::before{width:min(68vw,300px);top:48%;opacity:.065}
+}
