@@ -308,7 +308,8 @@ body{
   border-radius:0!important;
   background:transparent!important;
   box-shadow:none!important;
-  color:#72eee5;
+  color:var(--cyan);
+  font-weight:800;
   text-shadow:0 0 8px #19dcf255,0 0 16px #873cff35;
   overflow:visible;
 }
