@@ -239,7 +239,7 @@ body{
 @media(max-width:480px){.account-danger-actions{gap:8px}.account-danger-actions button{flex:1;padding:10px 8px;font-size:12px}.delete-dialog{padding:18px}}
 
 
-/* Header brand mark uses the same V symbol as the installed app icon */
+/* Header brand mark uses the same U symbol as the installed app icon */
 .brand-gem{
   width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;
   transform:none;border:1px solid #44365f;border-radius:10px;
