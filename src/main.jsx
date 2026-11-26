@@ -7,11 +7,9 @@ import {
 } from 'lucide-react'
 import './style.css'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey)
-  : null
+const supabaseUrl = 'https://rrpjzfaqmkrawvtvpqfm.supabase.co'
+const supabaseKey = 'sb_publishable_giHUqFHf-WWatUkS7AqNPA_UVkgA1ps'
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 function App() {
   const [tab, setTab] = useState('home')
@@ -34,7 +32,7 @@ function App() {
   const [adminLoading, setAdminLoading] = useState(false)
 
   async function checkAdmin(currentUser) {
-    if (!supabase || !currentUser) {
+    if (!currentUser) {
       setIsAdmin(false)
       setAdminLoading(false)
       return
@@ -60,7 +58,6 @@ function App() {
     }
     window.addEventListener('beforeinstallprompt', handler)
 
-    // Не регистрируем Service Worker: удаляем старые регистрации и кэши.
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations()
         .then(registrations => {
@@ -79,11 +76,9 @@ function App() {
         .catch(error => console.error('Ошибка очистки кэша:', error))
     }
 
-    if (supabase) {
-      supabase.auth.getSession().then(({ data }) => {
-        setUser(data.session?.user || null)
-      }).catch(error => console.error('Ошибка получения сессии:', error))
-    }
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user || null)
+    }).catch(error => console.error('Ошибка получения сессии:', error))
 
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
@@ -95,10 +90,6 @@ function App() {
 
   async function signIn(e) {
     e.preventDefault()
-    if (!supabase) {
-      setNotice('Supabase не подключён. Проверь настройки публикации сайта.')
-      return
-    }
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) setNotice(error.message)
     else {
@@ -108,10 +99,6 @@ function App() {
   }
 
   async function signUp() {
-    if (!supabase) {
-      setNotice('Supabase не подключён. Проверь настройки публикации сайта.')
-      return
-    }
     if (!email || password.length < 6) {
       setNotice('Укажи email и пароль не короче 6 символов.')
       return
@@ -127,7 +114,7 @@ function App() {
   }
 
   async function logout() {
-    if (supabase) await supabase.auth.signOut()
+    await supabase.auth.signOut()
     setUser(null)
     setIsAdmin(false)
     setNotice('Вы вышли из аккаунта')
@@ -174,7 +161,7 @@ function App() {
         <span>VORTEX <b>CARDS</b></span>
       </div>
       <div className="top-actions">
-        <span className="status"><i /> {supabase ? 'ONLINE' : 'DEMO MODE'}</span>
+        <span className="status"><i /> ONLINE</span>
         {installPrompt && <button className="install-btn" onClick={async () => {
           await installPrompt.prompt()
           setInstallPrompt(null)
@@ -343,4 +330,4 @@ function Quick({ icon, title, desc, click }) {
 }
 
 createRoot(document.getElementById('root')).render(<App />)
-            
+    
