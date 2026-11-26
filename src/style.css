@@ -189,3 +189,6 @@ body{
 .public-loading{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#090910;color:var(--muted)}
 .public-loading .brand-mark{color:#f4f2ff}
 @media(max-width:700px){.public-topbar{align-items:flex-start;flex-direction:column}.public-top-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.public-top-actions .language-picker{grid-column:1/-1;width:max-content}.public-top-actions .primary,.public-top-actions .outline{justify-content:center;padding:10px 8px;font-size:11px}.public-main{padding-top:24px}.public-hero{min-height:0;display:block;padding:24px}.public-card{margin:30px auto 5px}.public-features{grid-template-columns:1fr}.public-copy h1{font-size:39px}.public-copy p{font-size:13px}.public-footer{margin-top:10px}}
+
+/* Password visibility toggle */
+.password-field{position:relative;width:100%}.password-field input{padding-right:48px!important}.password-toggle{position:absolute;right:8px;top:13px;width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:7px;background:transparent;color:#a6a3bb;padding:0}.password-toggle:hover{color:#19dcf2;background:#ffffff0b}.password-field .password-toggle:focus-visible{outline:2px solid #19dcf2;outline-offset:2px}
