@@ -1147,14 +1147,7 @@ function App() {
       <div className="top-actions">
         <label className="language-picker" aria-label="Language"><span>🌐</span><select value={language} onChange={e => setLanguage(e.target.value)}><option value="uk">Українська</option><option value="ru">Русский</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option></select></label>
         <span className="status"><i /> ONLINE</span>
-        {installPrompt && <button className="install-btn" type="button" onClick={async () => {
-          try {
-            await installPrompt.prompt()
-            setInstallPrompt(null)
-          } catch (error) {
-            setNotice('Не удалось установить приложение: ' + error.message)
-          }
-        }}><Download size={16} /> Установить</button>}
+
       </div>
     </header>
 
