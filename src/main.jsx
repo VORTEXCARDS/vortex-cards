@@ -699,6 +699,31 @@ function App() {
     "Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.": "Only available units can be transferred. Units listed on the marketplace are locked until the listing is removed.",
     "Перевести другому пользователю": "Transfer to another user",
     "Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.": "Data is loaded from Supabase. Balances are calculated from ledger entries; requests alone do not mean funds have been received or paid out.",
+
+    "Имя пользователя (псевдоним)": "Username (nickname)",
+    "Например, VORTEX": "For example, VORTEX",
+    "Придумайте любое имя. Не указывайте здесь email или настоящее имя, если хотите сохранить приватность.": "Choose any username. Do not use your email or real name here if you want to protect your privacy.",
+    "Сохранить имя пользователя": "Save username",
+    "Email аккаунта (виден только вам):": "Account email (visible only to you):",
+    "Разрешение сохраняется. Сервер отправки будет подключён отдельно.": "Your permission is saved. The notification delivery server will be connected separately.",
+    "Удалить аккаунт": "Delete account",
+    "Удалить аккаунт навсегда?": "Permanently delete account?",
+    "Будет удалена ваша учётная запись VORTEX UNIT и связанные с ней данные. Доступ к аккаунту с сайта и установленного приложения прекратится. Это действие нельзя отменить.": "Your VORTEX UNIT account and related data will be deleted. Access from the website and installed app will end. This action cannot be undone.",
+    "Если у вас есть юниты, объявления или финансовая история, они также могут быть удалены вместе с аккаунтом.": "Your units, listings, and financial history may also be deleted with your account.",
+    "Для подтверждения напишите УДАЛИТЬ": "Type DELETE to confirm",
+    "Отмена": "Cancel",
+    "Удаляем...": "Deleting...",
+    "Удалить навсегда": "Delete permanently",
+    "Укажите email, который использовали при регистрации. Мы отправим на него ссылку для восстановления доступа.": "Enter the email address you used to register. We will send a password recovery link to it.",
+    "Придумайте новый пароль для своего аккаунта.": "Create a new password for your account.",
+    "Новый пароль": "New password",
+    "Повторите новый пароль": "Confirm new password",
+    "Скрыть пароль": "Hide password",
+    "Показать пароль": "Show password",
+    "Загрузка данных...": "Loading data...",
+    "Ошибка загрузки:": "Loading error:",
+    "Загрузка юнитов...": "Loading units...",
+    "Юниты пока не удалось загрузить.": "Units could not be loaded yet.",
   },
   "de": {
     "Обзор": "Übersicht",
@@ -1344,13 +1369,13 @@ function App() {
             <h2>{user ? t('Аккаунт') : t('Вход или регистрация')}</h2>
             {user && authMode !== 'reset' ? <>
               <form className="username-settings" onSubmit={saveUsername}>
-                <label>Имя пользователя (псевдоним)
-                  <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Например, Танос" minLength="2" maxLength="24" autoComplete="nickname" />
+                <label>{t('Имя пользователя (псевдоним)')}
+                  <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder={t('Например, VORTEX')} minLength="2" maxLength="24" autoComplete="nickname" />
                 </label>
-                <p className="muted">Придумайте любое имя. Не указывайте здесь email или настоящее имя, если хотите сохранить приватность.</p>
-                <button type="submit" className="primary full" disabled={usernameBusy}>{usernameBusy ? 'Сохраняем...' : 'Сохранить имя пользователя'}</button>
+                <p className="muted">{t('Придумайте любое имя. Не указывайте здесь email или настоящее имя, если хотите сохранить приватность.')}</p>
+                <button type="submit" className="primary full" disabled={usernameBusy}>{usernameBusy ? t('Сохраняем...') : t('Сохранить имя пользователя')}</button>
               </form>
-              <p className="muted">Email аккаунта (виден только вам): {user.email}</p>
+              <p className="muted">{t('Email аккаунта (виден только вам):')} {user.email}</p>
               <div className="push-settings-row">
                 <div className="push-settings-copy">
                   <b>{t('Push-уведомления')}</b>
@@ -1363,40 +1388,40 @@ function App() {
               </div>
               <div className="account-danger-actions">
                 <button type="button" className="outline" onClick={logout} disabled={busy || deleteBusy}>{t('Выйти')}</button>
-                <button type="button" className="delete-account-btn" onClick={() => { setDeleteDialogOpen(true); setDeletePhrase('') }} disabled={busy || deleteBusy}>Удалить аккаунт</button>
+                <button type="button" className="delete-account-btn" onClick={() => { setDeleteDialogOpen(true); setDeletePhrase('') }} disabled={busy || deleteBusy}>{t('Удалить аккаунт')}</button>
               </div>
               {deleteDialogOpen && <div className="delete-dialog-backdrop" role="presentation">
                 <section className="delete-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
-                  <h3 id="delete-account-title">Удалить аккаунт навсегда?</h3>
-                  <p>Будет удалена ваша учётная запись VORTEX UNIT и связанные с ней данные. Доступ к аккаунту с сайта и установленного приложения прекратится. Это действие нельзя отменить.</p>
-                  <p className="delete-dialog-warning">Если у вас есть юниты, объявления или финансовая история, они также могут быть удалены вместе с аккаунтом.</p>
+                  <h3 id="delete-account-title">{t('Удалить аккаунт навсегда?')}</h3>
+                  <p>{t('Будет удалена ваша учётная запись VORTEX UNIT и связанные с ней данные. Доступ к аккаунту с сайта и установленного приложения прекратится. Это действие нельзя отменить.')}</p>
+                  <p className="delete-dialog-warning">{t('Если у вас есть юниты, объявления или финансовая история, они также могут быть удалены вместе с аккаунтом.')}</p>
                   <form onSubmit={deleteAccount}>
-                    <label>Для подтверждения напишите УДАЛИТЬ
+                    <label>{t('Для подтверждения напишите УДАЛИТЬ')}
                       <input value={deletePhrase} onChange={event => setDeletePhrase(event.target.value)} autoComplete="off" placeholder="УДАЛИТЬ" />
                     </label>
                     <div className="delete-dialog-actions">
-                      <button type="button" className="outline" disabled={deleteBusy} onClick={() => { setDeleteDialogOpen(false); setDeletePhrase('') }}>Отмена</button>
-                      <button type="submit" className="delete-account-btn" disabled={deleteBusy || deletePhrase.trim().toUpperCase() !== 'УДАЛИТЬ'}>{deleteBusy ? 'Удаляем...' : 'Удалить навсегда'}</button>
+                      <button type="button" className="outline" disabled={deleteBusy} onClick={() => { setDeleteDialogOpen(false); setDeletePhrase('') }}>{t('Отмена')}</button>
+                      <button type="submit" className="delete-account-btn" disabled={deleteBusy || deletePhrase.trim().toUpperCase() !== 'УДАЛИТЬ'}>{deleteBusy ? t('Удаляем...') : t('Удалить навсегда')}</button>
                     </div>
                   </form>
                 </section>
               </div>}
             </> : authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
-              <p className="muted">Укажите email, который использовали при регистрации. Мы отправим на него ссылку для восстановления доступа.</p>
+              <p className="muted">{t('Укажите email, который использовали при регистрации. Мы отправим на него ссылку для восстановления доступа.')}</p>
               <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
-              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Отправляем...' : 'Отправить ссылку'}</button>
-              <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('login'); setNotice('') }}>Вернуться ко входу</button>
+              <button type="submit" className="primary full" disabled={busy}>{busy ? t('Отправляем...') : t('Отправить ссылку')}</button>
+              <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('login'); setNotice('') }}>{t('Вернуться ко входу')}</button>
             </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
-              <p className="muted">Придумайте новый пароль для своего аккаунта.</p>
-              <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
-              <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
-              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Сохраняем...' : 'Сохранить новый пароль'}</button>
+              <p className="muted">{t('Придумайте новый пароль для своего аккаунта.')}</p>
+              <label>{t('Новый пароль')}<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? t('Скрыть пароль') : t('Показать пароль')} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+              <label>{t('Повторите новый пароль')}<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+              <button type="submit" className="primary full" disabled={busy}>{busy ? t('Сохраняем...') : t('Сохранить новый пароль')}</button>
             </form> : <form onSubmit={signIn}>
               <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
-              <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
-              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : 'Войти'}</button>
-              <button type="button" className="outline full" disabled={busy} onClick={signUp}>{busy ? 'Подождите...' : 'Создать аккаунт'}</button>
-              <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('forgot'); setNotice('') }}>Забыли пароль?</button>
+              <label>{t('Пароль')}<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+              <button type="submit" className="primary full" disabled={busy}>{busy ? t('Подождите...') : t('Войти')}</button>
+              <button type="button" className="outline full" disabled={busy} onClick={signUp}>{busy ? t('Подождите...') : t('Создать аккаунт')}</button>
+              <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('forgot'); setNotice('') }}>{t('Забыли пароль?')}</button>
             </form>}
           </section>
           {user && <>
@@ -1412,7 +1437,7 @@ function App() {
             <section className="panel profile-financial">
               <div className="admin-head"><Wallet /><h3>{t('Финансовый кабинет')}</h3></div>
               <p className="muted">{t('Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.')}</p>
-              {financial.loading ? <p className="muted">Загрузка данных...</p> : financial.error ? <p className="muted">Ошибка загрузки: {financial.error}</p> : <>
+              {financial.loading ? <p className="muted">{t('Загрузка данных...')}</p> : financial.error ? <p className="muted">{t('Ошибка загрузки:')} {financial.error}</p> : <>
                 <h3>{t('Баланс по активам')}</h3>
                 <div className="admin-stats-grid">
                   {['USDT','BTC','ETH','TON','USDC','VTX'].map(asset => {
@@ -1438,7 +1463,7 @@ function App() {
               <div className="admin-head"><CreditCard /><h3>{t('Мои юниты')}</h3></div>
               <p className="muted">{t('Ваши юниты, зарегистрированные в реестре VORTEX UNIT.')}</p>
               <div className="owned-card-count">{financial.cards.filter(card => card.status !== 'retired').length} <span>{t('карточек')}</span></div>
-              {financial.loading ? <p className="muted">Загрузка юнитов...</p> : financial.error ? <p className="muted">Юниты пока не удалось загрузить.</p> : financial.cards.filter(card => card.status !== 'retired').length === 0
+              {financial.loading ? <p className="muted">{t('Загрузка юнитов...')}</p> : financial.error ? <p className="muted">{t('Юниты пока не удалось загрузить.')}</p> : financial.cards.filter(card => card.status !== 'retired').length === 0
                 ? <div className="empty-cards"><CreditCard size={30} /><b>{t('Пока нет юнитов')}</b><span>{t('Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.')}</span></div>
                 : <div className="owned-cards-grid">
                   {financial.cards.filter(card => card.status !== 'retired').map((card, index) => <div className="owned-card" key={card.id}>
