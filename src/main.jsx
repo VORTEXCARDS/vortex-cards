@@ -1356,7 +1356,7 @@ function App() {
             </div>
             <div className="hero-card">
               <div className="card-top"><span>VORTEX</span><span>GENESIS / 001</span></div>
-              <div className="card-emblem" aria-label="VORTEX UNIT"><svg viewBox="0 0 512 512" focusable="false" aria-hidden="true"><path d="M256 64 424 160v192L256 448 88 352V160z" fill="none" stroke="#8b5cf6" strokeWidth="24"/><path d="M150 174v96c0 62 44 108 106 108s106-46 106-108v-96" fill="none" stroke="#25e6d2" strokeWidth="26" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
+              <div className="orb"><div /></div>
               <div className="card-bottom"><b>VORTEX UNIT</b><span>OWN THE DIGITAL FLOW</span></div>
             </div>
           </section>
