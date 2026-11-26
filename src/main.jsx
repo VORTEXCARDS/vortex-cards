@@ -363,6 +363,7 @@ function App() {
         setPasswordConfirm('')
         setNotice('Введите новый пароль для аккаунта.')
         setTab('profile')
+        setPublicAuthOpen(true)
       }
     })
 
