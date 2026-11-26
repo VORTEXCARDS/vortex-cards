@@ -1006,6 +1006,11 @@ function App() {
       if (error) throw error
       setUser(null)
       setIsAdmin(false)
+      setEmail('')
+      setPassword('')
+      setPasswordConfirm('')
+      setShowPassword(false)
+      setAuthMode('login')
       setNotice('Вы вышли из аккаунта.')
     } catch (error) {
       setNotice('Ошибка выхода: ' + (error.message || 'неизвестная ошибка'))
