@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createClient } from '@supabase/supabase-js'
 import {
   Home, CreditCard, Users, Store, UserRound, Shield, ArrowLeftRight,
-  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, EyeOff
+  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye
 } from 'lucide-react'
 import './style.css'
 
@@ -486,7 +486,7 @@ function App() {
     "ЦЕНА ВЫКУПА": "ЦІНА ВИКУПУ",
     "Digital card platform": "Платформа цифрових юнитів",
     "Зарегистрироваться": "Зареєструватися",
-    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT — цифрова платформа юнитів. Створіть обліковий запис, керуйте своїми юнитми та відкривайте можливості платформи.",
+    "VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEX UNIT — цифрова платформа юнитів. Створіть обліковий запис, керуйте своїми юнитми та відкривайте можливості платформи.",
     "У меня уже есть аккаунт": "У мене вже є обліковий запис",
     "Юниты и NFT": "Цифрові юніти",
     "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Особистий кабінет і керування юнитми після входу.",
@@ -510,7 +510,7 @@ function App() {
   },
   "en": {
     "Обзор": "Overview",
-    "Юниты": "Units",
+    "Карточки": "Units",
     "Маркетплейс": "Marketplace",
     "Рефералы": "Referrals",
     "Профиль": "Profile",
@@ -573,7 +573,7 @@ function App() {
     "Заявки на обмен в VTX": "Exchange requests to VTX",
     "Заявок нет.": "No requests.",
     "Обновить финансовые данные": "Refresh financial data",
-    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Your UNITs registered in the VORTEX registry.",
+    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Your units registered in the VORTEX registry.",
     "карточек": "units",
     "Пока нет юнитов": "No units yet",
     "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Units issued and assigned to your account will appear here.",
@@ -598,7 +598,7 @@ function App() {
     "Записей пока нет.": "No records yet.",
     "Загружаем таблицы базы данных...": "Loading database tables...",
     "Зарегистрироваться": "Register",
-    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT is a digital UNIT platform. Create an account, manage your units, and explore the platform.",
+    "VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEX UNIT is a digital UNIT platform. Create an account, manage your units, and explore the platform.",
     "У меня уже есть аккаунт": "I already have an account",
     "Юниты и NFT": "Digital units",
     "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Personal dashboard and UNIT management after signing in.",
@@ -634,11 +634,11 @@ function App() {
     "юнитов доступно": "units available",
     "за юнит": "per UNIT",
     "ЦЕНА ВЫКУПА": "BUYBACK PRICE",
-    "Digital card platform": "NFT and digital units platform",
+    "Digital card platform": "Digital UNIT platform",
   },
   "de": {
     "Обзор": "Übersicht",
-    "Юниты": "Units",
+    "Карточки": "Units",
     "Маркетплейс": "Marktplatz",
     "Рефералы": "Empfehlungen",
     "Профиль": "Profil",
@@ -726,7 +726,7 @@ function App() {
     "Записей пока нет.": "Noch keine Einträge.",
     "Загружаем таблицы базы данных...": "Datenbanktabellen werden geladen...",
     "Зарегистрироваться": "Registrieren",
-    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT ist eine digitale Unitsplattform. Erstelle ein Konto, verwalte deine Units und entdecke die Möglichkeiten der Plattform.",
+    "VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEX UNIT ist eine digitale Unitsplattform. Erstelle ein Konto, verwalte deine Units und entdecke die Möglichkeiten der Plattform.",
     "У меня уже есть аккаунт": "Ich habe bereits ein Konto",
     "Юниты и NFT": "Digitale Units",
     "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Persönlicher Bereich und Unitsverwaltung nach der Anmeldung.",
@@ -766,7 +766,7 @@ function App() {
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
-    "Юниты": "Units",
+    "Карточки": "Units",
     "Маркетплейс": "Marché",
     "Рефералы": "Parrainages",
     "Профиль": "Profil",
@@ -854,7 +854,7 @@ function App() {
     "Записей пока нет.": "Aucun enregistrement pour le moment.",
     "Загружаем таблицы базы данных...": "Chargement des tables de la base de données...",
     "Зарегистрироваться": "S’inscrire",
-    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT est une plateforme de units numériques. Créez un compte, gérez vos units et découvrez les possibilités de la plateforme.",
+    "VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.": "VORTEX UNIT est une plateforme de units numériques. Créez un compte, gérez vos units et découvrez les possibilités de la plateforme.",
     "У меня уже есть аккаунт": "J’ai déjà un compte",
     "Юниты и NFT": "Units numériques",
     "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Espace personnel et gestion des units après connexion.",
@@ -1227,12 +1227,12 @@ function App() {
               <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('login'); setNotice('') }}>Вернуться ко входу</button>
             </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
               <p className="muted">Придумайте новый пароль для своего аккаунта.</p>
-              <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
-              <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
+              <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+              <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
               <button type="submit" className="primary full" disabled={busy}>{busy ? 'Сохраняем...' : 'Сохранить новый пароль'}</button>
             </form> : <form onSubmit={signIn}>
               <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
-              <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
+              <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
               <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : 'Войти'}</button>
               <button type="button" className="outline full" disabled={busy} onClick={signUp}>{busy ? 'Подождите...' : 'Создать аккаунт'}</button>
               <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('forgot'); setNotice('') }}>Забыли пароль?</button>
@@ -1418,7 +1418,7 @@ function App() {
           <div className="public-copy">
             <div className="pill"><Sparkles size={14} /> NFT · DIGITAL UNITS</div>
             <h1>Одна единица.<br /><span>Своя ценность.</span></h1>
-            <p>VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.</p>
+            <p>VORTEX UNIT — цифровая платформа карточек. Создай аккаунт, управляй своими карточками и открывай возможности платформы.</p>
             <div className="public-cta">
               <button type="button" className="primary" onClick={() => openPublicAuth('signup')}>Создать аккаунт</button>
               <button type="button" className="outline" onClick={() => openPublicAuth('login')}>У меня уже есть аккаунт</button>
@@ -1443,12 +1443,12 @@ function App() {
             <button type="submit" className="primary full" disabled={busy}>{busy ? 'Отправляем...' : 'Отправить ссылку'}</button>
             <button type="button" className="outline full" onClick={() => setAuthMode('login')}>Вернуться ко входу</button>
           </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
-            <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
-            <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
+            <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+            <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
             <button type="submit" className="primary full" disabled={busy}>{busy ? 'Сохраняем...' : 'Сохранить новый пароль'}</button>
           </form> : <form onSubmit={authMode === 'signup' ? e => { e.preventDefault(); signUp() } : signIn}>
             <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
-            <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
+            <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
             <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : authMode === 'signup' ? 'Зарегистрироваться' : 'Войти'}</button>
             {authMode === 'login' && <button type="button" className="outline full" disabled={busy} onClick={() => setAuthMode('forgot')}>Забыли пароль?</button>}
             <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode(authMode === 'signup' ? 'login' : 'signup'); setNotice('') }}>{authMode === 'signup' ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}</button>
