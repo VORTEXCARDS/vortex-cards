@@ -10,7 +10,7 @@
   "theme_color": "#080d1b",
   "icons": [
     {
-      "src": "/vortex-cards/icon-vortex-unit-20261126-v2.svg",
+      "src": "/vortex-cards/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
