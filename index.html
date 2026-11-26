@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#080d1b">
 <link rel="manifest" href="/vortex-cards/manifest.webmanifest">
 <link rel="icon" href="/vortex-cards/icon.svg" type="image/svg+xml">
-<title>VORTEX CARDS</title>
+<title>VORTEX UNIT</title>
 <script>
 (function () {
   function showError(title, details) {
@@ -23,13 +23,13 @@
     box.textContent = title + '\n\n' + String(details || 'Подробности ошибки отсутствуют');
   }
   window.addEventListener('error', function (event) {
-    showError('ОШИБКА ЗАПУСКА VORTEX CARDS', (event.message || 'Не удалось загрузить файл') +
+    showError('ОШИБКА ЗАПУСКА VORTEX UNIT', (event.message || 'Не удалось загрузить файл') +
       (event.filename ? '\nФайл: ' + event.filename : '') +
       (event.lineno ? '\nСтрока: ' + event.lineno : '') +
       (event.error && event.error.stack ? '\n\n' + event.error.stack : ''));
   }, true);
   window.addEventListener('unhandledrejection', function (event) {
-    showError('ОШИБКА В ПРИЛОЖЕНИИ VORTEX CARDS', event.reason && (event.reason.stack || event.reason.message) || event.reason);
+    showError('ОШИБКА В ПРИЛОЖЕНИИ VORTEX UNIT', event.reason && (event.reason.stack || event.reason.message) || event.reason);
   });
   window.addEventListener('vite:preloadError', function (event) {
     showError('НЕ УДАЛОСЬ ЗАГРУЗИТЬ ФАЙЛ ПРИЛОЖЕНИЯ', event.payload || event);
