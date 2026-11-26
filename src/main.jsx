@@ -26,6 +26,8 @@ function App() {
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
   const [publicAuthOpen, setPublicAuthOpen] = useState(false)
+  const [publicInfoPage, setPublicInfoPage] = useState('')
+  const [publicFooterOpen, setPublicFooterOpen] = useState('')
   const [pushEnabled, setPushEnabled] = useState(false)
   const [pushPromptOpen, setPushPromptOpen] = useState(false)
   const [pushBusy, setPushBusy] = useState(false)
@@ -1600,6 +1602,23 @@ function App() {
         </div>
       </header>
       <main className="public-main">
+        {publicInfoPage ? <section className="public-info-page">
+          <button type="button" className="outline public-back" onClick={() => setPublicInfoPage('')}>← На главную</button>
+          {publicInfoPage === 'terms' ? <>
+            <h1>Пользовательское соглашение</h1>
+            <p>На этой странице будет размещён полный текст пользовательского соглашения VORTEX UNIT.</p>
+            <p>Документ подготовим отдельно, чтобы точно описать правила использования платформы, аккаунтов, цифровых юнитов и доступных функций.</p>
+          </> : <>
+            <h1>FAQ — Частые вопросы</h1>
+            <div className="public-faq-list">
+              <article><h3>Что такое VORTEX UNIT?</h3><p>VORTEX UNIT — платформа для управления цифровыми юнитами, участия в сообществе и использования доступных функций маркетплейса.</p></article>
+              <article><h3>Как создать аккаунт?</h3><p>Нажмите «Зарегистрироваться» в верхней части сайта и следуйте инструкциям на экране.</p></article>
+              <article><h3>Как войти в свой аккаунт?</h3><p>Нажмите «Войти» и укажите email и пароль, использованные при регистрации.</p></article>
+              <article><h3>Где обратиться за помощью?</h3><p>Войдите в аккаунт и откройте раздел «Поддержка» в меню сайта.</p></article>
+              <article><h3>Как установить приложение?</h3><p>Откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран», если такая возможность доступна.</p></article>
+            </div>
+          </>}
+        </section> : <>
         <section className="public-hero">
           <div className="public-copy">
             <div className="pill"><Sparkles size={14} /> NFT · DIGITAL UNITS</div>
@@ -1640,9 +1659,26 @@ function App() {
             <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode(authMode === 'signup' ? 'login' : 'signup'); setNotice('') }}>{authMode === 'signup' ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}</button>
           </form>}
         </section>}
+        </>}
       </main>
-      <section className="public-support-wrap"><SupportCenter language={language} /></section>
-      <footer className="public-footer">© 2026 VORTEX UNIT <span>NFT · DIGITAL UNITS</span></footer>
+      <footer className="public-footer">
+        <nav className="public-footer-links" aria-label="Информация">
+          <button type="button" onClick={() => setPublicFooterOpen(v => v === 'contacts' ? '' : 'contacts')}>Контакты</button>
+          <button type="button" onClick={() => setPublicFooterOpen(v => v === 'support' ? '' : 'support')}>Служба поддержки</button>
+          <button type="button" onClick={() => { setPublicInfoPage('terms'); setPublicFooterOpen(''); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>Пользовательское соглашение</button>
+          <button type="button" onClick={() => { setPublicInfoPage('faq'); setPublicFooterOpen(''); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>FAQ</button>
+        </nav>
+        {publicFooterOpen === 'contacts' && <div className="public-footer-detail">
+          <b>Контакты</b>
+          <a href="mailto:support@vortexunit.com">support@vortexunit.com</a>
+        </div>}
+        {publicFooterOpen === 'support' && <div className="public-footer-detail">
+          <b>Служба поддержки</b>
+          <p>Форма обращения доступна после входа в аккаунт, в разделе «Поддержка».</p>
+          <button type="button" className="outline" onClick={() => { setPublicFooterOpen(''); openPublicAuth('login') }}>Войти в аккаунт</button>
+        </div>}
+        <div className="public-footer-copy">© 2026 VORTEX UNIT <span>NFT · DIGITAL UNITS</span></div>
+      </footer>
     </div>
     return translateTree(publicPage, language, translations)
   }
