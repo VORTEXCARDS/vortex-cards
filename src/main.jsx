@@ -998,6 +998,7 @@ function App() {
                       <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '520px', fontSize: '11px', textAlign: 'left' }}>
                         <thead><tr>
                           {columns.map(column => <th key={column} style={{ padding: '9px', borderBottom: '1px solid #51416f', color: '#27e5d2', whiteSpace: 'nowrap' }}>{column}</th>)}
+                          <th style={{ padding: '9px', borderBottom: '1px solid #51416f', color: '#27e5d2' }}>Действия</th>
                         </tr></thead>
                         <tbody>
                           {table.rows.map((row, rowIndex) => <tr key={row.id || rowIndex}>
