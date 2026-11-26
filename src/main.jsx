@@ -11,7 +11,10 @@ try { sessionStorage.removeItem('vortex-startup-reload') } catch (_) {}
 
 const supabaseUrl = 'https://rrpjzfaqmkrawvtvpqfm.supabase.co'
 const supabaseKey = 'sb_publishable_giHUqFHf-WWatUkS7AqNPA_UVkgA1ps'
-const supabase = createClient(supabaseUrl, supabaseKey)
+// Keep website and installed PWA sessions separate on the same device.
+const isStandaloneApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+const authStorageKey = isStandaloneApp ? 'vortex-unit-installed-app-auth' : 'sb-rrpjzfaqmkrawvtvpqfm-auth-token'
+const supabase = createClient(supabaseUrl, supabaseKey, { auth: { storageKey: authStorageKey } })
 
 function App() {
   const [tab, setTab] = useState('home')
@@ -1053,7 +1056,7 @@ function App() {
       setPasswordConfirm('')
       setAuthMode('login')
       setNotice('Пароль успешно изменён. Теперь можно войти с новым паролем.')
-      await supabase.auth.signOut()
+      await supabase.auth.signOut({ scope: 'local' })
       setUser(null)
     } catch (error) {
       console.error('Ошибка смены пароля:', error)
