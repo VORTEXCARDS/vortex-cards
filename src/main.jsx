@@ -1171,7 +1171,7 @@ function App() {
               <button className="primary" type="submit" disabled={busy}>{busy ? 'Выставляем...' : 'Выставить'}</button>
             </form>
           </div>
-          <div className="section-title">КАРТОЧКИ В ПРОДАЖЕ</div>
+          <div className="section-title">ЮНИТЫ В ПРОДАЖЕ</div>
           <div className="listing-list">
             {marketLoading ? <p className="muted">Загружаем предложения...</p>
               : marketError ? <p className="muted">Не удалось загрузить предложения: {marketError}</p>
