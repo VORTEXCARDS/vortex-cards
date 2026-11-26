@@ -35,6 +35,7 @@ function App() {
   const [adminLoading, setAdminLoading] = useState(false)
   const [adminData, setAdminData] = useState([])
   const [adminDataLoading, setAdminDataLoading] = useState(false)
+  const [financial, setFinancial] = useState({ ledger: [], cards: [], deposits: [], withdrawals: [], exchanges: [], error: '', loading: false })
 
   const adminTables = [
     { name: 'user_accounts', label: 'Аккаунты пользователей' },
@@ -60,6 +61,36 @@ function App() {
       setAnalytics({ total: all.count || 0, today: today.count || 0, week: recent.data?.length || 0, unique: new Set((recent.data || []).map(x => x.session_id)).size, error: '' })
     } catch (error) {
       setAnalytics(v => ({ ...v, error: error.message || 'Не удалось загрузить статистику' }))
+    }
+  }
+
+  async function loadFinancialData() {
+    if (!user) {
+      setFinancial({ ledger: [], cards: [], deposits: [], withdrawals: [], exchanges: [], error: '', loading: false })
+      return
+    }
+    setFinancial(v => ({ ...v, loading: true, error: '' }))
+    try {
+      const [ledger, cardsResult, deposits, withdrawals, exchanges] = await Promise.all([
+        supabase.from('wallet_ledger').select('id, asset_code, amount, entry_type, description, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(100),
+        supabase.from('card_inventory').select('id, serial_number, status, issued_at').eq('owner_id', user.id).order('issued_at', { ascending: false }).limit(100),
+        supabase.from('crypto_deposit_requests').select('id, asset_code, network, amount_expected, amount_received, status, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20),
+        supabase.from('crypto_withdrawal_requests').select('id, asset_code, network, amount, fee, status, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20),
+        supabase.from('exchange_requests').select('id, from_asset, amount_in, to_asset, amount_out, status, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20)
+      ])
+      const failed = [ledger, cardsResult, deposits, withdrawals, exchanges].find(result => result.error)
+      if (failed) throw failed.error
+      setFinancial({
+        ledger: ledger.data || [],
+        cards: cardsResult.data || [],
+        deposits: deposits.data || [],
+        withdrawals: withdrawals.data || [],
+        exchanges: exchanges.data || [],
+        error: '',
+        loading: false
+      })
+    } catch (error) {
+      setFinancial(v => ({ ...v, loading: false, error: error.message || 'Не удалось загрузить финансовые данные' }))
     }
   }
 
@@ -107,6 +138,10 @@ function App() {
 
   useEffect(() => {
     checkAdmin(user)
+  }, [user])
+
+  useEffect(() => {
+    loadFinancialData()
   }, [user])
 
   useEffect(() => {
@@ -416,6 +451,34 @@ function App() {
           <h2>{user ? 'Аккаунт' : 'Вход или регистрация'}</h2>
           {user ? <>
             <p className="muted">{user.email}</p>
+            <div className="panel">
+              <div className="admin-head"><Wallet /><h3>Финансовый кабинет</h3></div>
+              <p className="muted">Данные загружаются из Supabase. Балансы рассчитываются по подтверждённым записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.</p>
+              {financial.loading ? <p className="muted">Загрузка данных...</p> : financial.error ? <p className="muted">Ошибка загрузки: {financial.error}</p> : <>
+                <h3>Баланс по активам</h3>
+                <div className="admin-stats-grid">
+                  {['USDT','BTC','ETH','TON','USDC','VTX'].map(asset => {
+                    const total = financial.ledger.filter(entry => entry.asset_code === asset).reduce((sum, entry) => sum + Number(entry.amount || 0), 0)
+                    return <Stat key={asset} label={asset} value={total.toFixed(6)} icon={<Wallet />} />
+                  })}
+                </div>
+                <h3>Мои выпущенные карточки</h3>
+                <p className="big-number">{financial.cards.filter(card => card.status !== 'retired').length} <small>карточек</small></p>
+                <p className="muted">Отображаются только карточки, реально внесённые администратором в реестр.</p>
+                <h3>Последние финансовые операции</h3>
+                {financial.ledger.length === 0 ? <p className="muted">Финансовых операций пока нет.</p> : financial.ledger.slice(0,10).map(entry => <div className="listing" key={entry.id}>
+                  <div className="listing-info"><b>{entry.entry_type} · {entry.asset_code}</b><span>{entry.description || new Date(entry.created_at).toLocaleString()}</span></div>
+                  <div className="listing-price"><b>{Number(entry.amount).toFixed(6)}</b></div>
+                </div>)}
+                <h3>Заявки на пополнение</h3>
+                {financial.deposits.length === 0 ? <p className="muted">Заявок нет.</p> : financial.deposits.map(item => <p className="muted" key={item.id}>{item.asset_code} · {item.network} · {item.amount_expected ?? 'Сумма не указана'} · {item.status}</p>)}
+                <h3>Заявки на вывод</h3>
+                {financial.withdrawals.length === 0 ? <p className="muted">Заявок нет.</p> : financial.withdrawals.map(item => <p className="muted" key={item.id}>{item.asset_code} · {item.amount} · {item.status}</p>)}
+                <h3>Заявки на обмен в VTX</h3>
+                {financial.exchanges.length === 0 ? <p className="muted">Заявок нет.</p> : financial.exchanges.map(item => <p className="muted" key={item.id}>{item.amount_in} {item.from_asset} → VTX · {item.status}</p>)}
+              </>}
+              <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>Обновить финансовые данные</button>
+            </div>
             <button type="button" className="outline" onClick={logout} disabled={busy}>Выйти</button>
           </> : <form onSubmit={signIn}>
             <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
