@@ -30,8 +30,6 @@ function App() {
   const [qty, setQty] = useState('1')
   const [price, setPrice] = useState('10')
   const [referrals, setReferrals] = useState(0)
-
-  // Права администратора
   const [isAdmin, setIsAdmin] = useState(false)
   const [adminLoading, setAdminLoading] = useState(false)
 
@@ -41,14 +39,12 @@ function App() {
       setAdminLoading(false)
       return
     }
-
     setAdminLoading(true)
     const { data, error } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', currentUser.id)
       .maybeSingle()
-
     setIsAdmin(!error && data?.role === 'admin')
     setAdminLoading(false)
   }
@@ -64,28 +60,30 @@ function App() {
     }
     window.addEventListener('beforeinstallprompt', handler)
 
+    // Для GitHub Pages адрес должен учитывать базовый путь /vortex-cards/.
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {})
+      navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`)
+        .catch(error => console.error('Ошибка регистрации Service Worker:', error))
     }
 
     if (supabase) {
       supabase.auth.getSession().then(({ data }) => {
         setUser(data.session?.user || null)
-      })
+      }).catch(error => console.error('Ошибка получения сессии:', error))
     }
 
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
 
   const referralLink = useMemo(
-    () => `${location.origin}/?ref=${user?.id || 'YOUR_CODE'}`,
+    () => `${location.origin}${import.meta.env.BASE_URL}?ref=${user?.id || 'YOUR_CODE'}`,
     [user]
   )
 
   async function signIn(e) {
     e.preventDefault()
     if (!supabase) {
-      setNotice('Подключи Supabase в .env.local, чтобы включить настоящую регистрацию. Сейчас открыт демонстрационный режим.')
+      setNotice('Supabase не подключён. Проверь настройки публикации сайта.')
       return
     }
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
@@ -96,10 +94,13 @@ function App() {
     }
   }
 
-  async function signUp(e) {
-    e.preventDefault()
+  async function signUp() {
     if (!supabase) {
-      setNotice('Подключи Supabase в .env.local, чтобы включить настоящую регистрацию.')
+      setNotice('Supabase не подключён. Проверь настройки публикации сайта.')
+      return
+    }
+    if (!email || password.length < 6) {
+      setNotice('Укажи email и пароль не короче 6 символов.')
       return
     }
     const ref = new URLSearchParams(location.search).get('ref')
@@ -134,7 +135,7 @@ function App() {
       qty: q,
       price: p
     }, ...v])
-    setNotice('Демо-объявление добавлено. В реальной версии операция проводится сервером.')
+    setNotice('Демо-объявление добавлено. Реальная операция пока не подключена.')
   }
 
   function buy(item) {
@@ -162,7 +163,7 @@ function App() {
       <div className="top-actions">
         <span className="status"><i /> {supabase ? 'ONLINE' : 'DEMO MODE'}</span>
         {installPrompt && <button className="install-btn" onClick={async () => {
-          installPrompt.prompt()
+          await installPrompt.prompt()
           setInstallPrompt(null)
         }}><Download size={16} /> Установить</button>}
       </div>
@@ -271,7 +272,7 @@ function App() {
             <p className="muted">Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.</p>
             <div className="ref-link">
               <span>{referralLink}</span>
-              <button onClick={() => navigator.clipboard?.writeText(referralLink).then(() => setNotice('Ссылка скопирована'))}><Copy size={17} /></button>
+              <button onClick={() => navigator.clipboard?.writeText(referralLink).then(() => setNotice('Ссылка скопирована')).catch(() => setNotice('Не удалось скопировать ссылку'))}><Copy size={17} /></button>
             </div>
             <div className="stats mini">
               <Stat label="ПРИГЛАШЕНО" value={referrals} icon={<Users />} />
@@ -329,4 +330,4 @@ function Quick({ icon, title, desc, click }) {
 }
 
 createRoot(document.getElementById('root')).render(<App />)
-                
+                                                                                    
