@@ -18,6 +18,8 @@ function App() {
   const [menu, setMenu] = useState(false)
   const [installPrompt, setInstallPrompt] = useState(null)
   const [user, setUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [publicAuthOpen, setPublicAuthOpen] = useState(false)
   const [pushEnabled, setPushEnabled] = useState(false)
   const [pushPromptOpen, setPushPromptOpen] = useState(false)
   const [pushBusy, setPushBusy] = useState(false)
@@ -349,10 +351,12 @@ function App() {
       .then(({ data, error }) => {
         if (error) throw error
         setUser(data.session?.user || null)
+        setAuthLoading(false)
       })
       .catch(error => {
         console.error('Ошибка получения сессии:', error)
         setNotice('Не удалось проверить вход: ' + (error.message || 'ошибка соединения'))
+        setAuthLoading(false)
       })
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
