@@ -29,7 +29,7 @@ function App() {
   ])
   const [qty, setQty] = useState('1')
   const [price, setPrice] = useState('10')
-  const [referrals, setReferrals] = useState(0)
+  const [referrals] = useState(0)
   const [isAdmin, setIsAdmin] = useState(false)
   const [adminLoading, setAdminLoading] = useState(false)
 
@@ -60,10 +60,23 @@ function App() {
     }
     window.addEventListener('beforeinstallprompt', handler)
 
-    // Для GitHub Pages адрес должен учитывать базовый путь /vortex-cards/.
+    // Не регистрируем Service Worker: удаляем старые регистрации и кэши.
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`)
-        .catch(error => console.error('Ошибка регистрации Service Worker:', error))
+      navigator.serviceWorker.getRegistrations()
+        .then(registrations => {
+          registrations.forEach(registration => registration.unregister())
+        })
+        .catch(error => console.error('Ошибка удаления Service Worker:', error))
+    }
+
+    if ('caches' in window) {
+      caches.keys()
+        .then(keys => Promise.all(
+          keys
+            .filter(key => key.startsWith('vortex-cards-'))
+            .map(key => caches.delete(key))
+        ))
+        .catch(error => console.error('Ошибка очистки кэша:', error))
     }
 
     if (supabase) {
@@ -330,4 +343,4 @@ function Quick({ icon, title, desc, click }) {
 }
 
 createRoot(document.getElementById('root')).render(<App />)
-                                                                                    
+            
