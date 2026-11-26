@@ -1208,7 +1208,7 @@ function App() {
             </div>
             <div className="stats mini">
               <Stat label="ПРИГЛАШЕНО" value={referrals} icon={<Users />} />
-              <Stat label="НАГРАДА" value="+1 CARD" icon={<CreditCard />} />
+              <Stat label="НАГРАДА" value="+1 UNIT" icon={<CreditCard />} />
             </div>
           </div>
         </>}
