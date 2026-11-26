@@ -192,3 +192,9 @@ body{
 
 /* Password visibility toggle: simple eye inside the input */
 .password-field{position:relative;width:100%}.password-field input{padding-right:42px!important}.password-toggle{position:absolute;right:9px;top:50%;transform:translateY(-50%);width:28px;height:28px;min-width:0;min-height:0;display:grid;place-items:center;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#a6a3bb;padding:0!important;cursor:pointer;line-height:1}.password-toggle:hover{color:#19dcf2;background:transparent!important}.password-field .password-toggle:focus-visible{outline:1px solid #19dcf2;outline-offset:2px}
+
+/* App installation card on the home dashboard */
+.quick.install-quick{border-color:#39717b;background:linear-gradient(110deg,#142333,#19152b);box-shadow:inset 0 0 28px #19dcf20b}
+.quick.install-quick .quick-icon{background:linear-gradient(135deg,#244c68,#39245f);color:#19dcf2}
+.quick.install-quick b{color:#fff}
+.quick.install-quick .arrow{color:#19dcf2}
