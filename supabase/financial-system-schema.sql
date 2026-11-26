@@ -117,21 +117,30 @@ create policy "Users read own deposit requests" on public.crypto_deposit_request
   for select to authenticated using (user_id = auth.uid() or public.is_admin());
 drop policy if exists "Users create own deposit requests" on public.crypto_deposit_requests;
 create policy "Users create own deposit requests" on public.crypto_deposit_requests
-  for insert to authenticated with check (user_id = auth.uid());
+  for insert to authenticated with check (
+    user_id = auth.uid() and status = 'pending'
+    and amount_received is null and transaction_hash is null
+    and provider_reference is null and admin_note is null and confirmed_at is null
+  );
 
 drop policy if exists "Users read own withdrawal requests" on public.crypto_withdrawal_requests;
 create policy "Users read own withdrawal requests" on public.crypto_withdrawal_requests
   for select to authenticated using (user_id = auth.uid() or public.is_admin());
 drop policy if exists "Users create own withdrawal requests" on public.crypto_withdrawal_requests;
 create policy "Users create own withdrawal requests" on public.crypto_withdrawal_requests
-  for insert to authenticated with check (user_id = auth.uid());
+  for insert to authenticated with check (
+    user_id = auth.uid() and status = 'pending'
+    and tx_hash is null and admin_note is null and completed_at is null
+  );
 
 drop policy if exists "Users read own exchange requests" on public.exchange_requests;
 create policy "Users read own exchange requests" on public.exchange_requests
   for select to authenticated using (user_id = auth.uid() or public.is_admin());
 drop policy if exists "Users create own exchange requests" on public.exchange_requests;
 create policy "Users create own exchange requests" on public.exchange_requests
-  for insert to authenticated with check (user_id = auth.uid());
+  for insert to authenticated with check (
+    user_id = auth.uid() and status = 'pending' and completed_at is null
+  );
 
 drop policy if exists "Users read own cards" on public.card_inventory;
 create policy "Users read own cards" on public.card_inventory
