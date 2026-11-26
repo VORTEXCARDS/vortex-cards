@@ -20,6 +20,8 @@ function App() {
   const [user, setUser] = useState(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [authMode, setAuthMode] = useState('login')
   const [notice, setNotice] = useState('')
   const [busy, setBusy] = useState(false)
   const [cards, setCards] = useState(1)
@@ -267,8 +269,15 @@ function App() {
         setNotice('Не удалось проверить вход: ' + (error.message || 'ошибка соединения'))
       })
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null)
+      if (event === 'PASSWORD_RECOVERY') {
+        setAuthMode('reset')
+        setPassword('')
+        setPasswordConfirm('')
+        setNotice('Введите новый пароль для аккаунта.')
+        setTab('profile')
+      }
     })
 
     return () => {
@@ -717,6 +726,59 @@ function App() {
     }
   }
 
+  async function sendPasswordReset(e) {
+    e.preventDefault()
+    if (busy) return
+    const cleanEmail = email.trim()
+    if (!cleanEmail || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(cleanEmail)) {
+      setNotice('Введите правильный адрес электронной почты.')
+      return
+    }
+    setBusy(true)
+    setNotice('Отправляем ссылку для восстановления пароля...')
+    try {
+      const redirectTo = new URL(import.meta.env.BASE_URL, location.origin).toString()
+      const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, { redirectTo })
+      if (error) throw error
+      setNotice('Если этот адрес зарегистрирован, на него придёт письмо со ссылкой для восстановления пароля. Проверьте также папку «Спам».')
+    } catch (error) {
+      console.error('Ошибка восстановления пароля:', error)
+      setNotice('Не удалось отправить письмо: ' + (error.message || 'ошибка сервера'))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function saveNewPassword(e) {
+    e.preventDefault()
+    if (busy) return
+    if (password.length < 6) {
+      setNotice('Новый пароль должен содержать не менее 6 символов.')
+      return
+    }
+    if (password !== passwordConfirm) {
+      setNotice('Пароли не совпадают. Проверьте оба поля.')
+      return
+    }
+    setBusy(true)
+    setNotice('Сохраняем новый пароль...')
+    try {
+      const { error } = await supabase.auth.updateUser({ password })
+      if (error) throw error
+      setPassword('')
+      setPasswordConfirm('')
+      setAuthMode('login')
+      setNotice('Пароль успешно изменён. Теперь можно войти с новым паролем.')
+      await supabase.auth.signOut()
+      setUser(null)
+    } catch (error) {
+      console.error('Ошибка смены пароля:', error)
+      setNotice('Не удалось изменить пароль: ' + (error.message || 'ссылка могла устареть'))
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function signUp() {
     if (busy) return
     const cleanEmail = email.trim()
@@ -965,11 +1027,22 @@ function App() {
             {user ? <>
               <p className="muted">{user.email}</p>
               <button type="button" className="outline" onClick={logout} disabled={busy}>Выйти</button>
-            </> : <form onSubmit={signIn}>
+            </> : authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
+              <p className="muted">Укажите email, который использовали при регистрации. Мы отправим на него ссылку для восстановления доступа.</p>
+              <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
+              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Отправляем...' : 'Отправить ссылку'}</button>
+              <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('login'); setNotice('') }}>Вернуться ко входу</button>
+            </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
+              <p className="muted">Придумайте новый пароль для своего аккаунта.</p>
+              <label>Новый пароль<input type="password" value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /></label>
+              <label>Повторите новый пароль<input type="password" value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /></label>
+              <button type="submit" className="primary full" disabled={busy}>{busy ? 'Сохраняем...' : 'Сохранить новый пароль'}</button>
+            </form> : <form onSubmit={signIn}>
               <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
               <label>Пароль<input type="password" value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /></label>
               <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : 'Войти'}</button>
               <button type="button" className="outline full" disabled={busy} onClick={signUp}>{busy ? 'Подождите...' : 'Создать аккаунт'}</button>
+              <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('forgot'); setNotice('') }}>Забыли пароль?</button>
             </form>}
           </section>
           {user && <>
