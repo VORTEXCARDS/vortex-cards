@@ -1,4 +1,4 @@
-// VORTEXCARDS Push Service Worker
+// VORTEX UNIT Push Service Worker
 self.addEventListener('install', event => {
   self.skipWaiting();
 });
@@ -11,13 +11,13 @@ self.addEventListener('push', event => {
   let payload = {};
   try { payload = event.data ? event.data.json() : {}; }
   catch (_) { payload = { body: event.data ? event.data.text() : '' }; }
-  const title = payload.title || 'VORTEXCARDS';
+  const title = payload.title || 'VORTEX UNIT';
   const options = {
     body: payload.body || 'У вас новое уведомление.',
     icon: '/vortex-cards/icon.svg',
     badge: '/vortex-cards/icon.svg',
     data: { url: payload.url || '/vortex-cards/' },
-    tag: payload.tag || 'vortexcards-notification'
+    tag: payload.tag || 'vortex-unit-notification'
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
