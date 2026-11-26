@@ -912,6 +912,15 @@ function App() {
             </form>}
           </section>
           {user && <>
+            <section className="panel">
+              <h3>Перевести карточки другому пользователю</h3>
+              <p className="muted">Укажите email получателя и количество карточек. Передаются только свободные карточки, зарегистрированные за вашим аккаунтом.</p>
+              <form onSubmit={transferCards}>
+                <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
+                <label>Количество карточек<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
+                <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : 'Перевести другому пользователю'}</button>
+              </form>
+            </section>
             <section className="panel profile-financial">
               <div className="admin-head"><Wallet /><h3>Финансовый кабинет</h3></div>
               <p className="muted">Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.</p>
