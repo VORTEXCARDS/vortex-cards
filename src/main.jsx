@@ -505,6 +505,10 @@ function App() {
     "Забыли пароль?": "Забули пароль?",
     "Уже есть аккаунт? Войти": "Вже маєте обліковий запис? Увійти",
     "Нет аккаунта? Зарегистрироваться": "Немає облікового запису? Зареєструватися",
+    "Email получателя": "Email отримувача",
+    "Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.": "Передавати можна лише вільні юніти. Юніти, виставлені на маркетплейс, заблоковані для переказу, доки оголошення не буде знято з продажу.",
+    "Перевести другому пользователю": "Переказати іншому користувачу",
+    "Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.": "Дані завантажуються із Supabase. Баланси розраховуються за записами фінансового журналу; заявки самі по собі не означають надходження чи виплату коштів.",
   },
   "en": {
     "Обзор": "Overview",
@@ -631,6 +635,10 @@ function App() {
     "юнитов доступно": "units available",
     "за юнит": "per UNIT",
     "NFT · DIGITAL UNITS": "Digital UNIT platform",
+    "Email получателя": "Recipient email",
+    "Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.": "Only available units can be transferred. Units listed on the marketplace are locked until the listing is removed.",
+    "Перевести другому пользователю": "Transfer to another user",
+    "Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.": "Data is loaded from Supabase. Balances are calculated from ledger entries; requests alone do not mean funds have been received or paid out.",
   },
   "de": {
     "Обзор": "Übersicht",
@@ -757,6 +765,10 @@ function App() {
     "юнитов доступно": "Units verfügbar",
     "за юнит": "pro UNIT",
     "NFT · DIGITAL UNITS": "Digitale Unitsplattform",
+    "Email получателя": "E-Mail des Empfängers",
+    "Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.": "Nur verfügbare Units können übertragen werden. Auf dem Marktplatz angebotene Units sind bis zum Entfernen des Angebots gesperrt.",
+    "Перевести другому пользователю": "An einen anderen Nutzer übertragen",
+    "Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.": "Die Daten werden aus Supabase geladen. Guthaben werden anhand der Finanzbuchungen berechnet; Anfragen allein bedeuten keinen Geldeingang und keine Auszahlung.",
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
@@ -868,6 +880,10 @@ function App() {
     "Забыли пароль?": "Mot de passe oublié ?",
     "Уже есть аккаунт? Войти": "Vous avez déjà un compte ? Se connecter",
     "Нет аккаунта? Зарегистрироваться": "Pas de compte ? S’inscrire",
+    "Email получателя": "E-mail du destinataire",
+    "Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.": "Seules les unités disponibles peuvent être transférées. Les unités mises en vente sont bloquées jusqu'au retrait de l'annonce.",
+    "Перевести другому пользователю": "Transférer à un autre utilisateur",
+    "Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.": "Les données sont chargées depuis Supabase. Les soldes sont calculés à partir du journal financier ; les demandes ne signifient pas à elles seules qu'un dépôt ou un paiement a eu lieu.",
   },
 }
 
@@ -1141,11 +1157,11 @@ function App() {
             <div className="balance-icon"><CreditCard /></div>
           </div>
           <div className="panel">
-            <h3>Передать юниты</h3>
-            <p className="muted">Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.</p>
+            <h3>{t('Передать юниты')}</h3>
+            <p className="muted">{t('Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.')}</p>
             <form onSubmit={transferCards}>
-              <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
-              <label>Количество юнитов<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
+              <label>{t('Email получателя')}<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
+              <label>{t('Количество юнитов')}<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
               <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : 'Передать юниты'}</button>
             </form>
           </div>
@@ -1236,42 +1252,42 @@ function App() {
               <h3>Перевести юниты другому пользователю</h3>
               <p className="muted">Укажите email получателя и количество свободных юнитов. Юниты, выставленные на маркетплейс, передать нельзя.</p>
               <form onSubmit={transferCards}>
-                <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
-                <label>Количество юнитов<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
-                <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : 'Перевести другому пользователю'}</button>
+                <label>{t('Email получателя')}<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
+                <label>{t('Количество юнитов')}<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
+                <button type="submit" className="primary full" disabled={busy}>{busy ? 'Выполняется...' : t('Перевести другому пользователю')}</button>
               </form>
             </section>
             <section className="panel profile-financial">
-              <div className="admin-head"><Wallet /><h3>Финансовый кабинет</h3></div>
-              <p className="muted">Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.</p>
+              <div className="admin-head"><Wallet /><h3>{t('Финансовый кабинет')}</h3></div>
+              <p className="muted">{t('Данные загружаются из Supabase. Балансы рассчитываются по записям финансового журнала; заявки сами по себе не означают поступление или выплату средств.')}</p>
               {financial.loading ? <p className="muted">Загрузка данных...</p> : financial.error ? <p className="muted">Ошибка загрузки: {financial.error}</p> : <>
-                <h3>Баланс по активам</h3>
+                <h3>{t('Баланс по активам')}</h3>
                 <div className="admin-stats-grid">
                   {['USDT','BTC','ETH','TON','USDC','VTX'].map(asset => {
                     const total = financial.ledger.filter(entry => entry.asset_code === asset).reduce((sum, entry) => sum + Number(entry.amount || 0), 0)
                     return <Stat key={asset} label={asset} value={total.toFixed(6)} icon={<Wallet />} />
                   })}
                 </div>
-                <h3>Последние финансовые операции</h3>
-                {financial.ledger.length === 0 ? <p className="muted">Финансовых операций пока нет.</p> : financial.ledger.slice(0,10).map(entry => <div className="listing" key={entry.id}>
+                <h3>{t('Последние финансовые операции')}</h3>
+                {financial.ledger.length === 0 ? <p className="muted">{t('Финансовых операций пока нет.')}</p> : financial.ledger.slice(0,10).map(entry => <div className="listing" key={entry.id}>
                   <div className="listing-info"><b>{entry.entry_type} · {entry.asset_code}</b><span>{entry.description || new Date(entry.created_at).toLocaleString()}</span></div>
                   <div className="listing-price"><b>{Number(entry.amount).toFixed(6)}</b></div>
                 </div>)}
-                <h3>Заявки на пополнение</h3>
-                {financial.deposits.length === 0 ? <p className="muted">Заявок нет.</p> : financial.deposits.map(item => <p className="muted" key={item.id}>{item.asset_code} · {item.network} · {item.amount_expected ?? 'Сумма не указана'} · {item.status}</p>)}
-                <h3>Заявки на вывод</h3>
-                {financial.withdrawals.length === 0 ? <p className="muted">Заявок нет.</p> : financial.withdrawals.map(item => <p className="muted" key={item.id}>{item.asset_code} · {item.amount} · {item.status}</p>)}
-                <h3>Заявки на обмен в VTX</h3>
-                {financial.exchanges.length === 0 ? <p className="muted">Заявок нет.</p> : financial.exchanges.map(item => <p className="muted" key={item.id}>{item.amount_in} {item.from_asset} → VTX · {item.status}</p>)}
+                <h3>{t('Заявки на пополнение')}</h3>
+                {financial.deposits.length === 0 ? <p className="muted">{t('Заявок нет.')}</p> : financial.deposits.map(item => <p className="muted" key={item.id}>{item.asset_code} · {item.network} · {item.amount_expected ?? 'Сумма не указана'} · {item.status}</p>)}
+                <h3>{t('Заявки на вывод')}</h3>
+                {financial.withdrawals.length === 0 ? <p className="muted">{t('Заявок нет.')}</p> : financial.withdrawals.map(item => <p className="muted" key={item.id}>{item.asset_code} · {item.amount} · {item.status}</p>)}
+                <h3>{t('Заявки на обмен в VTX')}</h3>
+                {financial.exchanges.length === 0 ? <p className="muted">{t('Заявок нет.')}</p> : financial.exchanges.map(item => <p className="muted" key={item.id}>{item.amount_in} {item.from_asset} → VTX · {item.status}</p>)}
               </>}
-              <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>Обновить финансовые данные</button>
+              <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>{t('Обновить финансовые данные')}</button>
             </section>
             <section className="panel profile-cards">
-              <div className="admin-head"><CreditCard /><h3>Мои юниты</h3></div>
-              <p className="muted">Ваши юниты, зарегистрированные в реестре VORTEX UNIT.</p>
-              <div className="owned-card-count">{financial.cards.filter(card => card.status !== 'retired').length} <span>карточек</span></div>
+              <div className="admin-head"><CreditCard /><h3>{t('Мои юниты')}</h3></div>
+              <p className="muted">{t('Ваши юниты, зарегистрированные в реестре VORTEX UNIT.')}</p>
+              <div className="owned-card-count">{financial.cards.filter(card => card.status !== 'retired').length} <span>{t('карточек')}</span></div>
               {financial.loading ? <p className="muted">Загрузка юнитов...</p> : financial.error ? <p className="muted">Юниты пока не удалось загрузить.</p> : financial.cards.filter(card => card.status !== 'retired').length === 0
-                ? <div className="empty-cards"><CreditCard size={30} /><b>Пока нет юнитов</b><span>Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.</span></div>
+                ? <div className="empty-cards"><CreditCard size={30} /><b>{t('Пока нет юнитов')}</b><span>{t('Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.')}</span></div>
                 : <div className="owned-cards-grid">
                   {financial.cards.filter(card => card.status !== 'retired').map((card, index) => <div className="owned-card" key={card.id}>
                     <div className="owned-card-top"><span>VORTEX</span><span>№ {String(index + 1).padStart(3, '0')}</span></div>
@@ -1279,7 +1295,7 @@ function App() {
                     <div className="owned-card-bottom"><b>{card.serial_number}</b><span>{card.status === 'listed' ? 'На продаже' : card.status === 'reserved' ? 'Зарезервирована' : card.status === 'sold' ? 'Продана' : 'Владелец'}</span></div>
                   </div>)}
                 </div>}
-              <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>Обновить юниты</button>
+              <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>{t('Обновить юниты')}</button>
             </section>
           </>}
         </div>}
