@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createClient } from '@supabase/supabase-js'
 import {
   Home, CreditCard, Users, Store, UserRound, Shield, ArrowLeftRight,
-  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye
+  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, EyeOff
 } from 'lucide-react'
 import './style.css'
 
@@ -51,13 +51,13 @@ function App() {
 
   const adminTables = [
     { name: 'user_accounts', label: 'Аккаунты пользователей' },
-    { name: 'card_balances', label: 'Баланс юнитов' },
+    { name: 'card_balances', label: 'Баланс карточек' },
     { name: 'market_listings', label: 'Объявления маркетплейса' },
     { name: 'complaints', label: 'Жалобы' },
     { name: 'disputes', label: 'Спорные сделки' },
     { name: 'buyback_requests', label: 'Заявки на выкуп' },
     { name: 'admin_audit_log', label: 'Журнал действий администратора' },
-    { name: 'card_inventory', label: 'Реестр выпущенных юнитов' },
+    { name: 'card_inventory', label: 'Реестр выпущенных карточек' },
     { name: 'wallet_ledger', label: 'Финансовый журнал' },
     { name: 'crypto_deposit_requests', label: 'Заявки на пополнение криптовалютой' },
     { name: 'crypto_withdrawal_requests', label: 'Заявки на вывод криптовалюты' },
@@ -116,7 +116,7 @@ function App() {
     if (!user) { setNotice('Сначала войдите в аккаунт.'); return }
     const quantity = Number(transferQuantity)
     if (!transferEmail.trim() || !Number.isInteger(quantity) || quantity < 1) {
-      setNotice('Укажите email получателя и целое количество юнитов.'); return
+      setNotice('Укажите email получателя и целое количество карточек.'); return
     }
     setBusy(true)
     try {
@@ -127,16 +127,16 @@ function App() {
       setTransferEmail('')
       setTransferQuantity('1')
       await loadFinancialData()
-      setNotice(`Успешно передано юнитов: ${data?.transferred ?? quantity}.`)
+      setNotice(`Успешно передано карточек: ${data?.transferred ?? quantity}.`)
     } catch (error) {
-      setNotice('Не удалось передать юниты: ' + (error.message || 'ошибка операции'))
+      setNotice('Не удалось передать карточки: ' + (error.message || 'ошибка операции'))
     } finally { setBusy(false) }
   }
 
   async function issueCard(e) {
     e.preventDefault()
     if (!isAdmin || !issueOwnerId.trim() || !issueSerial.trim()) return
-    await runAdminAction('admin_issue_card', { p_owner_id: issueOwnerId.trim(), p_serial_number: issueSerial.trim() }, 'Юнит выпущена и закреплена за пользователем.')
+    await runAdminAction('admin_issue_card', { p_owner_id: issueOwnerId.trim(), p_serial_number: issueSerial.trim() }, 'Карточка выпущена и закреплена за пользователем.')
     setIssueSerial('')
   }
 
@@ -396,8 +396,8 @@ function App() {
     "Языки сайта": "Мови сайту",
     "Администратор": "Адміністратор",
     "Закрыть": "Закрити",
-    "Твой юнит.": "Твоя юнит.",
-    "Одна единица. Своя ценность.": "Твої правила.",
+    "Одна единица.": "Твоя юнит.",
+    "Своя ценность.": "Твої правила.",
     "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Керуй юнитми, запрошуй друзів і торгуй на P2P-маркетплейсі VORTEX.",
     "Открыть маркетплейс": "Відкрити маркетплейс",
     "МОИ ЮНИТЫ": "МОЇ КАРТКИ",
@@ -409,7 +409,7 @@ function App() {
     "P2P-рынок": "P2P-ринок",
     "Покупка и продажа": "Купівля та продаж",
     "Пригласить друга": "Запросити друга",
-    "Получить юнит": "Отримати юніт",
+    "Получить юнит": "Отримати юнит",
     "ДОСТУПНЫЙ БАЛАНС": "ДОСТУПНИЙ БАЛАНС",
     "Передать юниты": "Передати юніти",
     "В демонстрационном режиме переводы не выполняются.": "У демонстраційному режимі перекази не виконуються.",
@@ -421,11 +421,11 @@ function App() {
     "КОМИССИЯ 5%": "КОМІСІЯ 5%",
     "Создать объявление": "Створити оголошення",
     "Количество": "Кількість",
-    "Цена за юнит, ₴": "Ціна за юніт, ₴",
+    "Цена за юнит, ₴": "Ціна за юнит, ₴",
     "Выставить": "Виставити",
     "АКТИВНЫЕ ОБЪЯВЛЕНИЯ": "АКТИВНІ ОГОЛОШЕННЯ",
     "юнитов доступно": "юнитів доступно",
-    "за юнит": "за юніт",
+    "за юнит": "за юнит",
     "Купить": "Купити",
     "Расти вместе с VORTEX": "Рости разом із VORTEX",
     "ПРИГЛАШЕНО": "ЗАПРОШЕНО",
@@ -446,7 +446,7 @@ function App() {
     "Заявок нет.": "Заявок немає.",
     "Обновить финансовые данные": "Оновити фінансові дані",
     "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Ваші юніти, зареєстровані в реєстрі VORTEX.",
-    "юнитов": "юнитів",
+    "карточек": "юнитів",
     "Пока нет юнитов": "Поки немає юнитів",
     "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Коли юніти буде випущено та закріплено за вашим обліковим записом, вони з’являться тут.",
     "Обновить юниты": "Оновити юніти",
@@ -471,8 +471,8 @@ function App() {
     "Загружаем таблицы базы данных...": "Завантажуємо таблиці бази даних...",
 
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Для безпечних переказів потрібна підключена серверна операція Supabase.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование юнитов и удержание комиссии пока не подключены.": "Показано демонстраційні оголошення. Реальні розрахунки, резервування юнитів та утримання комісії поки не підключені.",
-    "Пригласивший получает 1 дополнительную юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовую юнит.": "Той, хто запросив, отримує 1 додаткову юніт після підтвердженої реєстрації реферала. Новий користувач отримує стартову юніт.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Показано демонстраційні оголошення. Реальні розрахунки, резервування юнитів та утримання комісії поки не підключені.",
+    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "Той, хто запросив, отримує 1 додаткову юнит після підтвердженої реєстрації реферала. Новий користувач отримує стартову юнит.",
     "Ссылка скопирована": "Посилання скопійовано",
     "Не удалось скопировать ссылку": "Не вдалося скопіювати посилання",
     "Загрузка данных...": "Завантаження даних...",
@@ -482,19 +482,19 @@ function App() {
     "Сумма не указана": "Суму не вказано",
     "Показано записей:": "Показано записів:",
     "юнитов доступно": "юнитів доступно",
-    "за юнит": "за юніт",
+    "за юнит": "за юнит",
     "ЦЕНА ВЫКУПА": "ЦІНА ВИКУПУ",
     "Digital card platform": "Платформа цифрових юнитів",
     "Зарегистрироваться": "Зареєструватися",
-    "VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.": "VORTEXUNITS — цифрова платформа юнитів. Створіть обліковий запис, керуйте своїми юнитми та відкривайте можливості платформи.",
+    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT — цифрова платформа юнитів. Створіть обліковий запис, керуйте своїми юнитми та відкривайте можливості платформи.",
     "У меня уже есть аккаунт": "У мене вже є обліковий запис",
     "Юниты и NFT": "Цифрові юніти",
-    "Личный кабинет и управление юнитми после входа.": "Особистий кабінет і керування юнитми після входу.",
+    "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Особистий кабінет і керування юнитми після входу.",
     "P2P-маркетплейс": "P2P-маркетплейс",
     "Просмотр предложений и торговые функции для пользователей.": "Перегляд пропозицій і торгові функції для користувачів.",
     "Сообщество": "Спільнота",
     "Приглашайте друзей и развивайтесь вместе с VORTEX.": "Запрошуйте друзів і розвивайтеся разом із VORTEX.",
-    "Регистрация VORTEX UNIT": "Реєстрація VORTEXUNITS",
+    "Регистрация VORTEX UNIT": "Реєстрація VORTEX UNIT",
     "Восстановление пароля": "Відновлення пароля",
     "Новый пароль": "Новий пароль",
     "Вход в аккаунт": "Вхід до облікового запису",
@@ -517,18 +517,18 @@ function App() {
     "Администрирование": "Administration",
     "МЕНЮ": "MENU",
     "Установить": "Install",
-    "DIGITAL UNIT ECONOMY": "DIGITAL UNIT ECONOMY",
+    "NFT · DIGITAL UNITS": "NFT · DIGITAL UNITS",
     "Вход или регистрация": "Sign in or register",
     "Панель администратора": "Admin panel",
     "Статистика посещаемости": "Traffic statistics",
     "Языки сайта": "Website languages",
     "Администратор": "Administrator",
     "Закрыть": "Close",
-    "Твой юнит.": "Your UNIT.",
-    "Твои правила.": "Your rules.",
+    "Одна единица.": "Your UNIT.",
+    "Своя ценность.": "Your rules.",
     "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Manage units, invite friends, and trade on the VORTEX P2P marketplace.",
     "Открыть маркетплейс": "Open marketplace",
-    "МОИ ЮНИТЫ": "MY UNITS",
+    "МОИ ЮНИТЫ": "MY CARDS",
     "РЕФЕРАЛЫ": "REFERRALS",
     "ЦЕНА ВЫКУПА*": "BUYBACK PRICE*",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "QUICK ACTIONS",
@@ -573,8 +573,8 @@ function App() {
     "Заявки на обмен в VTX": "Exchange requests to VTX",
     "Заявок нет.": "No requests.",
     "Обновить финансовые данные": "Refresh financial data",
-    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Your units registered in the VORTEX registry.",
-    "юнитов": "units",
+    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Your UNITs registered in the VORTEX registry.",
+    "карточек": "units",
     "Пока нет юнитов": "No units yet",
     "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Units issued and assigned to your account will appear here.",
     "Обновить юниты": "Refresh units",
@@ -598,15 +598,15 @@ function App() {
     "Записей пока нет.": "No records yet.",
     "Загружаем таблицы базы данных...": "Loading database tables...",
     "Зарегистрироваться": "Register",
-    "VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.": "VORTEXUNITS is a digital UNIT platform. Create an account, manage your units, and explore the platform.",
+    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT is a digital UNIT platform. Create an account, manage your units, and explore the platform.",
     "У меня уже есть аккаунт": "I already have an account",
-    "Цифровые юниты": "Digital units",
-    "Личный кабинет и управление юнитми после входа.": "Personal dashboard and UNIT management after signing in.",
+    "Юниты и NFT": "Digital units",
+    "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Personal dashboard and UNIT management after signing in.",
     "P2P-маркетплейс": "P2P marketplace",
     "Просмотр предложений и торговые функции для пользователей.": "Browse listings and use trading features.",
     "Сообщество": "Community",
     "Приглашайте друзей и развивайтесь вместе с VORTEX.": "Invite friends and grow together with VORTEX.",
-    "Регистрация VORTEX UNIT": "VORTEXUNITS registration",
+    "Регистрация VORTEX UNIT": "VORTEX UNIT registration",
     "Восстановление пароля": "Password recovery",
     "Новый пароль": "New password",
     "Вход в аккаунт": "Sign in",
@@ -621,8 +621,8 @@ function App() {
     "Нет аккаунта? Зарегистрироваться": "No account? Register",
 
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "A secure Supabase server operation is required to transfer units.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование юнитов и удержание комиссии пока не подключены.": "These are sample listings. Real payments, UNIT reservations, and fee collection are not connected yet.",
-    "Пригласивший получает 1 дополнительную юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовую юнит.": "The inviter receives 1 extra UNIT after the referral registration is confirmed. The new user receives a starter UNIT.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "These are sample listings. Real payments, UNIT reservations, and fee collection are not connected yet.",
+    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "The inviter receives 1 extra UNIT after the referral registration is confirmed. The new user receives a starter UNIT.",
     "Ссылка скопирована": "Link copied",
     "Не удалось скопировать ссылку": "Could not copy the link",
     "Загрузка данных...": "Loading data...",
@@ -634,7 +634,7 @@ function App() {
     "юнитов доступно": "units available",
     "за юнит": "per UNIT",
     "ЦЕНА ВЫКУПА": "BUYBACK PRICE",
-    "Digital card platform": "Digital UNIT platform",
+    "Digital card platform": "NFT and digital units platform",
   },
   "de": {
     "Обзор": "Übersicht",
@@ -645,15 +645,15 @@ function App() {
     "Администрирование": "Administration",
     "МЕНЮ": "MENÜ",
     "Установить": "Installieren",
-    "DIGITAL UNIT ECONOMY": "DIGITALE KARTENWIRTSCHAFT",
+    "NFT · DIGITAL UNITS": "DIGITALE KARTENWIRTSCHAFT",
     "Вход или регистрация": "Anmelden oder registrieren",
     "Панель администратора": "Adminbereich",
     "Статистика посещаемости": "Besucherstatistik",
     "Языки сайта": "Website-Sprachen",
     "Администратор": "Administrator",
     "Закрыть": "Schließen",
-    "Твой юнит.": "Deine UNIT.",
-    "Твои правила.": "Deine Regeln.",
+    "Одна единица.": "Deine UNIT.",
+    "Своя ценность.": "Deine Regeln.",
     "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Verwalte Units, lade Freunde ein und handle auf dem VORTEX-P2P-Marktplatz.",
     "Открыть маркетплейс": "Marktplatz öffnen",
     "МОИ ЮНИТЫ": "MEINE KARTEN",
@@ -702,7 +702,7 @@ function App() {
     "Заявок нет.": "Keine Anfragen.",
     "Обновить финансовые данные": "Finanzdaten aktualisieren",
     "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Ihre im VORTEX-Register erfassten Units.",
-    "юнитов": "Units",
+    "карточек": "Units",
     "Пока нет юнитов": "Noch keine Units",
     "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Ausgestellte und Ihrem Konto zugewiesene Units erscheinen hier.",
     "Обновить юниты": "Units aktualisieren",
@@ -726,15 +726,15 @@ function App() {
     "Записей пока нет.": "Noch keine Einträge.",
     "Загружаем таблицы базы данных...": "Datenbanktabellen werden geladen...",
     "Зарегистрироваться": "Registrieren",
-    "VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.": "VORTEXUNITS ist eine digitale Unitsplattform. Erstelle ein Konto, verwalte deine Units und entdecke die Möglichkeiten der Plattform.",
+    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT ist eine digitale Unitsplattform. Erstelle ein Konto, verwalte deine Units und entdecke die Möglichkeiten der Plattform.",
     "У меня уже есть аккаунт": "Ich habe bereits ein Konto",
-    "Цифровые юниты": "Digitale Units",
-    "Личный кабинет и управление юнитми после входа.": "Persönlicher Bereich und Unitsverwaltung nach der Anmeldung.",
+    "Юниты и NFT": "Digitale Units",
+    "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Persönlicher Bereich und Unitsverwaltung nach der Anmeldung.",
     "P2P-маркетплейс": "P2P-Marktplatz",
     "Просмотр предложений и торговые функции для пользователей.": "Angebote ansehen und Handelsfunktionen nutzen.",
     "Сообщество": "Community",
     "Приглашайте друзей и развивайтесь вместе с VORTEX.": "Lade Freunde ein und entwickle dich gemeinsam mit VORTEX weiter.",
-    "Регистрация VORTEX UNIT": "VORTEXUNITS-Registrierung",
+    "Регистрация VORTEX UNIT": "VORTEX UNIT-Registrierung",
     "Восстановление пароля": "Passwort wiederherstellen",
     "Новый пароль": "Neues Passwort",
     "Вход в аккаунт": "Anmelden",
@@ -749,8 +749,8 @@ function App() {
     "Нет аккаунта? Зарегистрироваться": "Noch kein Konto? Registrieren",
 
     "Для безопасных переводов требуется подключённая серверная операция Supabase.": "Für sichere Übertragungen ist eine serverseitige Supabase-Funktion erforderlich.",
-    "Показаны демонстрационные объявления. Реальные расчёты, резервирование юнитов и удержание комиссии пока не подключены.": "Dies sind Demo-Angebote. Echte Zahlungen, Unitsreservierungen und Gebühreneinzug sind noch nicht aktiviert.",
-    "Пригласивший получает 1 дополнительную юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовую юнит.": "Der Einladende erhält nach bestätigter Registrierung des geworbenen Nutzers eine zusätzliche UNIT. Der neue Nutzer erhält eine StarterUNIT.",
+    "Показаны демонстрационные объявления. Реальные расчёты, резервирование карточек и удержание комиссии пока не подключены.": "Dies sind Demo-Angebote. Echte Zahlungen, Unitsreservierungen und Gebühreneinzug sind noch nicht aktiviert.",
+    "Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.": "Der Einladende erhält nach bestätigter Registrierung des geworbenen Nutzers eine zusätzliche UNIT. Der neue Nutzer erhält eine StarterUNIT.",
     "Ссылка скопирована": "Link kopiert",
     "Не удалось скопировать ссылку": "Link konnte nicht kopiert werden",
     "Загрузка данных...": "Daten werden geladen...",
@@ -766,39 +766,39 @@ function App() {
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
-    "Юниты": "UNITs",
+    "Юниты": "Units",
     "Маркетплейс": "Marché",
     "Рефералы": "Parrainages",
     "Профиль": "Profil",
     "Администрирование": "Administration",
     "МЕНЮ": "MENU",
     "Установить": "Installer",
-    "DIGITAL UNIT ECONOMY": "ÉCONOMIE DES CARTES NUMÉRIQUES",
+    "NFT · DIGITAL UNITS": "ÉCONOMIE DES CARTES NUMÉRIQUES",
     "Вход или регистрация": "Connexion ou inscription",
     "Панель администратора": "Panneau administrateur",
     "Статистика посещаемости": "Statistiques de fréquentation",
     "Языки сайта": "Langues du site",
     "Администратор": "Administrateur",
     "Закрыть": "Fermer",
-    "Твой юнит.": "Votre UNIT.",
-    "Твои правила.": "Vos règles.",
-    "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Gérez vos UNITs, invitez vos amis et échangez sur la place de marché P2P VORTEX.",
+    "Одна единица.": "Votre UNIT.",
+    "Своя ценность.": "Vos règles.",
+    "Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.": "Gérez vos units, invitez vos amis et échangez sur la place de marché P2P VORTEX.",
     "Открыть маркетплейс": "Ouvrir la marketplace",
     "МОИ ЮНИТЫ": "MES CARTES",
     "РЕФЕРАЛЫ": "PARRAINAGES",
     "ЦЕНА ВЫКУПА*": "PRIX DE RACHAT*",
     "БЫСТРЫЕ ДЕЙСТВИЯ": "ACTIONS RAPIDES",
-    "Мои юниты": "Mes UNITs",
+    "Мои юниты": "Mes units",
     "Баланс и переводы": "Solde et transferts",
     "P2P-рынок": "Marché P2P",
     "Покупка и продажа": "Acheter et vendre",
     "Пригласить друга": "Inviter un ami",
     "Получить юнит": "Obtenir une UNIT",
     "ДОСТУПНЫЙ БАЛАНС": "SOLDE DISPONIBLE",
-    "Передать юниты": "Transférer des UNITs",
+    "Передать юниты": "Transférer des units",
     "В демонстрационном режиме переводы не выполняются.": "Les transferts sont désactivés en mode démo.",
     "Email или ID получателя": "E-mail ou identifiant du destinataire",
-    "Количество юнитов": "Nombre de UNITs",
+    "Количество юнитов": "Nombre de units",
     "Передать": "Transférer",
     "P2P маркетплейс": "Marketplace P2P",
     "Пользователи устанавливают собственные цены.": "Les utilisateurs fixent leurs propres prix.",
@@ -808,7 +808,7 @@ function App() {
     "Цена за юнит, ₴": "Prix par UNIT, ₴",
     "Выставить": "Mettre en vente",
     "АКТИВНЫЕ ОБЪЯВЛЕНИЯ": "ANNONCES ACTIVES",
-    "юнитов доступно": "UNITs disponibles",
+    "юнитов доступно": "units disponibles",
     "за юнит": "par UNIT",
     "Купить": "Acheter",
     "Расти вместе с VORTEX": "Grandissez avec VORTEX",
@@ -829,11 +829,11 @@ function App() {
     "Заявки на обмен в VTX": "Demandes de conversion en VTX",
     "Заявок нет.": "Aucune demande.",
     "Обновить финансовые данные": "Actualiser les données financières",
-    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Vos UNITs enregistrées dans le registre VORTEX.",
-    "юнитов": "UNITs",
+    "Ваши юниты, зарегистрированные в реестре VORTEX UNIT.": "Vos units enregistrées dans le registre VORTEX.",
+    "карточек": "units",
     "Пока нет юнитов": "Aucune UNIT pour le moment",
-    "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Les UNITs émises et associées à votre compte apparaîtront ici.",
-    "Обновить юниты": "Actualiser les UNITs",
+    "Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.": "Les units émises et associées à votre compte apparaîtront ici.",
+    "Обновить юниты": "Actualiser les units",
     "На продаже": "En vente",
     "Зарезервирована": "Réservée",
     "Продана": "Vendue",
@@ -854,15 +854,15 @@ function App() {
     "Записей пока нет.": "Aucun enregistrement pour le moment.",
     "Загружаем таблицы базы данных...": "Chargement des tables de la base de données...",
     "Зарегистрироваться": "S’inscrire",
-    "VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.": "VORTEXUNITS est une plateforme de UNITs numériques. Créez un compte, gérez vos UNITs et découvrez les possibilités de la plateforme.",
+    "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT est une plateforme de units numériques. Créez un compte, gérez vos units et découvrez les possibilités de la plateforme.",
     "У меня уже есть аккаунт": "J’ai déjà un compte",
-    "Цифровые юниты": "UNITs numériques",
-    "Личный кабинет и управление юнитми после входа.": "Espace personnel et gestion des UNITs après connexion.",
+    "Юниты и NFT": "Units numériques",
+    "Создавай коллекции и управляй уникальными цифровыми юнитами.": "Espace personnel et gestion des units après connexion.",
     "P2P-маркетплейс": "Marché P2P",
     "Просмотр предложений и торговые функции для пользователей.": "Consultez les offres et utilisez les fonctions de trading.",
     "Сообщество": "Communauté",
     "Приглашайте друзей и развивайтесь вместе с VORTEX.": "Invitez vos amis et évoluez avec VORTEX.",
-    "Регистрация VORTEX UNIT": "Inscription à VORTEXUNITS",
+    "Регистрация VORTEX UNIT": "Inscription à VORTEX UNIT",
     "Восстановление пароля": "Récupération du mot de passe",
     "Новый пароль": "Nouveau mot de passe",
     "Вход в аккаунт": "Connexion au compte",
@@ -1018,11 +1018,11 @@ function App() {
 
   async function addListing(e) {
     e.preventDefault()
-    if (!user) { setNotice('Чтобы выставить юнит, войдите в аккаунт.'); return }
+    if (!user) { setNotice('Чтобы выставить карточку, войдите в аккаунт.'); return }
     const q = Number(qty)
     const p = Number(price)
     if (!Number.isInteger(q) || q < 1 || !Number.isFinite(p) || p <= 0) {
-      setNotice('Укажите корректное количество юнитов и цену.')
+      setNotice('Укажите корректное количество карточек и цену.')
       return
     }
     setBusy(true)
@@ -1031,10 +1031,10 @@ function App() {
         p_quantity: q, p_price: p
       })
       if (error) throw error
-      setNotice(`Объявление создано. Выставлено юнитов: ${data?.quantity ?? q}. Пока объявление активно, эти юниты нельзя перевести другому пользователю.`)
+      setNotice(`Объявление создано. Выставлено карточек: ${data?.quantity ?? q}. Пока объявление активно, эти карточки нельзя перевести другому пользователю.`)
       await Promise.all([loadMarketplace(), loadFinancialData()])
     } catch (error) {
-      setNotice('Не удалось выставить юниты: ' + (error.message || 'ошибка операции'))
+      setNotice('Не удалось выставить карточки: ' + (error.message || 'ошибка операции'))
     } finally {
       setBusy(false)
     }
@@ -1046,7 +1046,7 @@ function App() {
     try {
       const { error } = await supabase.rpc('cancel_own_market_listing', { p_listing_id: item.id })
       if (error) throw error
-      setNotice('Объявление снято с продажи. Юниты снова доступны для перевода.')
+      setNotice('Объявление снято с продажи. Карточки снова доступны для перевода.')
       await Promise.all([loadMarketplace(), loadFinancialData()])
     } catch (error) {
       setNotice('Не удалось снять объявление: ' + (error.message || 'ошибка операции'))
@@ -1106,7 +1106,7 @@ function App() {
 
       <main className="main">
         <div className="page-head">
-          <div><div className="eyebrow">{t('DIGITAL UNIT ECONOMY')}</div><h1>{title}</h1></div>
+          <div><div className="eyebrow">{t('NFT · DIGITAL UNITS')}</div><h1>{title}</h1></div>
           <div className="avatar">{user?.email?.[0]?.toUpperCase() || 'G'}</div>
         </div>
 
@@ -1149,7 +1149,7 @@ function App() {
           </div>
           <div className="panel">
             <h3>Передать юниты</h3>
-            <p className="muted">Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.</p>
+            <p className="muted">Передать можно только свободные карточки. Карточки, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.</p>
             <form onSubmit={transferCards}>
               <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
               <label>Количество юнитов<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
@@ -1192,14 +1192,14 @@ function App() {
           <div className="panel referral-panel">
             <div className="ref-icon"><Users /></div>
             <h2>Расти вместе с VORTEX</h2>
-            <p className="muted">Пригласивший получает 1 дополнительную юнит после подтверждённой регистрации реферала. Новый пользователь получает стартовую юнит.</p>
+            <p className="muted">Пригласивший получает 1 дополнительную карточку после подтверждённой регистрации реферала. Новый пользователь получает стартовую карточку.</p>
             <div className="ref-link">
               <span>{referralLink}</span>
               <button type="button" onClick={() => navigator.clipboard?.writeText(referralLink).then(() => setNotice('Ссылка скопирована')).catch(() => setNotice('Не удалось скопировать ссылку'))}><Copy size={17} /></button>
             </div>
             <div className="stats mini">
               <Stat label="ПРИГЛАШЕНО" value={referrals} icon={<Users />} />
-              <Stat label="НАГРАДА" value="+1 UNIT" icon={<CreditCard />} />
+              <Stat label="НАГРАДА" value="+1 CARD" icon={<CreditCard />} />
             </div>
           </div>
         </>}
@@ -1227,12 +1227,12 @@ function App() {
               <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('login'); setNotice('') }}>Вернуться ко входу</button>
             </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
               <p className="muted">Придумайте новый пароль для своего аккаунта.</p>
-              <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
-              <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+              <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
+              <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
               <button type="submit" className="primary full" disabled={busy}>{busy ? 'Сохраняем...' : 'Сохранить новый пароль'}</button>
             </form> : <form onSubmit={signIn}>
               <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
-              <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+              <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
               <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : 'Войти'}</button>
               <button type="button" className="outline full" disabled={busy} onClick={signUp}>{busy ? 'Подождите...' : 'Создать аккаунт'}</button>
               <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('forgot'); setNotice('') }}>Забыли пароль?</button>
@@ -1240,8 +1240,8 @@ function App() {
           </section>
           {user && <>
             <section className="panel">
-              <h3>Перевести юниты другому пользователю</h3>
-              <p className="muted">Укажите email получателя и количество свободных юнитов. Юниты, выставленные на маркетплейс, передать нельзя.</p>
+              <h3>Перевести карточки другому пользователю</h3>
+              <p className="muted">Укажите email получателя и количество свободных карточек. Карточки, выставленные на маркетплейс, передать нельзя.</p>
               <form onSubmit={transferCards}>
                 <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
                 <label>Количество юнитов<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
@@ -1276,7 +1276,7 @@ function App() {
             <section className="panel profile-cards">
               <div className="admin-head"><CreditCard /><h3>Мои юниты</h3></div>
               <p className="muted">Ваши юниты, зарегистрированные в реестре VORTEX UNIT.</p>
-              <div className="owned-card-count">{financial.cards.filter(card => card.status !== 'retired').length} <span>юнитов</span></div>
+              <div className="owned-card-count">{financial.cards.filter(card => card.status !== 'retired').length} <span>карточек</span></div>
               {financial.loading ? <p className="muted">Загрузка юнитов...</p> : financial.error ? <p className="muted">Юниты пока не удалось загрузить.</p> : financial.units.filter(UNIT => UNIT.status !== 'retired').length === 0
                 ? <div className="empty-cards"><CreditCard size={30} /><b>Пока нет юнитов</b><span>Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.</span></div>
                 : <div className="owned-units-grid">
@@ -1305,12 +1305,12 @@ function App() {
               </>}
           </div>
           {user && isAdmin && <div className="panel">
-            <h3>Выпустить юнит пользователю</h3>
-            <p className="muted">Укажите UUID пользователя из таблицы user_accounts и уникальный серийный номер. Выпуск создаёт запись в реестре юнитов.</p>
+            <h3>Выпустить карточку пользователю</h3>
+            <p className="muted">Укажите UUID пользователя из таблицы user_accounts и уникальный серийный номер. Выпуск создаёт запись в реестре карточек.</p>
             <form className="listing-form" onSubmit={issueCard}>
               <label>UUID пользователя<input value={issueOwnerId} onChange={e => setIssueOwnerId(e.target.value)} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required /></label>
               <label>Серийный номер<input value={issueSerial} onChange={e => setIssueSerial(e.target.value)} placeholder="VTX-000001" required /></label>
-              <button type="submit" className="primary" disabled={adminActionBusy}>{adminActionBusy ? 'Выполняется...' : 'Выпустить юнит'}</button>
+              <button type="submit" className="primary" disabled={adminActionBusy}>{adminActionBusy ? 'Выполняется...' : 'Выпустить карточку'}</button>
             </form>
           </div>}
           {user && isAdmin && <div className="panel analytics-panel">
@@ -1355,12 +1355,12 @@ function App() {
                             <td style={{ padding: '9px', borderBottom: '1px solid #252438', whiteSpace: 'nowrap' }}>
                               {table.name === 'user_accounts' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_user_block', { p_user_id: row.user_id, p_blocked: !row.is_blocked, p_reason: row.is_blocked ? null : 'Блокировка администратором' }, row.is_blocked ? 'Аккаунт разблокирован.' : 'Аккаунт заблокирован.')}>{row.is_blocked ? 'Разблокировать' : 'Заблокировать'}</button>}
                               {table.name === 'complaints' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_complaint', { p_complaint_id: row.id }, 'Жалоба отмечена как рассмотренная.')}>Рассмотреть</button>}
-                              {table.name === 'disputes' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_dispute', { p_dispute_id: row.id, p_resolution: 'Решено администратором VORTEXUNITS' }, 'Спор закрыт. Решение записано.')}>Закрыть спор</button>}
+                              {table.name === 'disputes' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_dispute', { p_dispute_id: row.id, p_resolution: 'Решено администратором VORTEX UNIT' }, 'Спор закрыт. Решение записано.')}>Закрыть спор</button>}
                               {table.name === 'buyback_requests' && !['approved','rejected'].includes(row.status) && <>
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: true, p_note: 'Заявка одобрена. Выплата не произведена.' }, 'Заявка на выкуп одобрена без проведения выплаты.')}>Одобрить</button>
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: false, p_note: 'Заявка отклонена администратором.' }, 'Заявка на выкуп отклонена.')}>Отклонить</button>
                               </>}
-                              {table.name === 'card_inventory' && row.status !== 'sold' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_card_retired', { p_card_id: row.id, p_retired: row.status !== 'retired' }, row.status === 'retired' ? 'Юнит восстановлена.' : 'Юнит выведена из обращения.')}>{row.status === 'retired' ? 'Восстановить' : 'Вывести из обращения'}</button>}
+                              {table.name === 'card_inventory' && row.status !== 'sold' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_card_retired', { p_card_id: row.id, p_retired: row.status !== 'retired' }, row.status === 'retired' ? 'Карточка восстановлена.' : 'Карточка выведена из обращения.')}>{row.status === 'retired' ? 'Восстановить' : 'Вывести из обращения'}</button>}
                               {table.name === 'market_listings' && row.status === 'active' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_cancel_listing', { p_listing_id: row.id }, 'Объявление снято с продажи.')}>Снять с продажи</button>}
                               {table.name === 'crypto_deposit_requests' && ['pending','detected','confirming'].includes(row.status) && <>
                                 <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_deposit', { p_request_id: row.id, p_status: 'confirming', p_note: 'Проверяется подтверждение транзакции в сети. Средства не зачислены.' }, 'Заявка переведена на проверку сети.')}>Проверить</button>
@@ -1416,9 +1416,9 @@ function App() {
       <main className="public-main">
         <section className="public-hero">
           <div className="public-copy">
-            <div className="pill"><Sparkles size={14} /> DIGITAL UNIT ECONOMY</div>
-            <h1>Твой юнит.<br /><span>Твои правила.</span></h1>
-            <p>VORTEX UNIT — цифровая платформа юнитов. Создай аккаунт, управляй своими юнитми и открывай возможности платформы.</p>
+            <div className="pill"><Sparkles size={14} /> NFT · DIGITAL UNITS</div>
+            <h1>Одна единица.<br /><span>Своя ценность.</span></h1>
+            <p>VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.</p>
             <div className="public-cta">
               <button type="button" className="primary" onClick={() => openPublicAuth('signup')}>Создать аккаунт</button>
               <button type="button" className="outline" onClick={() => openPublicAuth('login')}>У меня уже есть аккаунт</button>
@@ -1431,7 +1431,7 @@ function App() {
           </div>
         </section>
         <section className="public-features">
-          <article><CreditCard /><b>Цифровые юниты</b><span>Личный кабинет и управление юнитми после входа.</span></article>
+          <article><CreditCard /><b>Юниты и NFT</b><span>Создавай коллекции и управляй уникальными цифровыми юнитами.</span></article>
           <article><Store /><b>P2P-маркетплейс</b><span>Просмотр предложений и торговые функции для пользователей.</span></article>
           <article><Users /><b>Сообщество</b><span>Приглашайте друзей и развивайтесь вместе с VORTEX.</span></article>
         </section>
@@ -1443,12 +1443,12 @@ function App() {
             <button type="submit" className="primary full" disabled={busy}>{busy ? 'Отправляем...' : 'Отправить ссылку'}</button>
             <button type="button" className="outline full" onClick={() => setAuthMode('login')}>Вернуться ко входу</button>
           </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
-            <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
-            <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+            <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
+            <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
             <button type="submit" className="primary full" disabled={busy}>{busy ? 'Сохраняем...' : 'Сохранить новый пароль'}</button>
           </form> : <form onSubmit={authMode === 'signup' ? e => { e.preventDefault(); signUp() } : signIn}>
             <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
-            <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+            <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
             <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : authMode === 'signup' ? 'Зарегистрироваться' : 'Войти'}</button>
             {authMode === 'login' && <button type="button" className="outline full" disabled={busy} onClick={() => setAuthMode('forgot')}>Забыли пароль?</button>}
             <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode(authMode === 'signup' ? 'login' : 'signup'); setNotice('') }}>{authMode === 'signup' ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}</button>
