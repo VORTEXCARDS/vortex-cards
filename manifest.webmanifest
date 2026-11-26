@@ -1,0 +1,19 @@
+{
+  "name": "VORTEX CARDS",
+  "short_name": "VORTEX",
+  "description": "VORTEX CARDS",
+  "start_url": "/vortex-cards/",
+  "scope": "/vortex-cards/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "/vortex-cards/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
