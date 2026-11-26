@@ -1,7 +1,7 @@
 {
-  "name": "VORTEX UNIT",
-  "short_name": "UNIT",
-  "description": "VORTEX UNIT",
+  "name": "VORTEX CARDS",
+  "short_name": "VORTEX CARDS",
+  "description": "VORTEX CARDS",
   "start_url": "/vortex-cards/",
   "scope": "/vortex-cards/",
   "display": "standalone",
