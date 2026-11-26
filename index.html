@@ -7,6 +7,35 @@
 <link rel="manifest" href="/vortex-cards/manifest.webmanifest">
 <link rel="icon" href="/vortex-cards/icon.svg" type="image/svg+xml">
 <title>VORTEX CARDS</title>
+<script>
+(function () {
+  function showError(title, details) {
+    var box = document.getElementById('vortex-startup-error');
+    if (!box) {
+      box = document.createElement('pre');
+      box.id = 'vortex-startup-error';
+      box.style.cssText = 'position:fixed;inset:10px;z-index:999999;overflow:auto;white-space:pre-wrap;background:#170d20;color:#fff;border:2px solid #ff5b75;border-radius:12px;padding:16px;font:14px/1.5 monospace';
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.appendChild(box);
+      });
+      if (document.body) document.body.appendChild(box);
+    }
+    box.textContent = title + '\n\n' + String(details || 'Подробности ошибки отсутствуют');
+  }
+  window.addEventListener('error', function (event) {
+    showError('ОШИБКА ЗАПУСКА VORTEX CARDS', (event.message || 'Не удалось загрузить файл') +
+      (event.filename ? '\nФайл: ' + event.filename : '') +
+      (event.lineno ? '\nСтрока: ' + event.lineno : '') +
+      (event.error && event.error.stack ? '\n\n' + event.error.stack : ''));
+  }, true);
+  window.addEventListener('unhandledrejection', function (event) {
+    showError('ОШИБКА В ПРИЛОЖЕНИИ VORTEX CARDS', event.reason && (event.reason.stack || event.reason.message) || event.reason);
+  });
+  window.addEventListener('vite:preloadError', function (event) {
+    showError('НЕ УДАЛОСЬ ЗАГРУЗИТЬ ФАЙЛ ПРИЛОЖЕНИЯ', event.payload || event);
+  });
+})();
+</script>
 </head>
 <body>
 <div id="root"></div>
