@@ -361,6 +361,7 @@ function App() {
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null)
+      setAuthLoading(false)
       if (event === 'PASSWORD_RECOVERY') {
         setAuthMode('reset')
         setPassword('')
