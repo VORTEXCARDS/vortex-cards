@@ -157,6 +157,8 @@ function App() {
       if (error) throw error
       setListings((data || []).map(item => ({
         id: item.id,
+        sellerId: item.seller_id,
+        isMine: item.seller_id === user?.id,
         seller: String(item.seller_id || '').slice(0, 8),
         qty: Number(item.quantity || 0),
         price: Number(item.price || 0),
@@ -767,26 +769,43 @@ function App() {
     }
   }
 
-  function addListing(e) {
+  async function addListing(e) {
     e.preventDefault()
-    const q = Math.max(1, Number(qty))
-    const p = Math.max(1, Number(price))
-    if (q > cards) {
-      setNotice('Недостаточно карточек для объявления.')
+    if (!user) { setNotice('Чтобы выставить карточку, войдите в аккаунт.'); return }
+    const q = Number(qty)
+    const p = Number(price)
+    if (!Number.isInteger(q) || q < 1 || !Number.isFinite(p) || p <= 0) {
+      setNotice('Укажите корректное количество карточек и цену.')
       return
     }
-    setCards(v => v - q)
-    setListings(v => [{
-      id: Date.now(),
-      seller: user?.email?.split('@')[0] || 'You',
-      qty: q,
-      price: p
-    }, ...v])
-    setNotice('Демо-объявление добавлено. Реальная операция пока не подключена.')
+    setBusy(true)
+    try {
+      const { data, error } = await supabase.rpc('create_market_listing', {
+        p_quantity: q, p_price: p
+      })
+      if (error) throw error
+      setNotice(`Объявление создано. Выставлено карточек: ${data?.quantity ?? q}. Пока объявление активно, эти карточки нельзя перевести другому пользователю.`)
+      await Promise.all([loadMarketplace(), loadFinancialData()])
+    } catch (error) {
+      setNotice('Не удалось выставить карточки: ' + (error.message || 'ошибка операции'))
+    } finally {
+      setBusy(false)
+    }
   }
 
-  function buy(item) {
-    setNotice(`Демо: заявка на ${item.qty} карточки по ${item.price} ₴ создана. Реальный платёж пока не подключён.`)
+  async function cancelOwnListing(item) {
+    if (!user || !item?.id || !item.isMine || busy) return
+    setBusy(true)
+    try {
+      const { error } = await supabase.rpc('cancel_own_market_listing', { p_listing_id: item.id })
+      if (error) throw error
+      setNotice('Объявление снято с продажи. Карточки снова доступны для перевода.')
+      await Promise.all([loadMarketplace(), loadFinancialData()])
+    } catch (error) {
+      setNotice('Не удалось снять объявление: ' + (error.message || 'ошибка операции'))
+    } finally {
+      setBusy(false)
+    }
   }
 
   const nav = [
@@ -885,7 +904,7 @@ function App() {
           </div>
           <div className="panel">
             <h3>Передать карточки</h3>
-            <p className="muted">Передача изменяет владельца выбранных свободных карточек в реестре. Получатель должен иметь подтверждённый аккаунт.</p>
+            <p className="muted">Передать можно только свободные карточки. Карточки, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.</p>
             <form onSubmit={transferCards}>
               <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
               <label>Количество карточек<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
@@ -904,7 +923,7 @@ function App() {
             <form className="listing-form" onSubmit={addListing}>
               <label>Количество<input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} /></label>
               <label>Цена за карточку, ₴<input type="number" min="1" value={price} onChange={e => setPrice(e.target.value)} /></label>
-              <button className="primary" type="submit">Выставить</button>
+              <button className="primary" type="submit" disabled={busy}>{busy ? 'Выставляем...' : 'Выставить'}</button>
             </form>
           </div>
           <div className="section-title">КАРТОЧКИ В ПРОДАЖЕ</div>
@@ -917,6 +936,7 @@ function App() {
                 <div className="listing-info"><b>VORTEX CARD</b><span>Продавец: {item.seller} · {item.qty} шт.</span></div>
                 <div className="listing-price"><b>{item.price.toLocaleString('uk-UA')} ₴</b><span>за карточку</span></div>
                 <div className="listing-price"><b>{(item.price * item.qty).toLocaleString('uk-UA')} ₴</b><span>за всё количество</span></div>
+                {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>Снять с продажи</button>}
               </div>)}
           </div>
           <button type="button" className="outline" onClick={loadMarketplace} disabled={marketLoading}>Обновить предложения</button>
@@ -955,7 +975,7 @@ function App() {
           {user && <>
             <section className="panel">
               <h3>Перевести карточки другому пользователю</h3>
-              <p className="muted">Укажите email получателя и количество карточек. Передаются только свободные карточки, зарегистрированные за вашим аккаунтом.</p>
+              <p className="muted">Укажите email получателя и количество свободных карточек. Карточки, выставленные на маркетплейс, передать нельзя.</p>
               <form onSubmit={transferCards}>
                 <label>Email получателя<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
                 <label>Количество карточек<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
