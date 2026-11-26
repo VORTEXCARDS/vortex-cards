@@ -219,3 +219,19 @@ body{
 .support-success{color:#35dfc5}
 .public-support-wrap{max-width:1000px;margin:30px auto;padding:0 24px}
 @media(max-width:600px){.support-center{padding:20px 16px;border-radius:15px}.support-heading h2{font-size:21px}.support-mark{width:50px;height:50px}.support-direct{align-items:flex-start;flex-direction:column;gap:7px}.public-support-wrap{padding:0 15px}}
+
+
+.account-danger-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px}
+.delete-account-btn{background:linear-gradient(135deg,#7d2438,#a52e45);border:1px solid #d45a70;border-radius:9px;padding:10px 14px;color:#fff;font-weight:700;cursor:pointer}
+.delete-account-btn:disabled{opacity:.45;cursor:not-allowed}
+.delete-dialog-backdrop{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:18px;background:#05040bd9;backdrop-filter:blur(7px)}
+.delete-dialog{width:min(100%,460px);max-height:90vh;overflow:auto;padding:22px;border:1px solid #8e3b52;border-radius:18px;background:linear-gradient(145deg,#211321,#11121d 70%);box-shadow:0 24px 80px #000b}
+.delete-dialog h3{margin:0 0 12px;color:#fff;font-size:20px}
+.delete-dialog p{font-size:13px;line-height:1.6;color:#d1c9d8}
+.delete-dialog .delete-dialog-warning{padding:10px 12px;border-left:3px solid #e05b70;background:#5b1e302e;color:#ffd5dc}
+.delete-dialog form{display:grid;gap:14px;margin-top:18px}
+.delete-dialog label{display:grid;gap:7px;font-size:12px;color:#e8dfee}
+.delete-dialog input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #76526a;border-radius:9px;background:#0b0b14;color:#fff;font:inherit}
+.delete-dialog-actions{display:flex;justify-content:space-between;gap:10px}
+.delete-dialog-actions button{flex:1}
+@media(max-width:480px){.account-danger-actions{gap:8px}.account-danger-actions button{flex:1;padding:10px 8px;font-size:12px}.delete-dialog{padding:18px}}
