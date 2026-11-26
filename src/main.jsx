@@ -510,7 +510,7 @@ function App() {
   },
   "en": {
     "Обзор": "Overview",
-    "Карточки": "Units",
+    "Юниты": "Units",
     "Маркетплейс": "Marketplace",
     "Рефералы": "Referrals",
     "Профиль": "Profile",
@@ -638,7 +638,7 @@ function App() {
   },
   "de": {
     "Обзор": "Übersicht",
-    "Карточки": "Units",
+    "Юниты": "Units",
     "Маркетплейс": "Marktplatz",
     "Рефералы": "Empfehlungen",
     "Профиль": "Profil",
@@ -766,7 +766,7 @@ function App() {
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
-    "Карточки": "Units",
+    "Юниты": "Units",
     "Маркетплейс": "Marché",
     "Рефералы": "Parrainages",
     "Профиль": "Profil",
@@ -1176,7 +1176,7 @@ function App() {
             {marketLoading ? <p className="muted">Загружаем предложения...</p>
               : marketError ? <p className="muted">Не удалось загрузить предложения: {marketError}</p>
               : listings.length === 0 ? <div className="panel"><h3>Пока нет юнитов в продаже</h3><p className="muted">Когда пользователи разместят реальные юниты, предложения появятся здесь.</p></div>
-              : listings.map(item => <div className="listing market-UNIT" key={item.id}>
+              : listings.map(item => <div className="listing market-card" key={item.id}>
                 <div className="listing-avatar"><CreditCard /></div>
                 <div className="listing-info"><b>VORTEX UNIT</b><span>Продавец: {item.seller} · {item.qty} шт.</span></div>
                 <div className="listing-price"><b>{item.price.toLocaleString('uk-UA')} ₴</b><span>за юнит</span></div>
@@ -1277,13 +1277,13 @@ function App() {
               <div className="admin-head"><CreditCard /><h3>Мои юниты</h3></div>
               <p className="muted">Ваши юниты, зарегистрированные в реестре VORTEX UNIT.</p>
               <div className="owned-card-count">{financial.cards.filter(card => card.status !== 'retired').length} <span>карточек</span></div>
-              {financial.loading ? <p className="muted">Загрузка юнитов...</p> : financial.error ? <p className="muted">Юниты пока не удалось загрузить.</p> : financial.units.filter(UNIT => UNIT.status !== 'retired').length === 0
+              {financial.loading ? <p className="muted">Загрузка юнитов...</p> : financial.error ? <p className="muted">Юниты пока не удалось загрузить.</p> : financial.cards.filter(card => card.status !== 'retired').length === 0
                 ? <div className="empty-cards"><CreditCard size={30} /><b>Пока нет юнитов</b><span>Когда юниты будут выпущены и закреплены за вашим аккаунтом, они появятся здесь.</span></div>
-                : <div className="owned-units-grid">
+                : <div className="owned-cards-grid">
                   {financial.cards.filter(card => card.status !== 'retired').map((card, index) => <div className="owned-card" key={card.id}>
                     <div className="owned-card-top"><span>VORTEX</span><span>№ {String(index + 1).padStart(3, '0')}</span></div>
                     <div className="owned-card-symbol">V</div>
-                    <div className="owned-card-bottom"><b>{card.serial_number}</b><span>{card.status === 'listed' ? 'На продаже' : UNIT.status === 'reserved' ? 'Зарезервирована' : UNIT.status === 'sold' ? 'Продана' : 'Владелец'}</span></div>
+                    <div className="owned-card-bottom"><b>{card.serial_number}</b><span>{card.status === 'listed' ? 'На продаже' : card.status === 'reserved' ? 'Зарезервирована' : card.status === 'sold' ? 'Продана' : 'Владелец'}</span></div>
                   </div>)}
                 </div>}
               <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>Обновить юниты</button>
