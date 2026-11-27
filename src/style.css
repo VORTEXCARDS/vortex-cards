@@ -179,7 +179,8 @@ body{
 .public-features article svg{color:var(--cyan);width:25px;height:25px}
 .public-features article b{font-size:14px}
 .public-features article span{font-size:12px;line-height:1.7;color:var(--muted)}
-.public-auth-panel{width:min(100%,480px);margin:22px auto 0}
+.public-auth-backdrop{position:fixed;inset:0;z-index:12000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(3,5,14,.82);backdrop-filter:blur(9px);overflow-y:auto}
+.public-auth-panel{width:min(100%,480px);max-height:calc(100dvh - 36px);overflow-y:auto;margin:auto;padding:24px;border:1px solid #66529a;border-radius:18px;background:radial-gradient(circle at 90% 0%,#18394b 0,transparent 38%),linear-gradient(145deg,#171327,#0d1421);box-shadow:0 24px 80px #000c}
 .public-auth-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
 .public-auth-heading h2{font-size:20px;margin:0}
 .public-auth-panel form{display:grid;gap:10px}
@@ -188,6 +189,7 @@ body{
 .public-footer{width:min(1120px,calc(100% - 32px));margin:0 auto;border-top:1px solid var(--line);padding:20px 0 26px;font-size:10px;color:#6e6b80;display:flex;justify-content:space-between}
 .public-loading{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#090910;color:var(--muted)}
 .public-loading .brand-mark{color:#f4f2ff}
+@media(max-width:520px){.public-auth-backdrop{padding:10px;align-items:center}.public-auth-panel{padding:20px 16px;max-height:calc(100dvh - 20px)}}
 @media(max-width:700px){.public-topbar{align-items:flex-start;flex-direction:column}.public-top-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.public-top-actions .language-picker{grid-column:1/-1;width:max-content}.public-top-actions .primary,.public-top-actions .outline{justify-content:center;padding:10px 8px;font-size:11px}.public-main{padding-top:24px}.public-hero{min-height:0;display:block;padding:24px}.public-card{margin:30px auto 5px}.public-features{grid-template-columns:1fr}.public-copy h1{font-size:39px}.public-copy p{font-size:13px}.public-footer{margin-top:10px}}
 
 /* Password visibility toggle: simple eye inside the input */
