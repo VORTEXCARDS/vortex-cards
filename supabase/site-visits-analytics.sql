@@ -29,3 +29,12 @@ create policy "Admins can read site visit analytics"
   on public.site_visits for select
   to authenticated
   using (public.is_admin());
+
+
+-- Explicit API privileges; row-level security still limits what each role can do.
+grant usage on schema public to anon, authenticated;
+grant insert on table public.site_visits to anon, authenticated;
+grant select on table public.site_visits to authenticated;
+
+-- Refresh PostgREST's schema cache so the table becomes visible to the app.
+notify pgrst, 'reload schema';
