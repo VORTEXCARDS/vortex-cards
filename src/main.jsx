@@ -558,7 +558,6 @@ function App() {
     "Передать": "Передати",
     "P2P маркетплейс": "P2P маркетплейс",
     "Пользователи устанавливают собственные цены.": "Користувачі встановлюють власні ціни.",
-    "КОМИССИЯ 5%": "КОМІСІЯ 5%",
     "Создать объявление": "Створити оголошення",
     "Количество": "Кількість",
     "Цена за юнит, ₴": "Ціна за юнит, ₴",
@@ -717,7 +716,6 @@ function App() {
     "Передать": "Transfer",
     "P2P маркетплейс": "P2P marketplace",
     "Пользователи устанавливают собственные цены.": "Users set their own prices.",
-    "КОМИССИЯ 5%": "5% FEE",
     "Создать объявление": "Create listing",
     "Количество": "Quantity",
     "Цена за юнит, ₴": "Price per UNIT, ₴",
@@ -883,7 +881,6 @@ function App() {
     "Передать": "Übertragen",
     "P2P маркетплейс": "P2P-Marktplatz",
     "Пользователи устанавливают собственные цены.": "Nutzer legen ihre eigenen Preise fest.",
-    "КОМИССИЯ 5%": "5 % GEBÜHR",
     "Создать объявление": "Anzeige erstellen",
     "Количество": "Menge",
     "Цена за юнит, ₴": "Preis pro UNIT, ₴",
@@ -1044,7 +1041,6 @@ function App() {
     "Передать": "Transférer",
     "P2P маркетплейс": "Marketplace P2P",
     "Пользователи устанавливают собственные цены.": "Les utilisateurs fixent leurs propres prix.",
-    "КОМИССИЯ 5%": "FRAIS DE 5 %",
     "Создать объявление": "Créer une annonce",
     "Количество": "Quantité",
     "Цена за юнит, ₴": "Prix par UNIT, ₴",
@@ -1387,6 +1383,13 @@ function App() {
     ['support', t('Поддержка'), Mail]
   ]
   const title = nav.find(x => x[0] === tab)?.[1] || (tab === 'admin' ? 'Администратор' : 'Обзор')
+  const listingUnitPrice = Math.max(0, Number(price) || 0)
+  const listingQuantity = Math.max(0, Number(qty) || 0)
+  const listingUnitNet = Math.round(listingUnitPrice * 0.95 * 100) / 100
+  const listingGross = Math.round(listingUnitPrice * listingQuantity * 100) / 100
+  const listingFee = Math.round(listingGross * 0.05 * 100) / 100
+  const listingNet = Math.round((listingGross - listingFee) * 100) / 100
+  const money = value => value.toLocaleString('uk-UA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   const page = <div className="app-shell">
     <header className="topbar">
@@ -1488,13 +1491,18 @@ function App() {
         {tab === 'market' && <>
           <div className="market-head">
             <div><h2>P2P маркетплейс</h2><p className="muted">Пользователи устанавливают собственные цены.</p></div>
-            <span className="fee">КОМИССИЯ 5%</span>
           </div>
           <div className="panel">
             <h3><Plus size={18} /> Создать объявление</h3>
             <form className="listing-form" onSubmit={addListing}>
               <label>Количество<input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} /></label>
-              <label>Цена за юнит, ₴<input type="number" min="1" value={price} onChange={e => setPrice(e.target.value)} /></label>
+              <label>Цена за юнит, ₴<input type="number" min="1" step="0.01" value={price} onChange={e => setPrice(e.target.value)} /></label>
+              <div className="seller-net-preview">
+                <div><span>Вы получите за 1 юнит</span><b>{money(listingUnitNet)} ₴</b></div>
+                <div><span>Общая сумма продажи</span><b>{money(listingGross)} ₴</b></div>
+                <div><span>Удержание при продаже</span><b>{money(listingFee)} ₴</b></div>
+                <div className="seller-net-total"><span>Всего к получению</span><b>{money(listingNet)} ₴</b></div>
+              </div>
               <button className="primary" type="submit" disabled={busy}>{busy ? 'Выставляем...' : 'Выставить'}</button>
             </form>
           </div>
