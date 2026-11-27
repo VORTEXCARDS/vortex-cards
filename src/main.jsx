@@ -61,6 +61,7 @@ function App() {
   const [adminData, setAdminData] = useState([])
   const [adminDataLoading, setAdminDataLoading] = useState(false)
   const [financial, setFinancial] = useState({ ledger: [], cards: [], deposits: [], withdrawals: [], exchanges: [], error: '', loading: false })
+  const [historyTab, setHistoryTab] = useState('deposits')
   const [transferEmail, setTransferEmail] = useState('')
   const [transferQuantity, setTransferQuantity] = useState('1')
   const [adminActionBusy, setAdminActionBusy] = useState(false)
@@ -755,6 +756,29 @@ function App() {
     "Загрузить аватар": "Завантажити аватар",
     "Удалить": "Видалити",
     "Аватар профиля": "Аватар профілю",
+    "История операций": "Історія операцій",
+    "Пополнения": "Поповнення",
+    "Выводы": "Виведення",
+    "Обмен VTX": "Обмін VTX",
+    "Пополнение": "Поповнення",
+    "Вывод": "Виведення",
+    "Пополнений пока нет.": "Поповнень поки немає.",
+    "Выводов пока нет.": "Виведень поки немає.",
+    "Обменов пока нет.": "Обмінів поки немає.",
+    "Статус": "Статус",
+    "Комиссия": "Комісія",
+    "pending": "Очікує",
+    "detected": "Виявлено",
+    "confirming": "Підтверджується",
+    "confirmed": "Підтверджено",
+    "rejected": "Відхилено",
+    "expired": "Термін дії минув",
+    "under_review": "На перевірці",
+    "approved": "Схвалено",
+    "processing": "Обробляється",
+    "completed": "Завершено",
+    "cancelled": "Скасовано",
+    "quoted": "Розраховано",
   },
   "en": {
     "Обзор": "Overview",
@@ -972,6 +996,29 @@ function App() {
     "Загрузить аватар": "Upload avatar",
     "Удалить": "Remove",
     "Аватар профиля": "Profile avatar",
+    "История операций": "Transaction history",
+    "Пополнения": "Deposits",
+    "Выводы": "Withdrawals",
+    "Обмен VTX": "VTX exchange",
+    "Пополнение": "Deposit",
+    "Вывод": "Withdrawal",
+    "Пополнений пока нет.": "No deposits yet.",
+    "Выводов пока нет.": "No withdrawals yet.",
+    "Обменов пока нет.": "No exchanges yet.",
+    "Статус": "Status",
+    "Комиссия": "Fee",
+    "pending": "Pending",
+    "detected": "Detected",
+    "confirming": "Confirming",
+    "confirmed": "Confirmed",
+    "rejected": "Rejected",
+    "expired": "Expired",
+    "under_review": "Under review",
+    "approved": "Approved",
+    "processing": "Processing",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "quoted": "Quoted",
   },
   "de": {
     "Обзор": "Übersicht",
@@ -1187,6 +1234,29 @@ function App() {
     "Загрузить аватар": "Avatar hochladen",
     "Удалить": "Entfernen",
     "Аватар профиля": "Profilavatar",
+    "История операций": "Transaktionsverlauf",
+    "Пополнения": "Einzahlungen",
+    "Выводы": "Auszahlungen",
+    "Обмен VTX": "VTX-Tausch",
+    "Пополнение": "Einzahlung",
+    "Вывод": "Auszahlung",
+    "Пополнений пока нет.": "Noch keine Einzahlungen.",
+    "Выводов пока нет.": "Noch keine Auszahlungen.",
+    "Обменов пока нет.": "Noch keine Tauschvorgänge.",
+    "Статус": "Status",
+    "Комиссия": "Gebühr",
+    "pending": "Ausstehend",
+    "detected": "Erkannt",
+    "confirming": "Wird bestätigt",
+    "confirmed": "Bestätigt",
+    "rejected": "Abgelehnt",
+    "expired": "Abgelaufen",
+    "under_review": "In Prüfung",
+    "approved": "Genehmigt",
+    "processing": "In Bearbeitung",
+    "completed": "Abgeschlossen",
+    "cancelled": "Storniert",
+    "quoted": "Kurs berechnet",
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
@@ -1386,6 +1456,29 @@ function App() {
     "Загрузить аватар": "Téléverser un avatar",
     "Удалить": "Supprimer",
     "Аватар профиля": "Avatar du profil",
+    "История операций": "Historique des opérations",
+    "Пополнения": "Dépôts",
+    "Выводы": "Retraits",
+    "Обмен VTX": "Échange VTX",
+    "Пополнение": "Dépôt",
+    "Вывод": "Retrait",
+    "Пополнений пока нет.": "Aucun dépôt pour le moment.",
+    "Выводов пока нет.": "Aucun retrait pour le moment.",
+    "Обменов пока нет.": "Aucun échange pour le moment.",
+    "Статус": "Statut",
+    "Комиссия": "Frais",
+    "pending": "En attente",
+    "detected": "Détecté",
+    "confirming": "Confirmation en cours",
+    "confirmed": "Confirmé",
+    "rejected": "Refusé",
+    "expired": "Expiré",
+    "under_review": "En vérification",
+    "approved": "Approuvé",
+    "processing": "En cours",
+    "completed": "Terminé",
+    "cancelled": "Annulé",
+    "quoted": "Cours calculé",
   },
 }
 
@@ -1921,17 +2014,32 @@ function App() {
                     return <Stat key={asset} label={asset} value={total.toFixed(6)} icon={<Wallet />} />
                   })}
                 </div>
-                <h3>{t('Последние финансовые операции')}</h3>
-                {financial.ledger.length === 0 ? <p className="muted">{t('Финансовых операций пока нет.')}</p> : financial.ledger.slice(0,10).map(entry => <div className="listing" key={entry.id}>
-                  <div className="listing-info"><b>{entry.entry_type} · {entry.asset_code}</b><span>{entry.description || new Date(entry.created_at).toLocaleString()}</span></div>
-                  <div className="listing-price"><b>{Number(entry.amount).toFixed(6)}</b></div>
-                </div>)}
-                <h3>{t('Заявки на пополнение')}</h3>
-                {financial.deposits.length === 0 ? <p className="muted">{t('Заявок нет.')}</p> : financial.deposits.map(item => <p className="muted" key={item.id}>{item.asset_code} · {item.network} · {item.amount_expected ?? 'Сумма не указана'} · {item.status}</p>)}
-                <h3>{t('Заявки на вывод')}</h3>
-                {financial.withdrawals.length === 0 ? <p className="muted">{t('Заявок нет.')}</p> : financial.withdrawals.map(item => <p className="muted" key={item.id}>{item.asset_code} · {item.amount} · {item.status}</p>)}
-                <h3>{t('Заявки на обмен в VTX')}</h3>
-                {financial.exchanges.length === 0 ? <p className="muted">{t('Заявок нет.')}</p> : financial.exchanges.map(item => <p className="muted" key={item.id}>{item.amount_in} {item.from_asset} → VTX · {item.status}</p>)}
+                <div className="financial-history">
+                  <h3>{t('История операций')}</h3>
+                  <div className="financial-history-tabs" role="tablist" aria-label={t('История операций')}>
+                    <button type="button" role="tab" aria-selected={historyTab === 'deposits'} className={historyTab === 'deposits' ? 'active' : ''} onClick={() => setHistoryTab('deposits')}>{t('Пополнения')} ({financial.deposits.length})</button>
+                    <button type="button" role="tab" aria-selected={historyTab === 'withdrawals'} className={historyTab === 'withdrawals' ? 'active' : ''} onClick={() => setHistoryTab('withdrawals')}>{t('Выводы')} ({financial.withdrawals.length})</button>
+                    <button type="button" role="tab" aria-selected={historyTab === 'exchanges'} className={historyTab === 'exchanges' ? 'active' : ''} onClick={() => setHistoryTab('exchanges')}>{t('Обмен VTX')} ({financial.exchanges.length})</button>
+                  </div>
+                  {historyTab === 'deposits' && (financial.deposits.length === 0
+                    ? <p className="muted">{t('Пополнений пока нет.')}</p>
+                    : financial.deposits.map(item => <div className="financial-history-item" key={item.id}>
+                      <div><b>{item.asset_code} · {t('Пополнение')}</b><span>{item.network} · {new Date(item.created_at).toLocaleString()}</span></div>
+                      <div className="financial-history-amount"><b>{Number(item.amount_received ?? item.amount_expected ?? 0).toFixed(6)} {item.asset_code}</b><span className={'history-status status-' + item.status}>{t('Статус')}: {t(item.status)}</span></div>
+                    </div>))}
+                  {historyTab === 'withdrawals' && (financial.withdrawals.length === 0
+                    ? <p className="muted">{t('Выводов пока нет.')}</p>
+                    : financial.withdrawals.map(item => <div className="financial-history-item" key={item.id}>
+                      <div><b>{item.asset_code} · {t('Вывод')}</b><span>{item.network} · {new Date(item.created_at).toLocaleString()}</span></div>
+                      <div className="financial-history-amount"><b>{Number(item.amount).toFixed(6)} {item.asset_code}</b><span>{t('Комиссия')}: {Number(item.fee || 0).toFixed(6)} {item.asset_code}</span><span className={'history-status status-' + item.status}>{t('Статус')}: {t(item.status)}</span></div>
+                    </div>))}
+                  {historyTab === 'exchanges' && (financial.exchanges.length === 0
+                    ? <p className="muted">{t('Обменов пока нет.')}</p>
+                    : financial.exchanges.map(item => <div className="financial-history-item" key={item.id}>
+                      <div><b>{t('Обмен VTX')}</b><span>{new Date(item.created_at).toLocaleString()}</span></div>
+                      <div className="financial-history-amount"><b>{Number(item.amount_in).toFixed(6)} {item.from_asset} → {item.amount_out == null ? '—' : Number(item.amount_out).toFixed(6) + ' VTX'}</b><span className={'history-status status-' + item.status}>{t('Статус')}: {t(item.status)}</span></div>
+                    </div>))}
+                </div>
               </>}
               <button type="button" className="outline" onClick={loadFinancialData} disabled={financial.loading}>{t('Обновить финансовые данные')}</button>
             </section>
