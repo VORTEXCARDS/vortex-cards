@@ -1993,7 +1993,7 @@ function App() {
             </div>
             <div className="market-detail-grid">
               <div><span>{t('Продавец')}</span><b>{selectedListing.seller}</b></div>
-              <div><span>{t('Количество юнитов')}</span><b>{selectedListing.qty}</b></div>
+              <div><span>Номер карточки</span><b>{selectedListing.serialNumbers?.[0] || 'Номер уточняется'}</b></div>
               <div><span>{t('Цена за один юнит')}</span><b>{selectedListing.price.toLocaleString('en-US', { maximumFractionDigits: 8 })} {selectedListing.assetCode}</b></div>
               <div><span>{t('Стоимость всего предложения')}</span><b>{(selectedListing.price * selectedListing.qty).toLocaleString('en-US', { maximumFractionDigits: 8 })} {selectedListing.assetCode}</b></div>
               <div><span>{t('Дата размещения')}</span><b>{new Date(selectedListing.createdAt).toLocaleString(language === 'ru' ? 'ru-RU' : language === 'uk' ? 'uk-UA' : language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : 'en-US')}</b></div>
@@ -2030,7 +2030,7 @@ function App() {
                 : listings.length === 0 ? <div className="panel"><h3>Пока нет юнитов в продаже</h3><p className="muted">Когда пользователи разместят реальные юниты, предложения появятся здесь.</p></div>
                 : listings.map(item => <div className="listing market-card market-card-compact" key={item.id}>
                   <div className="listing-avatar">{item.avatarUrl ? <img src={item.avatarUrl} alt="" /> : <UserRound />}</div>
-                  <div className="listing-info"><b>{item.seller}</b><span>VORTEX UNIT · {item.qty} шт.</span></div>
+                  <div className="listing-info"><b>{item.seller}</b><span>VORTEX UNIT · № {item.serialNumbers?.[0] || 'Номер уточняется'}</span></div>
                   <div className="listing-price"><b>{item.price.toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за одну карточку</span></div>
                   <button type="button" className="outline market-open-detail" onClick={() => setSelectedListing(item)}>{t('Подробнее')}</button>
                   {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>{t('Удалить объявление')}</button>}
