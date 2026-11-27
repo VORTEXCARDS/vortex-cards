@@ -67,6 +67,8 @@ function App() {
   const [adminUsers, setAdminUsers] = useState([])
   const [adminUsersLoading, setAdminUsersLoading] = useState(false)
   const [adminUserSearch, setAdminUserSearch] = useState('')
+  const [adminUserOffset, setAdminUserOffset] = useState(0)
+  const [adminUsersHasMore, setAdminUsersHasMore] = useState(false)
   const [financial, setFinancial] = useState({ ledger: [], cards: [], deposits: [], withdrawals: [], exchanges: [], error: '', loading: false })
   const [historyTab, setHistoryTab] = useState('deposits')
   const [transferEmail, setTransferEmail] = useState('')
@@ -179,19 +181,22 @@ function App() {
     } finally { setAdminActionBusy(false) }
   }
 
-  async function loadAdminUsers(search = adminUserSearch) {
+  async function loadAdminUsers(search = adminUserSearch, offset = 0) {
     if (!isAdmin) return
     setAdminUsersLoading(true)
     try {
       const { data, error } = await supabase.rpc('admin_list_users', {
         p_search: search.trim() || null,
         p_limit: 200,
-        p_offset: 0
+        p_offset: offset
       })
       if (error) throw error
       setAdminUsers(data || [])
+      setAdminUserOffset(offset)
+      setAdminUsersHasMore((data || []).length === 200)
     } catch (error) {
       setAdminUsers([])
+      setAdminUsersHasMore(false)
       setNotice('Не удалось загрузить список пользователей: ' + (error.message || 'ошибка сервера'))
     } finally {
       setAdminUsersLoading(false)
@@ -2382,7 +2387,7 @@ function App() {
               </label>
               <div className="admin-user-toolbar">
                 <button type="submit" className="primary" disabled={adminUsersLoading}>{adminUsersLoading ? 'Поиск...' : 'Найти пользователей'}</button>
-                <button type="button" className="outline" onClick={() => { setAdminUserSearch(''); loadAdminUsers(''); }} disabled={adminUsersLoading}>Показать всех</button>
+                <button type="button" className="outline" onClick={() => { setAdminUserSearch(''); loadAdminUsers('', 0); }} disabled={adminUsersLoading}>Показать всех</button>
               </div>
             </form>
             {adminUsersLoading ? <p className="muted">Загружаем пользователей...</p>
@@ -2392,15 +2397,15 @@ function App() {
                 <div style={{ overflowX: 'auto', width: '100%' }}>
                   <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '760px', fontSize: '12px', textAlign: 'left' }}>
                     <thead><tr>
-                      {['Email','Имя','Дата регистрации','Почта','Последний вход','ID пользователя','Статус','Действие'].map(label => <th key={label} style={{ padding: '9px', borderBottom: '1px solid #51416f', color: '#27e5d2', whiteSpace: 'nowrap' }}>{label}</th>)}
+                      {['Email','Имя','Реферальный код','Дата регистрации','Почта','Последний вход','ID пользователя','Статус','Действие'].map(label => <th key={label} style={{ padding: '9px', borderBottom: '1px solid #51416f', color: '#27e5d2', whiteSpace: 'nowrap' }}>{label}</th>)}
                     </tr></thead>
                     <tbody>
                       {adminUsers.map(row => {
-                        const account = adminData.find(table => table.name === 'user_accounts')?.rows.find(item => item.user_id === row.user_id)
-                        const blocked = account?.is_blocked === true
+                        const blocked = row.is_blocked === true
                         return <tr key={row.user_id}>
                           <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>{row.email || '—'}</td>
                           <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>{row.username || '—'}</td>
+                          <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>{row.referral_code || '—'}</td>
                           <td style={{ padding: '9px', borderBottom: '1px solid #252438', whiteSpace: 'nowrap' }}>{row.created_at ? new Date(row.created_at).toLocaleString('ru-RU') : '—'}</td>
                           <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>{row.email_confirmed_at ? 'Подтверждена' : 'Ожидает подтверждения'}</td>
                           <td style={{ padding: '9px', borderBottom: '1px solid #252438', whiteSpace: 'nowrap' }}>{row.last_sign_in_at ? new Date(row.last_sign_in_at).toLocaleString('ru-RU') : 'Ещё не входил'}</td>
@@ -2413,6 +2418,11 @@ function App() {
                       })}
                     </tbody>
                   </table>
+                </div>
+                <div className="admin-user-toolbar" style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', marginTop: '14px' }}>
+                  <button type="button" className="outline" disabled={adminUsersLoading || adminUserOffset === 0} onClick={() => loadAdminUsers(adminUserSearch, Math.max(0, adminUserOffset - 200))}>Назад</button>
+                  <span className="muted">Записи {adminUserOffset + 1}–{adminUserOffset + adminUsers.length}</span>
+                  <button type="button" className="outline" disabled={adminUsersLoading || !adminUsersHasMore} onClick={() => loadAdminUsers(adminUserSearch, adminUserOffset + 200)}>Далее</button>
                 </div>
               </>}
           </div>}
