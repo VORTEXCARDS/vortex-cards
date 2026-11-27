@@ -591,3 +591,22 @@ body{
  .market-detail-grid{grid-template-columns:1fr}
  .market-detail-title h2{font-size:17px}
 }
+
+
+/* Clearer wanted-card request instructions and pricing */
+.wanted-how{padding:17px;border:1px solid #34324f;border-radius:14px;background:linear-gradient(135deg,#17152a,#101c29)}
+.wanted-how h3{margin:0 0 12px;font-size:15px;color:#f3f0ff}
+.wanted-how-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.wanted-how-grid article{padding:12px;border:1px solid #302d49;border-radius:11px;background:#0e1422}
+.wanted-how-grid b{display:block;color:#58dfe2;font-size:12px;line-height:1.4}
+.wanted-how-grid p{margin:7px 0 0;color:#aaa8bc;font-size:11px;line-height:1.6}
+.wanted-form-hint{grid-column:1/-1;margin:0;color:#61d8d0;font-size:11px;line-height:1.6}
+.wanted-total{margin:0 0 10px;color:#aaa8bc;font-size:12px}
+.wanted-total b{color:#5fe4e1;font-size:14px}
+.wanted-card h3 small{font-size:10px;color:#aaa8bc;font-weight:500}
+.wanted-request-author{display:flex;align-items:center;gap:11px;margin-top:13px;padding:11px;border:1px solid #302d49;border-radius:11px;background:#171b2b}
+.wanted-request-author>span:last-child{display:flex;flex-direction:column;gap:3px}
+.wanted-request-author small{font-size:10px;color:#aaa8bc}
+.wanted-request-author b{font-size:13px;color:#f3f0ff}
+.wanted-request-avatar{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#8738ed,#087f9e);font-weight:800;color:#fff}
+@media(max-width:650px){.wanted-how-grid{grid-template-columns:1fr}.wanted-how{padding:14px}.wanted-form-hint{grid-column:auto}}
