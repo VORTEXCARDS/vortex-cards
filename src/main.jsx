@@ -286,6 +286,68 @@ function App() {
     }
   }
 
+  // Global Wanted chat notifications: keep active on every app tab, not only WantedSection.
+  useEffect(() => {
+    if (!user?.id) return
+    let active = true
+    const channel = supabase.channel('vortex-global-wanted-notices-' + user.id)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'card_request_messages' }, async payload => {
+        const message = payload.new
+        if (!message?.response_id || message.sender_id === user.id) return
+        try {
+          const { data: response, error: responseError } = await supabase
+            .from('card_request_responses')
+            .select('id, request_id, responder_id')
+            .eq('id', message.response_id)
+            .maybeSingle()
+          if (responseError) throw responseError
+          if (!response) return
+          const { data: request, error: requestError } = await supabase
+            .from('card_requests')
+            .select('id, card_number, requester_id')
+            .eq('id', response.request_id)
+            .maybeSingle()
+          if (requestError) throw requestError
+          if (!request) return
+          const recipientId = message.sender_id === response.responder_id
+            ? request.requester_id
+            : response.responder_id
+          if (!active || recipientId !== user.id) return
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('username')
+            .eq('user_id', message.sender_id)
+            .maybeSingle()
+          if (!active) return
+          const labels = {
+            ru: { title: 'Новое сообщение', card: 'Карточка №' },
+            uk: { title: 'Нове повідомлення', card: 'Картка №' },
+            en: { title: 'New message', card: 'Card #' },
+            de: { title: 'Neue Nachricht', card: 'Karte Nr.' },
+            fr: { title: 'Nouveau message', card: 'Carte n°' }
+          }
+          const words = labels[language] || labels.ru
+          const sender = profile?.username || (language === 'en' ? 'User' : language === 'de' ? 'Benutzer' : language === 'fr' ? 'Utilisateur' : language === 'uk' ? 'Користувач' : 'Пользователь')
+          const body = words.card + request.card_number + ' · ' + sender
+          setNotice(words.title + ': ' + body)
+          if ('Notification' in window && Notification.permission === 'granted' && document.visibilityState !== 'visible') {
+            new Notification('VORTEX UNIT · ' + words.title, { body, tag: 'vortex-wanted-' + message.id })
+          }
+        } catch (error) {
+          console.error('Ошибка уведомления о сообщении VORTEX:', error)
+        }
+      })
+      .subscribe((status, error) => {
+        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          console.error('Не удалось подключить уведомления VORTEX Realtime:', status, error)
+        }
+      })
+    return () => {
+      active = false
+      supabase.removeChannel(channel)
+    }
+  }, [user?.id, language])
+
   useEffect(() => {
     checkAdmin(user)
   }, [user])
