@@ -2412,7 +2412,7 @@ function App() {
                           <td style={{ padding: '9px', borderBottom: '1px solid #252438', maxWidth: '190px', overflowWrap: 'anywhere' }}>{row.user_id}</td>
                           <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>{blocked ? 'Заблокирован' : 'Активен'}</td>
                           <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>
-                            {row.user_id !== user.id && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_user_block', { p_user_id: row.user_id, p_blocked: !blocked, p_reason: blocked ? null : 'Блокировка администратором' }, blocked ? 'Аккаунт разблокирован.' : 'Аккаунт заблокирован.')}>{blocked ? 'Разблокировать' : 'Заблокировать'}</button>}
+                            <button type="button" className="outline admin-row-action" onClick={() => { setIssueOwnerId(row.user_id); setNotice('Пользователь выбран для выдачи юнита.'); }}>Выбрать</button>{row.user_id !== user.id && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_user_block', { p_user_id: row.user_id, p_blocked: !blocked, p_reason: blocked ? null : 'Блокировка администратором' }, blocked ? 'Аккаунт разблокирован.' : 'Аккаунт заблокирован.')}>{blocked ? 'Разблокировать' : 'Заблокировать'}</button>}
                           </td>
                         </tr>
                       })}
@@ -2428,7 +2428,7 @@ function App() {
           </div>}
           {user && isAdmin && <div className="panel">
             <h3>Выпустить юнит пользователю</h3>
-            <p className="muted">Укажите UUID пользователя из таблицы user_accounts и уникальный серийный номер. Выпуск создаёт запись в реестре карточек.</p>
+            <p className="muted">Выберите пользователя в списке выше или вставьте его UUID. Укажите уникальный серийный номер. Выпуск закрепит карточку за аккаунтом.</p>
             <form className="listing-form" onSubmit={issueCard}>
               <label>UUID пользователя<input value={issueOwnerId} onChange={e => setIssueOwnerId(e.target.value)} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required /></label>
               <label>Серийный номер<input value={issueSerial} onChange={e => setIssueSerial(e.target.value)} placeholder="VTX-000001" required /></label>
