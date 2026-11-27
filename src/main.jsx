@@ -79,6 +79,7 @@ function App() {
 
   const adminTables = [
     { name: 'market_listings', label: 'Объявления маркетплейса' },
+    { name: 'card_requests', label: 'Журнал объявлений «Ищу карточку»' },
     { name: 'admin_audit_log', label: 'Журнал действий администратора' },
     { name: 'card_inventory', label: 'Реестр выпущенных юнитов' },
     { name: 'wallet_ledger', label: 'Финансовый журнал' },
@@ -268,7 +269,9 @@ function App() {
     setAdminDataLoading(true)
     const results = await Promise.all(adminTables.map(async table => {
       try {
-        const { data, error } = await supabase.from(table.name).select('*').limit(50)
+        let request = supabase.from(table.name).select('*')
+        if (table.name === 'card_requests') request = request.order('created_at', { ascending: false })
+        const { data, error } = await request.limit(50)
         if (error) return { ...table, rows: [], error: error.message }
         return { ...table, rows: data || [], error: '' }
       } catch (error) {
