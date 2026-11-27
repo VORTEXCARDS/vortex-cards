@@ -779,6 +779,12 @@ function App() {
     "completed": "Завершено",
     "cancelled": "Скасовано",
     "quoted": "Розраховано",
+    "Запросы на недостающие карточки": "Запити на відсутні картки",
+    "Коллекция и редкие серии": "Колекція та рідкісні серії",
+    "Пригласить друга и награды": "Запросити друга й отримати винагороди",
+    "Личные данные и настройки": "Особисті дані та налаштування",
+    "Связаться со службой поддержки": "Зв’язатися зі службою підтримки",
+    "Управление платформой": "Керування платформою",
   },
   "en": {
     "Обзор": "Overview",
@@ -1019,6 +1025,12 @@ function App() {
     "completed": "Completed",
     "cancelled": "Cancelled",
     "quoted": "Quoted",
+    "Запросы на недостающие карточки": "Requests for missing cards",
+    "Коллекция и редкие серии": "Collection and rare series",
+    "Пригласить друга и награды": "Invite friends and earn rewards",
+    "Личные данные и настройки": "Personal details and settings",
+    "Связаться со службой поддержки": "Contact support",
+    "Управление платформой": "Platform management",
   },
   "de": {
     "Обзор": "Übersicht",
@@ -1257,6 +1269,12 @@ function App() {
     "completed": "Abgeschlossen",
     "cancelled": "Storniert",
     "quoted": "Kurs berechnet",
+    "Запросы на недостающие карточки": "Anfragen für fehlende Karten",
+    "Коллекция и редкие серии": "Sammlung und seltene Serien",
+    "Пригласить друга и награды": "Freunde einladen und Prämien erhalten",
+    "Личные данные и настройки": "Persönliche Daten und Einstellungen",
+    "Связаться со службой поддержки": "Support kontaktieren",
+    "Управление платформой": "Plattform verwalten",
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
@@ -1479,6 +1497,12 @@ function App() {
     "completed": "Terminé",
     "cancelled": "Annulé",
     "quoted": "Cours calculé",
+    "Запросы на недостающие карточки": "Demandes de cartes manquantes",
+    "Коллекция и редкие серии": "Collection et séries rares",
+    "Пригласить друга и награды": "Inviter des amis et gagner des récompenses",
+    "Личные данные и настройки": "Données personnelles et paramètres",
+    "Связаться со службой поддержки": "Contacter le support",
+    "Управление платформой": "Gestion de la plateforme",
   },
 }
 
@@ -1797,13 +1821,15 @@ function App() {
               <div className="card-bottom"><b>VORTEX UNIT</b><span>OWN THE DIGITAL FLOW</span></div>
             </div>
           </section>
-          <div className="stats">
-            <Stat label="РЕФЕРАЛЫ" value={referrals} icon={<Users />} />
-          </div>
-          <div className="section-title">БЫСТРЫЕ ДЕЙСТВИЯ</div>
+          <div className="section-title">{t('БЫСТРЫЕ ДЕЙСТВИЯ')}</div>
           <div className="quick-grid">
-            <Quick icon={<Store />} title="P2P-рынок" desc="Покупка и продажа" click={() => setTab('market')} />
-            <Quick icon={<Users />} title="Пригласить друга" desc="Получить юнит" click={() => setTab('referrals')} />
+            <Quick icon={<Store />} title={t('Маркетплейс')} desc={t('Покупка и продажа')} click={() => setTab('market')} />
+            <Quick icon={<Search />} title={t('Ищу карточку')} desc={t('Запросы на недостающие карточки')} click={() => setTab('wanted')} />
+            <Quick icon={<Gem />} title={t('Редкие карточки')} desc={t('Коллекция и редкие серии')} click={() => setTab('rare')} />
+            <Quick icon={<Users />} title={t('Рефералы')} desc={t('Пригласить друга и награды')} click={() => setTab('referrals')} />
+            <Quick icon={<UserRound />} title={t('Профиль')} desc={t('Личные данные и настройки')} click={() => setTab('profile')} />
+            <Quick icon={<Mail />} title={t('Поддержка')} desc={t('Связаться со службой поддержки')} click={() => setTab('support')} />
+            {isAdmin && <Quick icon={<Shield />} title={t('Администрирование')} desc={t('Управление платформой')} click={() => setTab('admin')} />}
             {!isInstalled && <Quick className="install-quick" icon={<Download />} title={t('Скачать приложение VORTEX UNIT')} desc={t('Установите приложение на устройство')} click={handleInstall} />}
           </div>
         </>}
