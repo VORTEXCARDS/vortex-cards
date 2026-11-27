@@ -55,7 +55,6 @@ function App() {
   const [selectedListing, setSelectedListing] = useState(null)
   const [marketLoading, setMarketLoading] = useState(false)
   const [marketError, setMarketError] = useState('')
-  const [qty, setQty] = useState('')
   const [price, setPrice] = useState('')
   const [assetCode, setAssetCode] = useState('')
   const [referrals] = useState(0)
@@ -1802,14 +1801,14 @@ function App() {
   async function addListing(e) {
     e.preventDefault()
     if (!user) { setNotice('Чтобы выставить юнит, войдите в аккаунт.'); return }
-    const q = Number(qty)
+    const q = 1
     const p = Number(price)
     if (!['USDT','BTC','ETH','TON','USDC'].includes(assetCode)) {
       setNotice('Выберите криптовалюту для объявления.')
       return
     }
-    if (!Number.isInteger(q) || q < 1 || !Number.isFinite(p) || p <= 0) {
-      setNotice('Укажите корректное количество карточек и цену.')
+    if (!Number.isFinite(p) || p <= 0) {
+      setNotice('Укажите корректную цену за одну карточку.')
       return
     }
     setBusy(true)
@@ -1818,7 +1817,7 @@ function App() {
         p_quantity: q, p_price: p, p_asset_code: assetCode
       })
       if (error) throw error
-      setNotice(`Объявление создано. Выставлено юнитов: ${data?.quantity ?? q}. Пока объявление активно, эти юниты нельзя перевести другому пользователю.`)
+      setNotice('Объявление создано. Выставлена одна карточка. Пока объявление активно, этот юнит нельзя перевести другому пользователю.')
       setListingPage(1)
       setSelectedListing(null)
       await Promise.all([loadMarketplace(1), loadFinancialData()])
@@ -1858,7 +1857,7 @@ function App() {
   ]
   const title = nav.find(x => x[0] === tab)?.[1] || (tab === 'admin' ? 'Администратор' : 'Обзор')
   const listingUnitPrice = Math.max(0, Number(price) || 0)
-  const listingQuantity = Math.max(0, Number(qty) || 0)
+  const listingQuantity = 1
   const showListingPreview = Number.isInteger(listingQuantity) && listingQuantity > 0 && Number.isFinite(listingUnitPrice) && listingUnitPrice > 0 && ['USDT','BTC','ETH','TON','USDC'].includes(assetCode)
   const listingUnitNet = Math.round(listingUnitPrice * 0.95 * 100) / 100
   const listingGross = Math.round(listingUnitPrice * listingQuantity * 100) / 100
@@ -2013,12 +2012,11 @@ function App() {
             <div className="panel">
               <h3><Plus size={18} /> Создать объявление</h3>
               <form className="listing-form" onSubmit={addListing}>
-                <label>Количество<input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} /></label>
                 <label>Цена за юнит<input type="number" min="0.00000001" step="any" placeholder="Введите цену" value={price} onChange={e => setPrice(e.target.value)} /></label>
                 <label>Криптовалюта<select value={assetCode} onChange={e => setAssetCode(e.target.value)} required><option value="">Выберите криптовалюту</option><option value="USDT">USDT</option><option value="BTC">BTC</option><option value="ETH">ETH</option><option value="TON">TON</option><option value="USDC">USDC</option></select></label>
                 {showListingPreview && <div className="seller-net-preview">
-                  <div><span>Вы получите за 1 юнит</span><b>{money(listingUnitNet)} {assetCode}</b></div>
-                  <div><span>Общая сумма продажи</span><b>{money(listingGross)} {assetCode}</b></div>
+                  <div><span>Вы получите за одну карточку</span><b>{money(listingUnitNet)} {assetCode}</b></div>
+                  <div><span>Цена одной карточки</span><b>{money(listingGross)} {assetCode}</b></div>
                   <div><span>Удержание при продаже</span><b>{money(listingFee)} {assetCode}</b></div>
                   <div className="seller-net-total"><span>Всего к получению</span><b>{money(listingNet)} {assetCode}</b></div>
                 </div>}
@@ -2033,7 +2031,7 @@ function App() {
                 : listings.map(item => <div className="listing market-card market-card-compact" key={item.id}>
                   <div className="listing-avatar">{item.avatarUrl ? <img src={item.avatarUrl} alt="" /> : <UserRound />}</div>
                   <div className="listing-info"><b>{item.seller}</b><span>VORTEX UNIT · {item.qty} шт.</span></div>
-                  <div className="listing-price"><b>{item.price.toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за юнит</span></div>
+                  <div className="listing-price"><b>{item.price.toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за одну карточку</span></div>
                   <button type="button" className="outline market-open-detail" onClick={() => setSelectedListing(item)}>{t('Подробнее')}</button>
                   {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>{t('Удалить объявление')}</button>}
                 </div>)}
