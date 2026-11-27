@@ -3,14 +3,12 @@
 -- Reward serials are held separately until won; existing owned cards are never moved.
 
 create table if not exists public.vortex_game_reward_pool (
-  serial_number text primary key,
+  serial_number text primary key check (serial_number ~ '^[0-9]{4}$'),
   added_at timestamptz not null default now(),
   claimed_by uuid references auth.users(id) on delete restrict,
   claimed_at timestamptz,
-  constraint vortex_game_reward_serial_format check (
-    serial_number ~ '^[0-9]{4}$'
-    and length(regexp_replace(serial_number, '([0-9]).*', '\1', 'g')) > 0
-  )
+  reserved_session_id uuid,
+  reserved_until timestamptz
 );
 
 -- Enforce four different digits (including leading zeroes).
@@ -228,4 +226,4 @@ begin
     v_added := v_added + 1;
   end loop;
   if v_added < 10 then raise exception 'Не удалось сформировать десять свободных игровых номеров'; end if;
-end $;
+end $seed$;
