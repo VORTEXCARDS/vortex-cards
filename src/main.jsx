@@ -50,8 +50,9 @@ function App() {
   const [listings, setListings] = useState([])
   const [marketLoading, setMarketLoading] = useState(false)
   const [marketError, setMarketError] = useState('')
-  const [qty, setQty] = useState('1')
-  const [price, setPrice] = useState('10')
+  const [qty, setQty] = useState('')
+  const [price, setPrice] = useState('')
+  const [assetCode, setAssetCode] = useState('')
   const [referrals] = useState(0)
   const [isAdmin, setIsAdmin] = useState(false)
   const [adminLoading, setAdminLoading] = useState(false)
@@ -179,7 +180,14 @@ function App() {
         .order('created_at', { ascending: false })
         .limit(100)
       if (error) throw error
-      const sellerIds = [...new Set((data || []).map(item => item.seller_id).filter(Boolean))]
+      const listingIds = (data || []).map(item => item.id)
+      const { data: currencies, error: currencyError } = listingIds.length
+        ? await supabase.from('market_listing_currencies').select('listing_id, asset_code').in('listing_id', listingIds)
+        : { data: [], error: null }
+      if (currencyError) throw currencyError
+      const currencyByListing = Object.fromEntries((currencies || []).map(row => [row.listing_id, row.asset_code]))
+      const pricedListings = (data || []).filter(item => currencyByListing[item.id])
+      const sellerIds = [...new Set(pricedListings.map(item => item.seller_id).filter(Boolean))]
       let profilesById = {}
       if (sellerIds.length) {
         const { data: profiles, error: profilesError } = await supabase
@@ -189,7 +197,7 @@ function App() {
         if (profilesError) console.warn('Не удалось загрузить аватары продавцов:', profilesError.message)
         profilesById = Object.fromEntries((profiles || []).map(profile => [profile.user_id, profile]))
       }
-      setListings((data || []).map(item => {
+      setListings(pricedListings.map(item => {
         const profile = profilesById[item.seller_id] || {}
         const isMine = item.seller_id === user?.id
         return {
@@ -200,6 +208,7 @@ function App() {
           avatarUrl: profile.avatar_url || (isMine ? user?.user_metadata?.avatar_url : '') || '',
           qty: Number(item.quantity || 0),
           price: Number(item.price || 0),
+          assetCode: currencyByListing[item.id],
           createdAt: item.created_at
         }
       }))
@@ -1501,14 +1510,18 @@ function App() {
     if (!user) { setNotice('Чтобы выставить юнит, войдите в аккаунт.'); return }
     const q = Number(qty)
     const p = Number(price)
+    if (!['USDT','BTC','ETH','TON','USDC'].includes(assetCode)) {
+      setNotice('Выберите криптовалюту для объявления.')
+      return
+    }
     if (!Number.isInteger(q) || q < 1 || !Number.isFinite(p) || p <= 0) {
       setNotice('Укажите корректное количество карточек и цену.')
       return
     }
     setBusy(true)
     try {
-      const { data, error } = await supabase.rpc('create_market_listing', {
-        p_quantity: q, p_price: p
+      const { data, error } = await supabase.rpc('create_market_listing_with_currency', {
+        p_quantity: q, p_price: p, p_asset_code: assetCode
       })
       if (error) throw error
       setNotice(`Объявление создано. Выставлено юнитов: ${data?.quantity ?? q}. Пока объявление активно, эти юниты нельзя перевести другому пользователю.`)
@@ -1548,6 +1561,7 @@ function App() {
   const title = nav.find(x => x[0] === tab)?.[1] || (tab === 'admin' ? 'Администратор' : 'Обзор')
   const listingUnitPrice = Math.max(0, Number(price) || 0)
   const listingQuantity = Math.max(0, Number(qty) || 0)
+  const showListingPreview = Number.isInteger(listingQuantity) && listingQuantity > 0 && Number.isFinite(listingUnitPrice) && listingUnitPrice > 0 && ['USDT','BTC','ETH','TON','USDC'].includes(assetCode)
   const listingUnitNet = Math.round(listingUnitPrice * 0.95 * 100) / 100
   const listingGross = Math.round(listingUnitPrice * listingQuantity * 100) / 100
   const listingFee = Math.round(listingGross * 0.05 * 100) / 100
@@ -1714,14 +1728,15 @@ function App() {
             <h3><Plus size={18} /> Создать объявление</h3>
             <form className="listing-form" onSubmit={addListing}>
               <label>Количество<input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} /></label>
-              <label>Цена за юнит, ₴<input type="number" min="1" step="0.01" value={price} onChange={e => setPrice(e.target.value)} /></label>
-              <div className="seller-net-preview">
-                <div><span>Вы получите за 1 юнит</span><b>{money(listingUnitNet)} ₴</b></div>
-                <div><span>Общая сумма продажи</span><b>{money(listingGross)} ₴</b></div>
-                <div><span>Удержание при продаже</span><b>{money(listingFee)} ₴</b></div>
-                <div className="seller-net-total"><span>Всего к получению</span><b>{money(listingNet)} ₴</b></div>
-              </div>
-              <button className="primary" type="submit" disabled={busy}>{busy ? 'Выставляем...' : 'Выставить'}</button>
+              <label>Цена за юнит<input type="number" min="0.00000001" step="any" placeholder="Введите цену" value={price} onChange={e => setPrice(e.target.value)} /></label>
+              <label>Криптовалюта<select value={assetCode} onChange={e => setAssetCode(e.target.value)} required><option value="">Выберите криптовалюту</option><option value="USDT">USDT</option><option value="BTC">BTC</option><option value="ETH">ETH</option><option value="TON">TON</option><option value="USDC">USDC</option></select></label>
+              {showListingPreview && <div className="seller-net-preview">
+                <div><span>Вы получите за 1 юнит</span><b>{money(listingUnitNet)} {assetCode}</b></div>
+                <div><span>Общая сумма продажи</span><b>{money(listingGross)} {assetCode}</b></div>
+                <div><span>Удержание при продаже</span><b>{money(listingFee)} {assetCode}</b></div>
+                <div className="seller-net-total"><span>Всего к получению</span><b>{money(listingNet)} {assetCode}</b></div>
+              </div>}
+              <button className="primary" type="submit" disabled={busy || !showListingPreview}>{busy ? 'Выставляем...' : 'Выставить'}</button>
             </form>
           </div>
           <div className="section-title">ЮНИТЫ В ПРОДАЖЕ</div>
@@ -1732,8 +1747,8 @@ function App() {
               : listings.map(item => <div className="listing market-card" key={item.id}>
                 <div className="listing-avatar">{item.avatarUrl ? <img src={item.avatarUrl} alt="" /> : <UserRound />}</div>
                 <div className="listing-info"><b>{item.seller}</b><span>VORTEX UNIT · {item.qty} шт.</span></div>
-                <div className="listing-price"><b>{item.price.toLocaleString('uk-UA')} ₴</b><span>за юнит</span></div>
-                <div className="listing-price"><b>{(item.price * item.qty).toLocaleString('uk-UA')} ₴</b><span>за всё количество</span></div>
+                <div className="listing-price"><b>{item.price.toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за юнит</span></div>
+                <div className="listing-price"><b>{(item.price * item.qty).toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за всё количество</span></div>
                 {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>Снять с продажи</button>}
               </div>)}
           </div>
