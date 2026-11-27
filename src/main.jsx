@@ -1555,7 +1555,6 @@ function App() {
 
   const nav = [
     ['home', t('Обзор'), Home],
-    ['cards', t('Юниты'), CreditCard],
     ['market', t('Маркетплейс'), Store],
     ['wanted', t('Ищу карточку'), Search],
     ['rare', t('Редкие карточки'), Gem],
@@ -1640,12 +1639,10 @@ function App() {
             </div>
           </section>
           <div className="stats">
-            <Stat label="МОИ ЮНИТЫ" value={cards} icon={<CreditCard />} />
             <Stat label="РЕФЕРАЛЫ" value={referrals} icon={<Users />} />
           </div>
           <div className="section-title">БЫСТРЫЕ ДЕЙСТВИЯ</div>
           <div className="quick-grid">
-            <Quick icon={<CreditCard />} title="Мои юниты" desc="Баланс и переводы" click={() => setTab('cards')} />
             <Quick icon={<Store />} title="P2P-рынок" desc="Покупка и продажа" click={() => setTab('market')} />
             <Quick icon={<Users />} title="Пригласить друга" desc="Получить юнит" click={() => setTab('referrals')} />
             {!isInstalled && <Quick className="install-quick" icon={<Download />} title={t('Скачать приложение VORTEX UNIT')} desc={t('Установите приложение на устройство')} click={handleInstall} />}
@@ -1688,22 +1685,6 @@ function App() {
         {tab === 'wanted' && <WantedSection supabase={supabase} user={user} language={language} onNotice={setNotice} onMarketplace={() => setTab('market')} />}
 
         {tab === 'support' && <SupportCenter userEmail={user?.email} language={language} />}
-
-        {tab === 'cards' && <>
-          <div className="balance-panel">
-            <div><span className="muted">ДОСТУПНЫЙ БАЛАНС</span><div className="big-number">{cards} <small>VORTEX UNIT</small></div></div>
-            <div className="balance-icon"><CreditCard /></div>
-          </div>
-          <div className="panel">
-            <h3>{t('Передать юниты')}</h3>
-            <p className="muted">{t('Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.')}</p>
-            <form onSubmit={transferCards}>
-              <label>{t('Email получателя')}<input type="email" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} placeholder="user@example.com" required /></label>
-              <label>{t('Количество юнитов')}<input type="number" min="1" max="100" step="1" value={transferQuantity} onChange={e => setTransferQuantity(e.target.value)} required /></label>
-              <button type="submit" className="primary full" disabled={busy}>{busy ? t('Выполняется...') : t('Передать юниты')}</button>
-            </form>
-          </div>
-        </>}
 
         {tab === 'market' && <>
           <div className="market-head">
@@ -2030,16 +2011,16 @@ function App() {
         </section> : <>
         <section className="public-hero">
           <div className="public-copy">
-            <div className="pill"><Sparkles size={14} /> NFT · DIGITAL UNITS</div>
-            <h1>Одна единица.<br /><span>Своя ценность.</span></h1>
-            <p>VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.</p>
+            <div className="pill"><Sparkles size={14} /> VORTEX · COLLECTOR COMMUNITY</div>
+            <h1>Твоя коллекция.<br /><span>Твои правила.</span></h1>
+            <p>Находи редкие карточки, публикуй запросы, общайся с коллекционерами и развивай свою коллекцию вместе с VORTEX.</p>
             <div className="public-cta">
               <button type="button" className="primary" onClick={() => openPublicAuth('signup')}>Создать аккаунт</button>
               <button type="button" className="outline" onClick={() => openPublicAuth('login')}>У меня уже есть аккаунт</button>
             </div>
           </div>
           <div className="hero-card public-card">
-            <div className="card-top"><span>VORTEX</span><span>GENESIS / 001</span></div>
+            <div className="card-top"><span>VORTEX</span><span>COLLECTOR COMMUNITY</span></div>
             <div className="card-geometry" aria-hidden="true">
               <svg viewBox="0 0 64 64" focusable="false">
                 <path d="M32 4 54 17v30L32 60 10 47V17L32 4Z" />
@@ -2048,11 +2029,10 @@ function App() {
                 <path d="m20 23 12 8 12-8M32 31v17" />
               </svg>
             </div>
-            <div className="card-bottom"><b>VORTEX UNIT</b><span>OWN THE DIGITAL FLOW</span></div>
-          </div>
+            <div className="card-bottom"><b>VORTEX</b><span>COLLECT · CONNECT · TRADE</span></div>
+          </div>/div>
         </section>
         <section className="public-features">
-          <article><CreditCard /><b>Юниты и NFT</b><span>Создавай коллекции и управляй уникальными цифровыми юнитами.</span></article>
           <article><Store /><b>P2P-маркетплейс</b><span>Просмотр предложений и торговые функции для пользователей.</span></article>
           <article><Users /><b>Сообщество</b><span>Приглашайте друзей и развивайтесь вместе с VORTEX.</span></article>
         </section>
