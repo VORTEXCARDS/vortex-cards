@@ -638,3 +638,32 @@ body{
 .public-auth-panel{position:relative!important;inset:auto!important;align-self:center!important;justify-self:center!important;width:min(480px,100%)!important;max-height:calc(100dvh - 32px)!important;margin:0!important;overflow-y:auto!important}
 @media(max-width:650px){.public-discover-grid{grid-template-columns:1fr}.public-discover-card{min-height:250px;padding:19px}}
 @media(max-width:520px){.public-auth-backdrop{padding:10px!important}.public-auth-panel{max-height:calc(100dvh - 20px)!important}}
+
+
+/* Refined serial engraving on the public collector card */
+.public-card .card-serial{
+  position:absolute;
+  left:17px;
+  right:17px;
+  bottom:43px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding-top:6px;
+  border-top:1px solid rgba(190,174,225,.22);
+  color:#b9b0ce;
+  line-height:1;
+}
+.public-card .card-serial span{
+  font-size:6px;
+  font-weight:600;
+  letter-spacing:1.25px;
+  color:#85809d;
+}
+.public-card .card-serial b{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1.8px;
+  color:#ddd5ee;
+}
