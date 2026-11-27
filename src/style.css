@@ -471,3 +471,12 @@ body{
 .wanted-status{display:inline-flex;margin-top:12px;padding:6px 10px;border:1px solid #66502f;border-radius:20px;background:#3b2b182e;color:#e5c47d;font-size:10px;font-weight:800}
 .wanted-rule{margin:0;padding:13px 15px;border-left:3px solid #20c9ca;background:#10202a;color:#c5d5dc;font-size:11px;line-height:1.7}
 @media(max-width:700px){.wanted-flow{grid-template-columns:1fr}.wanted-hero{padding:21px 18px}.wanted-coming{padding:16px}}
+
+
+/* Crypto-denominated marketplace listing form */
+.listing-form{grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
+.listing-form label{display:grid;gap:7px}
+.listing-form input,.listing-form select{width:100%;min-width:0;margin:0}
+.listing-form .seller-net-preview{grid-column:1/-1}
+.listing-form>.primary{grid-column:1/-1}
+@media(max-width:600px){.listing-form{grid-template-columns:1fr}}
