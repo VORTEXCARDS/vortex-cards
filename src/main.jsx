@@ -34,6 +34,7 @@ function App() {
   const [pushPromptOpen, setPushPromptOpen] = useState(false)
   const [pushBusy, setPushBusy] = useState(false)
   const pushServerReady = Boolean(import.meta.env.VITE_VAPID_PUBLIC_KEY)
+  const [profileSettingsOpen, setProfileSettingsOpen] = useState(false)
   const [username, setUsername] = useState('')
   const [usernameBusy, setUsernameBusy] = useState(false)
   const [avatarBusy, setAvatarBusy] = useState(false)
@@ -744,6 +745,16 @@ function App() {
     "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "Розділ створено як колекційний каталог. Продаж, аукціон і грошовий викуп тут поки не активні.",
     "Разделы редких карточек": "Розділи рідкісних карток",
 
+    "Настройки профиля": "Налаштування профілю",
+    "Назад": "Назад",
+    "Пользователь": "Користувач",
+    "Фото профиля": "Фото профілю",
+    "Загрузите изображение JPG, PNG или WEBP до 5 МБ. Его увидят другие пользователи.": "Завантажте зображення JPG, PNG або WEBP до 5 МБ. Його побачать інші користувачі.",
+    "Загружаем...": "Завантаження...",
+    "Изменить фото": "Змінити фото",
+    "Загрузить аватар": "Завантажити аватар",
+    "Удалить": "Видалити",
+    "Аватар профиля": "Аватар профілю",
   },
   "en": {
     "Обзор": "Overview",
@@ -951,6 +962,16 @@ function App() {
     "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "This section is a collector catalogue. Sales, auctions, and cash buybacks are not active yet.",
     "Разделы редких карточек": "Rare card sections",
 
+    "Настройки профиля": "Profile settings",
+    "Назад": "Back",
+    "Пользователь": "User",
+    "Фото профиля": "Profile photo",
+    "Загрузите изображение JPG, PNG или WEBP до 5 МБ. Его увидят другие пользователи.": "Upload a JPG, PNG, or WEBP image up to 5 MB. Other users will be able to see it.",
+    "Загружаем...": "Uploading...",
+    "Изменить фото": "Change photo",
+    "Загрузить аватар": "Upload avatar",
+    "Удалить": "Remove",
+    "Аватар профиля": "Profile avatar",
   },
   "de": {
     "Обзор": "Übersicht",
@@ -1156,6 +1177,16 @@ function App() {
     "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "Dieser Bereich ist ein Sammlerkatalog. Verkäufe, Auktionen und Rückkäufe gegen Geld sind noch nicht aktiv.",
     "Разделы редких карточек": "Bereiche für seltene Karten",
 
+    "Настройки профиля": "Profileinstellungen",
+    "Назад": "Zurück",
+    "Пользователь": "Benutzer",
+    "Фото профиля": "Profilfoto",
+    "Загрузите изображение JPG, PNG или WEBP до 5 МБ. Его увидят другие пользователи.": "Laden Sie ein JPG-, PNG- oder WEBP-Bild mit bis zu 5 MB hoch. Andere Nutzer können es sehen.",
+    "Загружаем...": "Wird hochgeladen...",
+    "Изменить фото": "Foto ändern",
+    "Загрузить аватар": "Avatar hochladen",
+    "Удалить": "Entfernen",
+    "Аватар профиля": "Profilavatar",
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
@@ -1345,6 +1376,16 @@ function App() {
     "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "Cette section est un catalogue de collection. Les ventes, enchères et rachats en argent ne sont pas encore actifs.",
     "Разделы редких карточек": "Sections des cartes rares",
 
+    "Настройки профиля": "Paramètres du profil",
+    "Назад": "Retour",
+    "Пользователь": "Utilisateur",
+    "Фото профиля": "Photo de profil",
+    "Загрузите изображение JPG, PNG или WEBP до 5 МБ. Его увидят другие пользователи.": "Téléversez une image JPG, PNG ou WEBP de 5 Mo maximum. Les autres utilisateurs pourront la voir.",
+    "Загружаем...": "Téléversement...",
+    "Изменить фото": "Modifier la photo",
+    "Загрузить аватар": "Téléverser un avatar",
+    "Удалить": "Supprimer",
+    "Аватар профиля": "Avatar du profil",
   },
 }
 
@@ -1767,62 +1808,80 @@ function App() {
           <section className="panel auth-panel profile-account">
             <h2>{user ? t('Аккаунт') : t('Вход или регистрация')}</h2>
             {user && authMode !== 'reset' ? <>
-              <div className="profile-avatar-card">
+              <div className="profile-summary-card">
                 <div className="profile-avatar-preview">
                   {user.user_metadata?.avatar_url
-                    ? <img src={user.user_metadata.avatar_url} alt="Аватар профиля" />
+                    ? <img src={user.user_metadata.avatar_url} alt={t('Аватар профиля')} />
                     : <UserRound size={38} />}
                 </div>
-                <div className="profile-avatar-copy">
-                  <b>Фото профиля</b>
-                  <span>Загрузите изображение JPG, PNG или WEBP до 5 МБ. Его увидят другие пользователи.</span>
-                  <div className="profile-avatar-actions">
-                    <label className="primary avatar-upload-label">
-                      {avatarBusy ? 'Загружаем...' : user.user_metadata?.avatar_url ? 'Изменить фото' : 'Загрузить аватар'}
-                      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadAvatar} disabled={avatarBusy} />
-                    </label>
-                    {user.user_metadata?.avatar_url && <button type="button" className="outline" onClick={removeAvatar} disabled={avatarBusy}>Удалить</button>}
+                <div className="profile-summary-copy">
+                  <b>{user.user_metadata?.username || t('Пользователь')}</b>
+                  <span>{user.email}</span>
+                  <button type="button" className="primary" onClick={() => setProfileSettingsOpen(true)}>{t('Настройки профиля')}</button>
+                </div>
+              </div>
+              {profileSettingsOpen && <section className="profile-settings-panel">
+                <div className="profile-settings-heading">
+                  <h3>{t('Настройки профиля')}</h3>
+                  <button type="button" className="outline" onClick={() => setProfileSettingsOpen(false)}>{t('Назад')}</button>
+                </div>
+                <div className="profile-avatar-card">
+                  <div className="profile-avatar-preview">
+                    {user.user_metadata?.avatar_url
+                      ? <img src={user.user_metadata.avatar_url} alt={t('Аватар профиля')} />
+                      : <UserRound size={38} />}
+                  </div>
+                  <div className="profile-avatar-copy">
+                    <b>{t('Фото профиля')}</b>
+                    <span>{t('Загрузите изображение JPG, PNG или WEBP до 5 МБ. Его увидят другие пользователи.')}</span>
+                    <div className="profile-avatar-actions">
+                      <label className="primary avatar-upload-label">
+                        {avatarBusy ? t('Загружаем...') : user.user_metadata?.avatar_url ? t('Изменить фото') : t('Загрузить аватар')}
+                        <input type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadAvatar} disabled={avatarBusy} />
+                      </label>
+                      {user.user_metadata?.avatar_url && <button type="button" className="outline" onClick={removeAvatar} disabled={avatarBusy}>{t('Удалить')}</button>}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <form className="username-settings" onSubmit={saveUsername}>
-                <label>{t('Имя пользователя (псевдоним)')}
-                  <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder={t('Например, VORTEX')} minLength="2" maxLength="24" autoComplete="nickname" />
-                </label>
-                <p className="muted">{t('Придумайте любое имя. Не указывайте здесь email или настоящее имя, если хотите сохранить приватность.')}</p>
-                <button type="submit" className="primary full" disabled={usernameBusy}>{usernameBusy ? t('Сохраняем...') : t('Сохранить имя пользователя')}</button>
-              </form>
-              <p className="muted">{t('Email аккаунта (виден только вам):')} {user.email}</p>
-              <div className="push-settings-row">
-                <div className="push-settings-copy">
-                  <b>{t('Push-уведомления')}</b>
-                  <span>{pushServerReady ? t('Получать важные сообщения VORTEX UNIT на этом устройстве.') : t('Разрешение сохраняется. Сервер отправки будет подключён отдельно.')}</span>
+                <form className="username-settings" onSubmit={saveUsername}>
+                  <label>{t('Имя пользователя (псевдоним)')}
+                    <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder={t('Например, VORTEX')} minLength="2" maxLength="24" autoComplete="nickname" />
+                  </label>
+                  <p className="muted">{t('Придумайте любое имя. Не указывайте здесь email или настоящее имя, если хотите сохранить приватность.')}</p>
+                  <button type="submit" className="primary full" disabled={usernameBusy}>{usernameBusy ? t('Сохраняем...') : t('Сохранить имя пользователя')}</button>
+                </form>
+                <p className="muted">{t('Email аккаунта (виден только вам):')} {user.email}</p>
+                <div className="push-settings-row">
+                  <div className="push-settings-copy">
+                    <b>{t('Push-уведомления')}</b>
+                    <span>{pushServerReady ? t('Получать важные сообщения VORTEX UNIT на этом устройстве.') : t('Разрешение сохраняется. Сервер отправки будет подключён отдельно.')}</span>
+                  </div>
+                  <label className="push-switch" aria-label={t('Получать push-уведомления')}>
+                    <input type="checkbox" checked={pushEnabled} disabled={pushBusy} onChange={event => savePushPreference(event.target.checked)} />
+                    <span className="push-switch-track"></span>
+                  </label>
                 </div>
-                <label className="push-switch" aria-label={t('Получать push-уведомления')}>
-                  <input type="checkbox" checked={pushEnabled} disabled={pushBusy} onChange={event => savePushPreference(event.target.checked)} />
-                  <span className="push-switch-track"></span>
-                </label>
-              </div>
-              <div className="account-danger-actions">
-                <button type="button" className="outline" onClick={logout} disabled={busy || deleteBusy}>{t('Выйти')}</button>
-                <button type="button" className="delete-account-btn" onClick={() => { setDeleteDialogOpen(true); setDeletePhrase('') }} disabled={busy || deleteBusy}>{t('Удалить аккаунт')}</button>
-              </div>
-              {deleteDialogOpen && <div className="delete-dialog-backdrop" role="presentation">
-                <section className="delete-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
-                  <h3 id="delete-account-title">{t('Удалить аккаунт навсегда?')}</h3>
-                  <p>{t('Будет удалена ваша учётная запись VORTEX UNIT и связанные с ней данные. Доступ к аккаунту с сайта и установленного приложения прекратится. Это действие нельзя отменить.')}</p>
-                  <p className="delete-dialog-warning">{t('Если у вас есть юниты, объявления или финансовая история, они также могут быть удалены вместе с аккаунтом.')}</p>
-                  <form onSubmit={deleteAccount}>
-                    <label>{t('Для подтверждения напишите УДАЛИТЬ')}
-                      <input value={deletePhrase} onChange={event => setDeletePhrase(event.target.value)} autoComplete="off" placeholder="УДАЛИТЬ" />
-                    </label>
-                    <div className="delete-dialog-actions">
-                      <button type="button" className="outline" disabled={deleteBusy} onClick={() => { setDeleteDialogOpen(false); setDeletePhrase('') }}>{t('Отмена')}</button>
-                      <button type="submit" className="delete-account-btn" disabled={deleteBusy || deletePhrase.trim().toUpperCase() !== 'УДАЛИТЬ'}>{deleteBusy ? t('Удаляем...') : t('Удалить навсегда')}</button>
-                    </div>
-                  </form>
-                </section>
-              </div>}
+                <div className="account-danger-actions">
+                  <button type="button" className="outline" onClick={logout} disabled={busy || deleteBusy}>{t('Выйти')}</button>
+                  <button type="button" className="delete-account-btn" onClick={() => { setDeleteDialogOpen(true); setDeletePhrase('') }} disabled={busy || deleteBusy}>{t('Удалить аккаунт')}</button>
+                </div>
+                {deleteDialogOpen && <div className="delete-dialog-backdrop" role="presentation">
+                  <section className="delete-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
+                    <h3 id="delete-account-title">{t('Удалить аккаунт навсегда?')}</h3>
+                    <p>{t('Будет удалена ваша учётная запись VORTEX UNIT и связанные с ней данные. Доступ к аккаунту с сайта и установленного приложения прекратится. Это действие нельзя отменить.')}</p>
+                    <p className="delete-dialog-warning">{t('Если у вас есть юниты, объявления или финансовая история, они также могут быть удалены вместе с аккаунтом.')}</p>
+                    <form onSubmit={deleteAccount}>
+                      <label>{t('Для подтверждения напишите УДАЛИТЬ')}
+                        <input value={deletePhrase} onChange={event => setDeletePhrase(event.target.value)} autoComplete="off" placeholder="УДАЛИТЬ" />
+                      </label>
+                      <div className="delete-dialog-actions">
+                        <button type="button" className="outline" disabled={deleteBusy} onClick={() => { setDeleteDialogOpen(false); setDeletePhrase('') }}>{t('Отмена')}</button>
+                        <button type="submit" className="delete-account-btn" disabled={deleteBusy || deletePhrase.trim().toUpperCase() !== 'УДАЛИТЬ'}>{deleteBusy ? t('Удаляем...') : t('Удалить навсегда')}</button>
+                      </div>
+                    </form>
+                  </section>
+                </div>}
+              </section>}
             </> : authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
               <p className="muted">{t('Укажите email, который использовали при регистрации. Мы отправим на него ссылку для восстановления доступа.')}</p>
               <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
