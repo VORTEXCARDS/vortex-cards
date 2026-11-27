@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Search, Plus, MessageCircle, Send, X, CheckCircle, Store, RefreshCw } from 'lucide-react'
+import { Search, Plus, MessageCircle, Send, CheckCircle, Store, Mail } from 'lucide-react'
 
 const assets = ['USDT','BTC','ETH','TON','USDC']
 const words = {
@@ -14,7 +14,21 @@ export default function WantedSection({ supabase, user, language='ru', onNotice,
  const [requests,setRequests]=useState([]),[busy,setBusy]=useState(false),[showForm,setShowForm]=useState(false)
  const [card,setCard]=useState(''),[quantity,setQuantity]=useState('1'),[price,setPrice]=useState(''),[asset,setAsset]=useState('USDT'),[details,setDetails]=useState('')
  const [thread,setThread]=useState(null),[messages,setMessages]=useState([]),[reply,setReply]=useState('')
- const [responses,setResponses]=useState([])
+ const [responses,setResponses]=useState([]),[view,setView]=useState('requests'),[conversations,setConversations]=useState([])
+ const loadConversations=useCallback(async()=>{
+  if(!user){setConversations([]);return}
+  const {data:mine,error:mineError}=await supabase.from('card_requests').select('id,card_number,requester_id,status,created_at').eq('requester_id',user.id)
+  if(mineError){onNotice(c.error+mineError.message);return}
+  const ownIds=(mine||[]).map(x=>x.id)
+  const [a,b]=await Promise.all([ownIds.length?supabase.from('card_request_responses').select('id,request_id,responder_id,created_at').in('request_id',ownIds):Promise.resolve({data:[],error:null}),supabase.from('card_request_responses').select('id,request_id,responder_id,created_at').eq('responder_id',user.id)])
+  if(a.error||b.error){onNotice(c.error+(a.error||b.error).message);return}
+  const unique=new Map([...(a.data||[]),...(b.data||[])].map(x=>[x.id,x]));const rows=[...unique.values()]
+  if(!rows.length){setConversations([]);return}
+  const ids=[...new Set(rows.map(x=>x.request_id))]
+  const {data:reqs,error}=await supabase.from('card_requests').select('id,card_number,requester_id,status').in('id',ids)
+  if(error){onNotice(c.error+error.message);return}
+  const map=new Map((reqs||[]).map(x=>[x.id,x]));setConversations(rows.map(x=>({response:x,request:map.get(x.request_id)})).filter(x=>x.request).sort((x,y)=>new Date(y.response.created_at)-new Date(x.response.created_at)))
+ },[supabase,user?.id,language])
  const load=useCallback(async()=>{
   if(!user){setRequests([]);return}
   setBusy(true)
@@ -22,7 +36,7 @@ export default function WantedSection({ supabase, user, language='ru', onNotice,
   if(error) onNotice(c.error+error.message); else setRequests(data||[])
   setBusy(false)
  },[supabase,user?.id,language])
- useEffect(()=>{load()},[load])
+ useEffect(()=>{load();loadConversations()},[load,loadConversations])
  const create=async e=>{
   e.preventDefault();if(!user){onNotice(c.login);return}
   const q=Number(quantity),p=Number(price)
@@ -42,7 +56,7 @@ export default function WantedSection({ supabase, user, language='ru', onNotice,
   }
   const {data,error}=await supabase.from('card_request_messages').select('id,response_id,sender_id,body,created_at').eq('response_id',id).order('created_at')
   setBusy(false);if(error){onNotice(c.error+error.message);return}
-  setThread({request,responseId:id});setMessages(data||[])
+  setThread({request,responseId:id});setMessages(data||[]);setView('requests')
   const {data:all}=await supabase.from('card_request_responses').select('id,request_id,responder_id').eq('request_id',request.id)
   setResponses(all||[])
  }
@@ -66,10 +80,11 @@ export default function WantedSection({ supabase, user, language='ru', onNotice,
   setThread(null);onNotice(status==='fulfilled'?c.foundOk:c.closedOk);load()
  }
  if(!user)return <section className="wanted-archive"><div className="wanted-hero"><div className="wanted-kicker"><Search size={16}/> VORTEX UNIT · CARD REQUESTS</div><h2>Ищу карточку</h2><p>{c.intro}</p></div><p>{c.login}</p></section>
+ if(view==='chats'&&!thread)return <section className="wanted-archive"><div className="wanted-toolbar"><h2>{c.chat}</h2><button className="outline" onClick={()=>setView('requests')}>{c.back}</button></div>{conversations.length===0?<div className="panel wanted-empty">Пока нет переписок. Откликнитесь на запрос или дождитесь отклика на свой.</div>:<div className="wanted-list">{conversations.map(item=><article className="panel wanted-card" key={item.response.id}><div><span className="wanted-card-number">#{item.request.card_number}</span><span className="wanted-card-status">{item.request.requester_id===user.id?'Ваш запрос':'Вы откликнулись'}</span></div><small>{new Date(item.response.created_at).toLocaleString()}</small><div className="wanted-actions"><button className="primary" onClick={()=>openThread(item.request,item.response.id)}><MessageCircle size={16}/>{c.chat}</button></div></article>)}</div>}</section>
  if(thread && !thread.responseId)return <section className="wanted-archive"><button className="outline" onClick={()=>setThread(null)}>{c.back}</button><div className="panel wanted-thread"><h2>{c.chat}: #{thread.request.card_number}</h2>{responses.length===0?<p>{c.empty}</p>:responses.map(x=><button className="outline" key={x.id} onClick={()=>openThread(thread.request,x.id)}>Открыть переписку · {x.responder_id.slice(0,8)}</button>)}</div></section>
  if(thread)return <section className="wanted-archive"><button className="outline" onClick={()=>setThread(null)}>{c.back}</button><div className="panel wanted-thread"><h2>{c.chat}: #{thread.request.card_number}</h2><p>{c.step}</p><div className="wanted-messages">{messages.map(m=><div className={m.sender_id===user.id?'wanted-message mine':'wanted-message'} key={m.id}><p>{m.body}</p><small>{new Date(m.created_at).toLocaleString()}</small></div>)}</div><form onSubmit={send} className="wanted-send"><input value={reply} onChange={e=>setReply(e.target.value)} placeholder={c.message} maxLength="2000" required/><button className="primary" disabled={busy}><Send size={16}/>{c.send}</button></form>{thread.request.requester_id===user.id&&thread.request.status==='open'&&<div className="wanted-actions"><button className="outline" onClick={()=>close('closed')}>{c.close}</button><button className="primary" onClick={()=>close('fulfilled')}><CheckCircle size={16}/>{c.fulfilled}</button></div>}</div></section>
  return <section className="wanted-archive"><div className="wanted-hero"><div className="wanted-kicker"><Search size={16}/> VORTEX UNIT · CARD REQUESTS</div><h2>Ищу карточку</h2><p>{c.intro}</p></div>
- <div className="wanted-toolbar"><h3>{c.open}</h3><button className="primary" onClick={()=>setShowForm(v=>!v)}><Plus size={17}/>{c.create}</button></div>
+ <div className="wanted-toolbar"><h3>{c.open}</h3><div className="wanted-toolbar-actions"><button className="outline" onClick={()=>{loadConversations();setView("chats")}}><Mail size={16}/>Мои переписки</button><button className="primary" onClick={()=>setShowForm(v=>!v)}><Plus size={17}/>{c.create}</button></div></div>
  {showForm&&<form className="panel wanted-form" onSubmit={create}><label>{c.number}<input value={card} onChange={e=>setCard(e.target.value)} maxLength="40" required placeholder="001"/></label><label>{c.qty}<input type="number" min="1" step="1" value={quantity} onChange={e=>setQuantity(e.target.value)} required/></label><label>{c.price}<input type="number" min="0.00000001" step="any" value={price} onChange={e=>setPrice(e.target.value)} required/></label><label>{c.currency}<select value={asset} onChange={e=>setAsset(e.target.value)}>{assets.map(a=><option key={a}>{a}</option>)}</select></label><label className="wanted-wide">{c.details}<textarea value={details} onChange={e=>setDetails(e.target.value)} maxLength="1000" placeholder={c.detailsHint}/></label><button className="primary" disabled={busy}>{busy?c.loading:c.publish}</button></form>}
  {busy&&!requests.length?<p>{c.loading}</p>:requests.length===0?<div className="panel wanted-empty">{c.empty}</div>:<div className="wanted-list">{requests.map(r=><article className="panel wanted-card" key={r.id}><div><span className="wanted-card-number">#{r.card_number}</span><span className="wanted-card-status">{r.status==='open'?c.open:r.status==='fulfilled'?c.fulfilled:c.closed}</span></div><h3>{r.quantity} × {Number(r.desired_price).toLocaleString('en-US',{maximumFractionDigits:8})} {r.asset_code}</h3>{r.details&&<p>{r.details}</p>}<small>{new Date(r.created_at).toLocaleString()}</small><div className="wanted-actions">{r.requester_id===user.id?<><button className="outline" onClick={async()=>{const {data,error}=await supabase.from('card_request_responses').select('id,request_id,responder_id').eq('request_id',r.id);if(error){onNotice(c.error+error.message);return}setResponses(data||[]);setThread({request:r,responseId:null});setMessages([])}}>{c.mine}</button>{r.status==='open'&&<button className="outline" onClick={async()=>{const {error}=await supabase.from('card_requests').update({status:'closed'}).eq('id',r.id);if(error)onNotice(c.error+error.message);else{onNotice(c.closedOk);load()}}}>{c.close}</button>}</>:<button className="primary" disabled={r.status!=='open'} onClick={()=>respond(r)}><MessageCircle size={16}/>{c.respond}</button>}</div></article>)}</div>}
  <p className="wanted-rule">{c.step} <button className="outline" onClick={onMarketplace}><Store size={15}/>{c.market}</button></p>
