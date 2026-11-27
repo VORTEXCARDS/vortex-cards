@@ -68,7 +68,7 @@ export default function GamesSection({ user, onNotice, onReward, supabaseClient 
         p_guess: guess
       })
       if (error) throw error
-      setAttempts(value => [...value, { value: guess, exact: data.exact, present: data.present }])
+      setAttempts(value => [...value, { value: guess, exact: data.exact, present: data.present, feedback: data.feedback || [] }])
       setGuess('')
       if (data.status === 'won') {
         setCodeStatus('won')
@@ -145,11 +145,11 @@ export default function GamesSection({ user, onNotice, onReward, supabaseClient 
         </form>
         {codeStatus === 'idle' || codeStatus === 'unavailable' ? <div className="games-hint">Номер выбирается сервером из отдельного фонда игровых карточек. Он не раскрывается браузеру.</div> : null}
         {codeStatus === 'loading' && <div className="games-hint">Подбираем секретный номер…</div>}
-        {codeStatus === 'playing' && <div className="games-hint">П — цифра на своём месте. Н — цифра есть в номере, но стоит не там. 0 — совпадений нет.</div>}
-        <div className="code-legend"><span><i className="legend-exact"/> П — на месте</span><span><i className="legend-present"/> Н — не на месте</span><span><i className="legend-none"/> 0 — нет в номере</span></div>
+        {codeStatus === 'playing' && <div className="games-hint">После каждой попытки увидишь подсказку отдельно по каждой цифре. Восемь попыток даются на весь номер.</div>}
+        <div className="code-legend"><span><i className="legend-exact"/> ✓ На месте</span><span><i className="legend-present"/> ↔ Есть, переставь</span><span><i className="legend-none"/> ✕ Нет в коде</span></div>
         <div className="code-history">
           <div className="code-history-head"><b>Попытки</b><span>{attempts.length} / 8</span></div>
-          {attempts.length === 0 ? <p className="games-empty">После первой проверки здесь появится подсказка.</p> : attempts.map((item,index) => <div className="code-attempt" key={index}><b>{item.value.split('').join(' ')}</b><span><i>{item.exact} П</i><i>{item.present} Н</i><i className="no-match">{4-item.exact-item.present} 0</i></span></div>)}
+          {attempts.length === 0 ? <p className="games-empty">После первой проверки здесь появится подсказка по каждой цифре.</p> : attempts.map((item,index) => <div className="code-attempt-detail" key={index}><div className="code-attempt-number"><b>Попытка {index+1}</b><strong>{item.value.split('').join('  ')}</strong></div><div className="code-digit-feedback">{(item.feedback || []).map((digit,i) => <div className={"code-digit-result " + digit.status} key={i}><b>{digit.digit}</b><span>{digit.status === "exact" ? "✓ На месте" : digit.status === "present" ? "↔ Есть в коде — переставь" : "✕ Нет в коде"}</span></div>)}</div></div>)}
         </div>
         {codeStatus === 'won' && <div className="games-result won"><Award size={19}/><b>Код взломан! Карточка выиграна.</b><strong>№ {rewardSerial}</strong><span>Карточка уже закреплена за твоим аккаунтом. Начислено {points} очков.</span></div>}
         {codeStatus === 'lost' && <div className="games-result">Попытки закончились. Начни новую игру, чтобы попробовать ещё раз.</div>}
