@@ -50,6 +50,9 @@ function App() {
   const [busy, setBusy] = useState(false)
   const [cards, setCards] = useState(1)
   const [listings, setListings] = useState([])
+  const [listingPage, setListingPage] = useState(1)
+  const [listingCount, setListingCount] = useState(0)
+  const [selectedListing, setSelectedListing] = useState(null)
   const [marketLoading, setMarketLoading] = useState(false)
   const [marketError, setMarketError] = useState('')
   const [qty, setQty] = useState('')
@@ -172,23 +175,37 @@ function App() {
     } finally { setAdminActionBusy(false) }
   }
 
-  async function loadMarketplace() {
+  async function loadMarketplace(page = listingPage) {
+    const pageSize = 5
     setMarketLoading(true)
     setMarketError('')
     try {
-      const { data, error } = await supabase
+      const from = (page - 1) * pageSize
+      const { data, error, count } = await supabase
         .from('market_listings')
-        .select('id, seller_id, quantity, price, status, created_at')
+        .select('id, seller_id, quantity, price, status, created_at', { count: 'exact' })
         .eq('status', 'active')
         .order('created_at', { ascending: false })
-        .limit(100)
+        .range(from, from + pageSize - 1)
       if (error) throw error
+      setListingCount(count || 0)
       const listingIds = (data || []).map(item => item.id)
-      const { data: currencies, error: currencyError } = listingIds.length
-        ? await supabase.from('market_listing_currencies').select('listing_id, asset_code').in('listing_id', listingIds)
-        : { data: [], error: null }
-      if (currencyError) throw currencyError
-      const currencyByListing = Object.fromEntries((currencies || []).map(row => [row.listing_id, row.asset_code]))
+      const [currencyResult, inventoryResult] = await Promise.all([
+        listingIds.length
+          ? supabase.from('market_listing_currencies').select('listing_id, asset_code').in('listing_id', listingIds)
+          : Promise.resolve({ data: [], error: null }),
+        listingIds.length
+          ? supabase.from('card_inventory').select('listing_id, serial_number').in('listing_id', listingIds)
+          : Promise.resolve({ data: [], error: null })
+      ])
+      if (currencyResult.error) throw currencyResult.error
+      if (inventoryResult.error) throw inventoryResult.error
+      const currencyByListing = Object.fromEntries((currencyResult.data || []).map(row => [row.listing_id, row.asset_code]))
+      const serialsByListing = {}
+      ;(inventoryResult.data || []).forEach(row => {
+        if (!serialsByListing[row.listing_id]) serialsByListing[row.listing_id] = []
+        serialsByListing[row.listing_id].push(row.serial_number)
+      })
       const pricedListings = (data || []).filter(item => currencyByListing[item.id])
       const sellerIds = [...new Set(pricedListings.map(item => item.seller_id).filter(Boolean))]
       let profilesById = {}
@@ -212,7 +229,8 @@ function App() {
           qty: Number(item.quantity || 0),
           price: Number(item.price || 0),
           assetCode: currencyByListing[item.id],
-          createdAt: item.created_at
+          createdAt: item.created_at,
+          serialNumbers: serialsByListing[item.id] || []
         }
       }))
     } catch (error) {
@@ -243,7 +261,7 @@ function App() {
   }, [tab, isAdmin])
 
   useEffect(() => {
-    if (tab === 'market') loadMarketplace()
+    if (tab === 'market') loadMarketplace(listingPage)
   }, [tab])
 
   async function checkAdmin(currentUser) {
@@ -1729,7 +1747,9 @@ function App() {
       })
       if (error) throw error
       setNotice(`Объявление создано. Выставлено юнитов: ${data?.quantity ?? q}. Пока объявление активно, эти юниты нельзя перевести другому пользователю.`)
-      await Promise.all([loadMarketplace(), loadFinancialData()])
+      setListingPage(1)
+      setSelectedListing(null)
+      await Promise.all([loadMarketplace(1), loadFinancialData()])
     } catch (error) {
       setNotice('Не удалось выставить юниты: ' + (error.message || 'ошибка операции'))
     } finally {
@@ -1747,7 +1767,7 @@ function App() {
       const { error } = await supabase.rpc('cancel_own_market_listing', { p_listing_id: item.id })
       if (error) throw error
       setNotice(t('Объявление удалено. Юниты возвращены в вашу коллекцию.'))
-      await Promise.all([loadMarketplace(), loadFinancialData()])
+      await Promise.all([loadMarketplace(listingPage), loadFinancialData()])
     } catch (error) {
       setNotice(t('Не удалось удалить объявление: ') + (error.message || 'ошибка операции'))
     } finally {
@@ -1891,39 +1911,69 @@ function App() {
         {tab === 'support' && <SupportCenter userEmail={user?.email} language={language} />}
 
         {tab === 'market' && <>
-          <div className="market-head">
-            <div><h2>P2P маркетплейс</h2><p className="muted">Пользователи устанавливают собственные цены.</p></div>
-          </div>
-          <div className="panel">
-            <h3><Plus size={18} /> Создать объявление</h3>
-            <form className="listing-form" onSubmit={addListing}>
-              <label>Количество<input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} /></label>
-              <label>Цена за юнит<input type="number" min="0.00000001" step="any" placeholder="Введите цену" value={price} onChange={e => setPrice(e.target.value)} /></label>
-              <label>Криптовалюта<select value={assetCode} onChange={e => setAssetCode(e.target.value)} required><option value="">Выберите криптовалюту</option><option value="USDT">USDT</option><option value="BTC">BTC</option><option value="ETH">ETH</option><option value="TON">TON</option><option value="USDC">USDC</option></select></label>
-              {showListingPreview && <div className="seller-net-preview">
-                <div><span>Вы получите за 1 юнит</span><b>{money(listingUnitNet)} {assetCode}</b></div>
-                <div><span>Общая сумма продажи</span><b>{money(listingGross)} {assetCode}</b></div>
-                <div><span>Удержание при продаже</span><b>{money(listingFee)} {assetCode}</b></div>
-                <div className="seller-net-total"><span>Всего к получению</span><b>{money(listingNet)} {assetCode}</b></div>
-              </div>}
-              <button className="primary" type="submit" disabled={busy || !showListingPreview}>{busy ? 'Выставляем...' : 'Выставить'}</button>
-            </form>
-          </div>
-          <div className="section-title">ЮНИТЫ В ПРОДАЖЕ</div>
-          <div className="listing-list">
-            {marketLoading ? <p className="muted">Загружаем предложения...</p>
-              : marketError ? <p className="muted">Не удалось загрузить предложения: {marketError}</p>
-              : listings.length === 0 ? <div className="panel"><h3>Пока нет юнитов в продаже</h3><p className="muted">Когда пользователи разместят реальные юниты, предложения появятся здесь.</p></div>
-              : listings.map(item => <div className="listing market-card" key={item.id}>
-                <div className="listing-avatar">{item.avatarUrl ? <img src={item.avatarUrl} alt="" /> : <UserRound />}</div>
-                <div className="listing-info"><b>{item.seller}</b><span>VORTEX UNIT · {item.qty} шт.</span></div>
-                <div className="listing-price"><b>{item.price.toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за юнит</span></div>
-                <div className="listing-price"><b>{(item.price * item.qty).toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за всё количество</span></div>
-                {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>{t('Удалить объявление')}</button>}
-              </div>)}
-          </div>
-          <button type="button" className="outline" onClick={loadMarketplace} disabled={marketLoading}>Обновить предложения</button>
-          <p className="disclaimer">В витрине отображаются только реальные активные объявления из базы данных. Покупка и расчёты будут доступны после подключения безопасного механизма сделки.</p>
+          {selectedListing ? <section className="market-detail panel">
+            <div className="market-detail-top">
+              <button type="button" className="outline" onClick={() => setSelectedListing(null)}>← {t('Назад к объявлениям')}</button>
+              <span className="market-detail-status">{t('Активное объявление')}</span>
+            </div>
+            <div className="market-detail-title">
+              <div className="market-detail-emblem"><Gem size={30} /></div>
+              <div><h2>{t('Предложение VORTEX UNIT')}</h2><p className="muted">{t('Подробная информация об объявлении')}</p></div>
+            </div>
+            <div className="market-detail-grid">
+              <div><span>{t('Продавец')}</span><b>{selectedListing.seller}</b></div>
+              <div><span>{t('Количество юнитов')}</span><b>{selectedListing.qty}</b></div>
+              <div><span>{t('Цена за один юнит')}</span><b>{selectedListing.price.toLocaleString('en-US', { maximumFractionDigits: 8 })} {selectedListing.assetCode}</b></div>
+              <div><span>{t('Стоимость всего предложения')}</span><b>{(selectedListing.price * selectedListing.qty).toLocaleString('en-US', { maximumFractionDigits: 8 })} {selectedListing.assetCode}</b></div>
+              <div><span>{t('Дата размещения')}</span><b>{new Date(selectedListing.createdAt).toLocaleString(language === 'ru' ? 'ru-RU' : language === 'uk' ? 'uk-UA' : language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : 'en-US')}</b></div>
+              <div><span>{t('Номера юнитов')}</span><b>{selectedListing.serialNumbers.length ? selectedListing.serialNumbers.join(', ') : t('Будут показаны после синхронизации реестра')}</b></div>
+            </div>
+            <div className="market-detail-seller">
+              {selectedListing.avatarUrl ? <img src={selectedListing.avatarUrl} alt="" /> : <UserRound size={22} />}
+              <div><small>{t('Объявление размещено пользователем')}</small><b>{selectedListing.seller}</b></div>
+            </div>
+            {selectedListing.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(selectedListing)}>{t('Удалить объявление')}</button>}
+            <p className="disclaimer">{t('Покупка и расчёты станут доступны после подключения безопасного механизма сделки.')}</p>
+          </section> : <>
+            <div className="market-head">
+              <div><h2>P2P маркетплейс</h2><p className="muted">Пользователи устанавливают собственные цены.</p></div>
+            </div>
+            <div className="panel">
+              <h3><Plus size={18} /> Создать объявление</h3>
+              <form className="listing-form" onSubmit={addListing}>
+                <label>Количество<input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} /></label>
+                <label>Цена за юнит<input type="number" min="0.00000001" step="any" placeholder="Введите цену" value={price} onChange={e => setPrice(e.target.value)} /></label>
+                <label>Криптовалюта<select value={assetCode} onChange={e => setAssetCode(e.target.value)} required><option value="">Выберите криптовалюту</option><option value="USDT">USDT</option><option value="BTC">BTC</option><option value="ETH">ETH</option><option value="TON">TON</option><option value="USDC">USDC</option></select></label>
+                {showListingPreview && <div className="seller-net-preview">
+                  <div><span>Вы получите за 1 юнит</span><b>{money(listingUnitNet)} {assetCode}</b></div>
+                  <div><span>Общая сумма продажи</span><b>{money(listingGross)} {assetCode}</b></div>
+                  <div><span>Удержание при продаже</span><b>{money(listingFee)} {assetCode}</b></div>
+                  <div className="seller-net-total"><span>Всего к получению</span><b>{money(listingNet)} {assetCode}</b></div>
+                </div>}
+                <button className="primary" type="submit" disabled={busy || !showListingPreview}>{busy ? 'Выставляем...' : 'Выставить'}</button>
+              </form>
+            </div>
+            <div className="section-title">ЮНИТЫ В ПРОДАЖЕ</div>
+            <div className="listing-list">
+              {marketLoading ? <p className="muted">Загружаем предложения...</p>
+                : marketError ? <p className="muted">Не удалось загрузить предложения: {marketError}</p>
+                : listings.length === 0 ? <div className="panel"><h3>Пока нет юнитов в продаже</h3><p className="muted">Когда пользователи разместят реальные юниты, предложения появятся здесь.</p></div>
+                : listings.map(item => <div className="listing market-card market-card-compact" key={item.id}>
+                  <div className="listing-avatar">{item.avatarUrl ? <img src={item.avatarUrl} alt="" /> : <UserRound />}</div>
+                  <div className="listing-info"><b>{item.seller}</b><span>VORTEX UNIT · {item.qty} шт.</span></div>
+                  <div className="listing-price"><b>{item.price.toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за юнит</span></div>
+                  <button type="button" className="outline market-open-detail" onClick={() => setSelectedListing(item)}>{t('Подробнее')}</button>
+                  {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>{t('Удалить объявление')}</button>}
+                </div>)}
+            </div>
+            {listingCount > 5 && <nav className="market-pagination" aria-label={t('Страницы объявлений')}>
+              <button type="button" className="outline" disabled={listingPage <= 1 || marketLoading} onClick={() => { const next = listingPage - 1; setListingPage(next); loadMarketplace(next) }}>{t('Назад')}</button>
+              <span>{t('Страница')} {listingPage} {t('из')} {Math.ceil(listingCount / 5)}</span>
+              <button type="button" className="outline" disabled={listingPage >= Math.ceil(listingCount / 5) || marketLoading} onClick={() => { const next = listingPage + 1; setListingPage(next); loadMarketplace(next) }}>{t('Далее')}</button>
+            </nav>}
+            <button type="button" className="outline" onClick={() => loadMarketplace(listingPage)} disabled={marketLoading}>Обновить предложения</button>
+            <p className="disclaimer">В витрине отображаются только реальные активные объявления из базы данных. Покупка и расчёты будут доступны после подключения безопасного механизма сделки.</p>
+          </>}
         </>}
 
         {tab === 'referrals' && <>
