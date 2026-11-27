@@ -2267,7 +2267,8 @@ function App() {
               </svg>
             </div>
             <div className="card-bottom"><b>VORTEX</b><span>COLLECT · CONNECT · TRADE</span></div>
-          </div>/div>
+          </div>
+          </div>
         </section>
         <section className="public-features">
           <article><Store /><b>P2P-маркетплейс</b><span>Просмотр предложений и торговые функции для пользователей.</span></article>
