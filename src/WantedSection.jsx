@@ -1,0 +1,76 @@
+import React, { useCallback, useEffect, useState } from 'react'
+import { Search, Plus, MessageCircle, Send, X, CheckCircle, Store, RefreshCw } from 'lucide-react'
+
+const assets = ['USDT','BTC','ETH','TON','USDC']
+const words = {
+ ru:{intro:'Публикуйте запросы на карточки, которых не хватает в вашей коллекции. Другие участники смогут откликнуться и написать вам.',create:'Создать запрос',number:'Номер карточки',qty:'Количество',price:'Желаемая цена за одну',currency:'Валюта',details:'Дополнительные условия',detailsHint:'Необязательно',publish:'Опубликовать запрос',open:'Активные запросы',mine:'Мои запросы',empty:'Пока нет активных запросов. Станьте первым!',respond:'Откликнуться',own:'Ваш запрос',close:'Закрыть запрос',closed:'Запрос закрыт',fulfilled:'Карточка найдена',chat:'Переписка',send:'Отправить',message:'Напишите сообщение...',back:'К списку запросов',market:'Перейти в маркетплейс',confirm:'Отметить карточку найденной?',loading:'Загрузка...',login:'Войдите в аккаунт, чтобы пользоваться запросами.',error:'Не удалось выполнить действие: ',sent:'Отклик отправлен. Теперь можно переписываться.',created:'Запрос опубликован.',closedOk:'Запрос закрыт.',foundOk:'Запрос отмечен как выполненный.',step:'Условия сделки обсуждайте здесь. Оплата и передача карточки — только через маркетплейс.'},
+ uk:{intro:'Публікуйте запити на картки, яких бракує у вашій колекції. Інші учасники зможуть відгукнутися та написати вам.',create:'Створити запит',number:'Номер картки',qty:'Кількість',price:'Бажана ціна за одну',currency:'Валюта',details:'Додаткові умови',detailsHint:'Необов’язково',publish:'Опублікувати запит',open:'Активні запити',mine:'Мої запити',empty:'Активних запитів поки немає.',respond:'Відгукнутися',own:'Ваш запит',close:'Закрити запит',closed:'Запит закрито',fulfilled:'Картку знайдено',chat:'Листування',send:'Надіслати',message:'Напишіть повідомлення...',back:'До списку',market:'Перейти до маркетплейсу',confirm:'Позначити картку знайденою?',loading:'Завантаження...',login:'Увійдіть, щоб користуватися запитами.',error:'Не вдалося виконати дію: ',sent:'Відгук надіслано.',created:'Запит опубліковано.',closedOk:'Запит закрито.',foundOk:'Запит виконано.',step:'Умови обговорюйте тут. Оплата й передавання — лише через маркетплейс.'},
+ en:{intro:'Post requests for cards missing from your collection. Other members can respond and message you.',create:'Create request',number:'Card number',qty:'Quantity',price:'Desired price per card',currency:'Currency',details:'Additional details',detailsHint:'Optional',publish:'Publish request',open:'Active requests',mine:'My requests',empty:'No active requests yet.',respond:'Respond',own:'Your request',close:'Close request',closed:'Request closed',fulfilled:'Card found',chat:'Conversation',send:'Send',message:'Write a message...',back:'Back to requests',market:'Open marketplace',confirm:'Mark this request as fulfilled?',loading:'Loading...',login:'Sign in to use card requests.',error:'Action failed: ',sent:'Response sent.',created:'Request published.',closedOk:'Request closed.',foundOk:'Request marked fulfilled.',step:'Discuss terms here. Payment and card transfer must happen through the marketplace.'},
+ de:{intro:'Erstellen Sie Anfragen für Karten, die Ihrer Sammlung fehlen. Andere Mitglieder können antworten und Ihnen schreiben.',create:'Anfrage erstellen',number:'Kartennummer',qty:'Anzahl',price:'Wunschpreis pro Karte',currency:'Währung',details:'Zusätzliche Angaben',detailsHint:'Optional',publish:'Anfrage veröffentlichen',open:'Aktive Anfragen',mine:'Meine Anfragen',empty:'Noch keine aktiven Anfragen.',respond:'Antworten',own:'Ihre Anfrage',close:'Anfrage schließen',closed:'Anfrage geschlossen',fulfilled:'Karte gefunden',chat:'Nachrichten',send:'Senden',message:'Nachricht schreiben...',back:'Zurück',market:'Marktplatz öffnen',confirm:'Als erfüllt markieren?',loading:'Laden...',login:'Bitte anmelden, um Anfragen zu nutzen.',error:'Aktion fehlgeschlagen: ',sent:'Antwort gesendet.',created:'Anfrage veröffentlicht.',closedOk:'Anfrage geschlossen.',foundOk:'Als erfüllt markiert.',step:'Bedingungen hier besprechen. Zahlung und Übertragung nur über den Marktplatz.'},
+ fr:{intro:'Publiez des demandes pour les cartes manquantes à votre collection. Les autres membres peuvent répondre et vous écrire.',create:'Créer une demande',number:'Numéro de carte',qty:'Quantité',price:'Prix souhaité par carte',currency:'Devise',details:'Détails supplémentaires',detailsHint:'Facultatif',publish:'Publier la demande',open:'Demandes actives',mine:'Mes demandes',empty:'Aucune demande active pour le moment.',respond:'Répondre',own:'Votre demande',close:'Fermer la demande',closed:'Demande fermée',fulfilled:'Carte trouvée',chat:'Conversation',send:'Envoyer',message:'Écrire un message...',back:'Retour',market:'Ouvrir le marché',confirm:'Marquer comme terminée ?',loading:'Chargement...',login:'Connectez-vous pour utiliser les demandes.',error:'Échec : ',sent:'Réponse envoyée.',created:'Demande publiée.',closedOk:'Demande fermée.',foundOk:'Demande terminée.',step:'Discutez ici. Paiement et transfert uniquement via la marketplace.'}
+}
+export default function WantedSection({ supabase, user, language='ru', onNotice, onMarketplace }) {
+ const c=words[language]||words.ru
+ const [requests,setRequests]=useState([]),[busy,setBusy]=useState(false),[showForm,setShowForm]=useState(false)
+ const [card,setCard]=useState(''),[quantity,setQuantity]=useState('1'),[price,setPrice]=useState(''),[asset,setAsset]=useState('USDT'),[details,setDetails]=useState('')
+ const [thread,setThread]=useState(null),[messages,setMessages]=useState([]),[reply,setReply]=useState('')
+ const [responses,setResponses]=useState([])
+ const load=useCallback(async()=>{
+  if(!user){setRequests([]);return}
+  setBusy(true)
+  const {data,error}=await supabase.from('card_requests').select('*').order('created_at',{ascending:false}).limit(100)
+  if(error) onNotice(c.error+error.message); else setRequests(data||[])
+  setBusy(false)
+ },[supabase,user?.id,language])
+ useEffect(()=>{load()},[load])
+ const create=async e=>{
+  e.preventDefault();if(!user){onNotice(c.login);return}
+  const q=Number(quantity),p=Number(price)
+  if(!card.trim()||!Number.isInteger(q)||q<1||!Number.isFinite(p)||p<=0){onNotice('Проверьте номер, количество и цену.');return}
+  setBusy(true)
+  const {error}=await supabase.from('card_requests').insert({requester_id:user.id,card_number:card.trim(),quantity:q,desired_price:p,asset_code:asset,details:details.trim()})
+  setBusy(false);if(error){onNotice(c.error+error.message);return}
+  setCard('');setQuantity('1');setPrice('');setDetails('');setShowForm(false);onNotice(c.created);load()
+ }
+ const openThread=async (request,responseId)=>{
+  setBusy(true)
+  let id=responseId
+  if(!id){
+   const {data:existing}=await supabase.from('card_request_responses').select('id').eq('request_id',request.id).eq('responder_id',user.id).maybeSingle()
+   id=existing?.id
+   if(!id){const {data,error}=await supabase.from('card_request_responses').insert({request_id:request.id,responder_id:user.id}).select('id').single();if(error){setBusy(false);onNotice(c.error+error.message);return}id=data.id}
+  }
+  const {data,error}=await supabase.from('card_request_messages').select('id,response_id,sender_id,body,created_at').eq('response_id',id).order('created_at')
+  setBusy(false);if(error){onNotice(c.error+error.message);return}
+  setThread({request,responseId:id});setMessages(data||[])
+  const {data:all}=await supabase.from('card_request_responses').select('id,request_id,responder_id').eq('request_id',request.id)
+  setResponses(all||[])
+ }
+ const send=async e=>{
+  e.preventDefault();if(!reply.trim()||!thread)return
+  const {data,error}=await supabase.from('card_request_messages').insert({response_id:thread.responseId,sender_id:user.id,body:reply.trim()}).select('id,response_id,sender_id,body,created_at').single()
+  if(error){onNotice(c.error+error.message);return}
+  setMessages(v=>[...v,data]);setReply('')
+ }
+ const respond=async request=>{
+  if(!user){onNotice(c.login);return}
+  if(request.requester_id===user.id){onNotice(c.own);return}
+  await openThread(request,null);onNotice(c.sent)
+ }
+ const close=async(status)=>{
+  if(!thread && !status)return
+  const request=thread?.request
+  if(!request||request.requester_id!==user.id)return
+  const {error}=await supabase.from('card_requests').update({status,updated_at:new Date().toISOString()}).eq('id',request.id)
+  if(error){onNotice(c.error+error.message);return}
+  setThread(null);onNotice(status==='fulfilled'?c.foundOk:c.closedOk);load()
+ }
+ if(!user)return <section className="wanted-archive"><div className="wanted-hero"><div className="wanted-kicker"><Search size={16}/> VORTEX UNIT · CARD REQUESTS</div><h2>Ищу карточку</h2><p>{c.intro}</p></div><p>{c.login}</p></section>
+ if(thread)return <section className="wanted-archive"><button className="outline" onClick={()=>setThread(null)}>{c.back}</button><div className="panel wanted-thread"><h2>{c.chat}: #{thread.request.card_number}</h2><p>{c.step}</p><div className="wanted-messages">{messages.map(m=><div className={m.sender_id===user.id?'wanted-message mine':'wanted-message'} key={m.id}><p>{m.body}</p><small>{new Date(m.created_at).toLocaleString()}</small></div>)}</div><form onSubmit={send} className="wanted-send"><input value={reply} onChange={e=>setReply(e.target.value)} placeholder={c.message} maxLength="2000" required/><button className="primary" disabled={busy}><Send size={16}/>{c.send}</button></form>{thread.request.requester_id===user.id&&thread.request.status==='open'&&<div className="wanted-actions"><button className="outline" onClick={()=>close('closed')}>{c.close}</button><button className="primary" onClick={()=>close('fulfilled')}><CheckCircle size={16}/>{c.fulfilled}</button></div>}</div></section>
+ return <section className="wanted-archive"><div className="wanted-hero"><div className="wanted-kicker"><Search size={16}/> VORTEX UNIT · CARD REQUESTS</div><h2>Ищу карточку</h2><p>{c.intro}</p></div>
+ <div className="wanted-toolbar"><h3>{c.open}</h3><button className="primary" onClick={()=>setShowForm(v=>!v)}><Plus size={17}/>{c.create}</button></div>
+ {showForm&&<form className="panel wanted-form" onSubmit={create}><label>{c.number}<input value={card} onChange={e=>setCard(e.target.value)} maxLength="40" required placeholder="001"/></label><label>{c.qty}<input type="number" min="1" step="1" value={quantity} onChange={e=>setQuantity(e.target.value)} required/></label><label>{c.price}<input type="number" min="0.00000001" step="any" value={price} onChange={e=>setPrice(e.target.value)} required/></label><label>{c.currency}<select value={asset} onChange={e=>setAsset(e.target.value)}>{assets.map(a=><option key={a}>{a}</option>)}</select></label><label className="wanted-wide">{c.details}<textarea value={details} onChange={e=>setDetails(e.target.value)} maxLength="1000" placeholder={c.detailsHint}/></label><button className="primary" disabled={busy}>{busy?c.loading:c.publish}</button></form>}
+ {busy&&!requests.length?<p>{c.loading}</p>:requests.length===0?<div className="panel wanted-empty">{c.empty}</div>:<div className="wanted-list">{requests.map(r=><article className="panel wanted-card" key={r.id}><div><span className="wanted-card-number">#{r.card_number}</span><span className="wanted-card-status">{r.status==='open'?c.open:r.status==='fulfilled'?c.fulfilled:c.closed}</span></div><h3>{r.quantity} × {Number(r.desired_price).toLocaleString('en-US',{maximumFractionDigits:8})} {r.asset_code}</h3>{r.details&&<p>{r.details}</p>}<small>{new Date(r.created_at).toLocaleString()}</small><div className="wanted-actions">{r.requester_id===user.id?<><button className="outline" onClick={()=>{setThread({request:r,responseId:null});setMessages([])}}>{c.mine}</button>{r.status==='open'&&<button className="outline" onClick={async()=>{const {error}=await supabase.from('card_requests').update({status:'closed'}).eq('id',r.id);if(error)onNotice(c.error+error.message);else{onNotice(c.closedOk);load()}}}>{c.close}</button>}</>:<button className="primary" disabled={r.status!=='open'} onClick={()=>respond(r)}><MessageCircle size={16}/>{c.respond}</button>}</div></article>)}</div>}
+ <p className="wanted-rule">{c.step} <button className="outline" onClick={onMarketplace}><Store size={15}/>{c.market}</button></p>
+ </section>
+}
