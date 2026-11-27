@@ -203,7 +203,8 @@ grant execute on function public.game_submit_code(uuid,text) to authenticated;
 -- Seed ten genuine, unique four-digit prize serials that do not already exist.
 -- They become official card numbers only when a player wins and they are
 -- inserted into card_inventory. Existing issued numbers are never touched.
-do $seed$declare
+do $seed$
+declare
   v_serial text;
   v_added integer := 0;
 begin
