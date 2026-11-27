@@ -1726,10 +1726,14 @@ function App() {
     setNotice('Отправляем запрос на регистрацию...')
     try {
       const ref = new URLSearchParams(location.search).get('ref')
+      const emailRedirectTo = new URL(import.meta.env.BASE_URL, location.origin).toString()
       const { data, error } = await supabase.auth.signUp({
         email: cleanEmail,
         password,
-        options: { data: { referral_code: ref, push_consent_status: 'pending', push_notifications_enabled: false } }
+        options: {
+          emailRedirectTo,
+          data: { referral_code: ref, push_consent_status: 'pending', push_notifications_enabled: false }
+        }
       })
       if (error) throw error
 
