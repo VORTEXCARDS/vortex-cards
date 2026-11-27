@@ -35,9 +35,6 @@ begin
       raise exception 'Имя пользователя должно содержать от 2 до 24 символов.';
     end if;
 
-    if v_username !~ '^[[:alnum:]_ .-]+$' then
-      raise exception 'Имя пользователя содержит недопустимые символы.';
-    end if;
 
     insert into public.user_profiles (user_id, username, avatar_url, updated_at)
     values (new.id, v_username, null, now());
