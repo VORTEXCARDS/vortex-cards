@@ -2501,12 +2501,7 @@ function App() {
             <div className="card-bottom"><b>VORTEX</b><span>COLLECT · CONNECT · TRADE</span></div>
           </div>
         </section>
-        <section className="public-features">
-          <article><Store /><b>P2P-маркетплейс</b><span>Просмотр предложений и торговые функции для пользователей.</span></article>
-          <article><Users /><b>Сообщество</b><span>Приглашайте друзей и развивайтесь вместе с VORTEX.</span></article>
-        </section>
         <section className="public-discover">
-          <div className="public-discover-heading"><span>ОТКРОЙ VORTEX UNIT</span><h2>Больше, чем цифровая коллекция</h2><p>Два направления, которые объединяют коллекционеров и помогают развивать собственную коллекцию.</p></div>
           <div className="public-discover-grid">
             <article className="public-discover-card public-discover-collection">
               <div className="public-discover-icon"><Gem /></div>
