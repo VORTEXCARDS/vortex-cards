@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { createRoot, createPortal } from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
+import { createPortal } from 'react-dom'
 import { createClient } from '@supabase/supabase-js'
 import {
   Home, CreditCard, Users, Store, UserRound, Shield, ArrowLeftRight,
