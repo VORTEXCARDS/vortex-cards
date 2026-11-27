@@ -407,3 +407,44 @@ body{
 .seller-net-preview b{color:#f4f2ff;font-variant-numeric:tabular-nums;white-space:nowrap}
 .seller-net-preview .seller-net-total{padding-top:10px;border-top:1px solid #3b4260;color:#d8fff6;font-weight:800}
 .seller-net-preview .seller-net-total b{color:#35dfc5;font-size:16px}
+
+
+/* VORTEX UNIT rare-card archive */
+.rare-archive{display:grid;gap:18px}
+.rare-hero{position:relative;overflow:hidden;padding:26px;border:1px solid #65502f;border-radius:18px;background:radial-gradient(circle at 88% 8%,#a77a302e,transparent 38%),radial-gradient(circle at 5% 100%,#44265b55,transparent 45%),linear-gradient(125deg,#171323,#101725 70%,#171421);box-shadow:0 18px 45px #0004}
+.rare-kicker{display:flex;align-items:center;gap:8px;color:#d7b66c;font-size:10px;font-weight:800;letter-spacing:1.5px}
+.rare-hero h2{margin:14px 0 8px;font-size:clamp(25px,4vw,36px);color:#f7e8c5}
+.rare-hero>p{max-width:620px;margin:0;color:#bdb5c5;font-size:13px;line-height:1.7}
+.rare-hero-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.rare-hero-stats>div{display:grid;gap:4px;min-width:145px;padding:11px 14px;border:1px solid #80643c77;border-radius:10px;background:#080b1499}
+.rare-hero-stats b{color:#e8c77c;font-size:18px;letter-spacing:1px}
+.rare-hero-stats span{color:#aaa2b5;font-size:10px}
+.rare-tabs{display:flex;gap:8px;overflow-x:auto;padding:3px 1px 8px}
+.rare-tabs button{display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;padding:11px 14px;border:1px solid #39344e;border-radius:10px;background:#111321;color:#aaa5ba;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.rare-tabs button.active{border-color:#9a7842;background:linear-gradient(120deg,#392b1d,#211b2e);color:#f1d28c}
+.rare-section-heading h3{margin:0 0 5px;font-size:17px}
+.rare-section-heading p{margin:0;color:var(--muted);font-size:11px}
+.rare-category-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.rare-category{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px;min-height:180px;padding:19px;border:1px solid #51446c;border-radius:14px;background:linear-gradient(145deg,#1b1829,#101724)}
+.rare-category:after{content:"";position:absolute;width:115px;height:115px;right:-38px;top:-38px;border:1px solid #ffffff12;transform:rotate(45deg);box-shadow:0 0 0 12px #ffffff05,0 0 0 25px #ffffff03}
+.rare-category>span{font-size:9px;font-weight:900;letter-spacing:1.6px;color:#b9a0e8}
+.rare-category>b{font-size:27px;letter-spacing:1px;color:#f0e9fb}
+.rare-category>small{font-size:11px;color:#d7c9a8;font-weight:700}
+.rare-category>p{max-width:390px;margin:0;color:#aaa5b8;font-size:11px;line-height:1.6}
+.rare-category.legendary{border-color:#927044;background:linear-gradient(145deg,#332719,#171622)}
+.rare-category.legendary>span,.rare-category.legendary>b{color:#e7c77d}
+.rare-category.elite{border-color:#596b86}
+.rare-category.elite>span,.rare-category.elite>b{color:#c7d8f2}
+.rare-category.special>span,.rare-category.special>b{color:#a8d9df}
+.rare-category.limited>span,.rare-category.limited>b{color:#c8a5ee}
+.rare-note,.rare-admin-hint{display:flex;align-items:flex-start;gap:12px;padding:15px;border:1px solid #51442f;border-radius:12px;background:#201b163b;color:#e4c77f}
+.rare-note svg,.rare-admin-hint svg{flex:0 0 auto;margin-top:2px}
+.rare-note b{font-size:12px}
+.rare-note p{margin:5px 0 0;color:#bdb4a6;font-size:11px;line-height:1.6}
+.rare-empty{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px}
+.rare-empty>svg{color:#c6a35d;margin-bottom:8px}
+.rare-empty h3{margin:5px 0}
+.rare-empty p{max-width:520px;margin:0;color:var(--muted);font-size:12px;line-height:1.7}
+.rare-admin-hint{border-color:#4c426a;background:#211a333d;color:#bca8e8;font-size:11px;line-height:1.6}
+.rare-disclaimer{margin:0;color:#77758c;font-size:10px;line-height:1.6}
+@media(max-width:600px){.rare-hero{padding:21px 18px}.rare-category-grid{grid-template-columns:1fr}.rare-category{min-height:155px}.rare-tabs button{padding:10px 11px;font-size:10px}}
