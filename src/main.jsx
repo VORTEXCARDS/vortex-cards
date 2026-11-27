@@ -697,6 +697,8 @@ function App() {
     "Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.": "Тут буде доступна історія випуску та зміни власників кожної картки після підключення реєстру.",
     "Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.": "Адміністративне керування резервом 001–010, тиражами та передаванням буде додано до окремої панелі після затвердження правил випуску.",
     "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "Розділ створено як колекційний каталог. Продаж, аукціон і грошовий викуп тут поки не активні.",
+    "Разделы редких карточек": "Розділи рідкісних карток",
+
   },
   "en": {
     "Обзор": "Overview",
@@ -888,6 +890,8 @@ function App() {
     "Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.": "The issue and ownership history of each card will be available here once the registry is connected.",
     "Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.": "Admin controls for the 001–010 reserve, edition sizes, and transfers will be added to a separate panel after the release rules are approved.",
     "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "This section is a collector catalogue. Sales, auctions, and cash buybacks are not active yet.",
+    "Разделы редких карточек": "Rare card sections",
+
   },
   "de": {
     "Обзор": "Übersicht",
@@ -1077,6 +1081,8 @@ function App() {
     "Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.": "Nach Anbindung des Registers ist hier die Ausgabe- und Besitzhistorie jeder Karte verfügbar.",
     "Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.": "Die Verwaltung der Reserve 001–010, der Auflagen und Übertragungen wird nach Festlegung der Ausgaberegeln in einem separaten Adminbereich ergänzt.",
     "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "Dieser Bereich ist ein Sammlerkatalog. Verkäufe, Auktionen und Rückkäufe gegen Geld sind noch nicht aktiv.",
+    "Разделы редких карточек": "Bereiche für seltene Karten",
+
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
@@ -1250,6 +1256,8 @@ function App() {
     "Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.": "L’historique d’émission et des changements de propriétaire de chaque carte sera disponible après la connexion du registre.",
     "Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.": "La gestion administrative de la réserve 001–010, des tirages et des transferts sera ajoutée à un panneau distinct après validation des règles d’émission.",
     "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "Cette section est un catalogue de collection. Les ventes, enchères et rachats en argent ne sont pas encore actifs.",
+    "Разделы редких карточек": "Sections des cartes rares",
+
   },
 }
 
@@ -1586,7 +1594,7 @@ function App() {
               <div><b>LIMITED</b><span>{t('Ограниченные серии')}</span></div>
             </div>
           </div>
-          <div className="rare-tabs" role="tablist" aria-label="Разделы редких карточек">
+          <div className="rare-tabs" role="tablist" aria-label={t('Разделы редких карточек')}>
             <button type="button" className={rareView === 'gallery' ? 'active' : ''} onClick={() => setRareView('gallery')}><Gem size={16}/> {t('Галерея')}</button>
             <button type="button" className={rareView === 'collection' ? 'active' : ''} onClick={() => setRareView('collection')}><CreditCard size={16}/> {t('Моя коллекция')}</button>
             <button type="button" className={rareView === 'sets' ? 'active' : ''} onClick={() => setRareView('sets')}><Layers size={16}/> {t('Комплекты')}</button>
