@@ -671,6 +671,32 @@ function App() {
     "Придумайте новый пароль для своего аккаунта.": "Придумайте новий пароль для свого облікового запису.",
     "Скрыть пароль": "Приховати пароль",
     "Показать пароль": "Показати пароль",
+      "Редкие карточки": "Рідкісні картки",
+    "COLLECTOR ARCHIVE": "КОЛЕКЦІЙНИЙ АРХІВ",
+    "Коллекционные номера, ограниченные тиражи и история карточек VORTEX UNIT.": "Колекційні номери, обмежені тиражі та історія карток VORTEX UNIT.",
+    "Резерв основателей": "Резерв засновників",
+    "Ограниченные серии": "Обмежені серії",
+    "Галерея": "Галерея",
+    "Моя коллекция": "Моя колекція",
+    "Комплекты": "Комплекти",
+    "История": "Історія",
+    "Категории редкости": "Категорії рідкісності",
+    "Предварительная структура коллекционного архива": "Попередня структура колекційного архіву",
+    "Легендарные": "Легендарні",
+    "Элитные номера": "Елітні номери",
+    "Коллекционные номера": "Колекційні номери",
+    "Специальные серии": "Спеціальні серії",
+    "Самые редкие первые номера. В дальнейшем могут быть переданы пользователям.": "Найрідкісніші перші номери. Надалі можуть бути передані користувачам.",
+    "Особые карточки с отдельными ограниченными тиражами.": "Особливі картки з окремими обмеженими тиражами.",
+    "Редкость определяется установленным тиражом каждого номера.": "Рідкісність визначається встановленим тиражем кожного номера.",
+    "Отдельные тематические выпуски с собственными правилами и тиражами.": "Окремі тематичні випуски з власними правилами та тиражами.",
+    "Правило тиража": "Правило тиражу",
+    "У каждого номера заранее задаётся максимальное количество экземпляров. После утверждения тираж не увеличивается. Одинаковые номера могут существовать в пределах этого тиража.": "Для кожного номера заздалегідь встановлюється максимальна кількість примірників. Після затвердження тираж не збільшується. Однакові номери можуть існувати в межах цього тиражу.",
+    "Здесь будут отображаться редкие карточки, которыми владеет пользователь. Подключение реестра карточек будет выполнено отдельным этапом.": "Тут відображатимуться рідкісні картки, якими володіє користувач. Реєстр карток буде підключено окремим етапом.",
+    "Здесь появятся собранные наборы, например из трёх заданных номеров. Условия комплектов и возможного выкупа будут опубликованы до запуска.": "Тут з’являться зібрані набори, наприклад із трьох визначених номерів. Умови комплектів і можливого викупу буде оприлюднено до запуску.",
+    "Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.": "Тут буде доступна історія випуску та зміни власників кожної картки після підключення реєстру.",
+    "Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.": "Адміністративне керування резервом 001–010, тиражами та передаванням буде додано до окремої панелі після затвердження правил випуску.",
+    "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "Розділ створено як колекційний каталог. Продаж, аукціон і грошовий викуп тут поки не активні.",
   },
   "en": {
     "Обзор": "Overview",
@@ -836,6 +862,32 @@ function App() {
     "Push-уведомления": "Push notifications",
     "Получать важные сообщения VORTEX UNIT на этом устройстве.": "Receive important VORTEX UNIT messages on this device.",
     "Получать push-уведомления": "Receive push notifications",
+      "Редкие карточки": "Rare Cards",
+    "COLLECTOR ARCHIVE": "COLLECTOR ARCHIVE",
+    "Коллекционные номера, ограниченные тиражи и история карточек VORTEX UNIT.": "Collectible numbers, limited editions, and VORTEX UNIT card history.",
+    "Резерв основателей": "Founders’ reserve",
+    "Ограниченные серии": "Limited series",
+    "Галерея": "Gallery",
+    "Моя коллекция": "My collection",
+    "Комплекты": "Sets",
+    "История": "History",
+    "Категории редкости": "Rarity categories",
+    "Предварительная структура коллекционного архива": "Preliminary collector archive structure",
+    "Легендарные": "Legendary",
+    "Элитные номера": "Elite numbers",
+    "Коллекционные номера": "Collectible numbers",
+    "Специальные серии": "Special series",
+    "Самые редкие первые номера. В дальнейшем могут быть переданы пользователям.": "The rarest first numbers. They may be transferred to users in the future.",
+    "Особые карточки с отдельными ограниченными тиражами.": "Special cards with their own limited editions.",
+    "Редкость определяется установленным тиражом каждого номера.": "Rarity is determined by the fixed edition size of each number.",
+    "Отдельные тематические выпуски с собственными правилами и тиражами.": "Separate themed releases with their own rules and edition sizes.",
+    "Правило тиража": "Edition rule",
+    "У каждого номера заранее задаётся максимальное количество экземпляров. После утверждения тираж не увеличивается. Одинаковые номера могут существовать в пределах этого тиража.": "A maximum number of copies is set for each number in advance. Once approved, the edition size cannot be increased. Identical numbers may exist within that edition limit.",
+    "Здесь будут отображаться редкие карточки, которыми владеет пользователь. Подключение реестра карточек будет выполнено отдельным этапом.": "Rare cards owned by the user will appear here. The card registry will be connected in a separate phase.",
+    "Здесь появятся собранные наборы, например из трёх заданных номеров. Условия комплектов и возможного выкупа будут опубликованы до запуска.": "Collected sets, such as groups of three specified numbers, will appear here. Set and potential buyback terms will be published before launch.",
+    "Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.": "The issue and ownership history of each card will be available here once the registry is connected.",
+    "Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.": "Admin controls for the 001–010 reserve, edition sizes, and transfers will be added to a separate panel after the release rules are approved.",
+    "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "This section is a collector catalogue. Sales, auctions, and cash buybacks are not active yet.",
   },
   "de": {
     "Обзор": "Übersicht",
@@ -999,6 +1051,32 @@ function App() {
     "Придумайте новый пароль для своего аккаунта.": "Legen Sie ein neues Passwort für Ihr Konto fest.",
     "Скрыть пароль": "Passwort verbergen",
     "Показать пароль": "Passwort anzeigen",
+      "Редкие карточки": "Seltene Karten",
+    "COLLECTOR ARCHIVE": "SAMMLERARCHIV",
+    "Коллекционные номера, ограниченные тиражи и история карточек VORTEX UNIT.": "Sammlernummern, limitierte Auflagen und die Kartenhistorie von VORTEX UNIT.",
+    "Резерв основателей": "Gründerreserve",
+    "Ограниченные серии": "Limitierte Serien",
+    "Галерея": "Galerie",
+    "Моя коллекция": "Meine Sammlung",
+    "Комплекты": "Sets",
+    "История": "Verlauf",
+    "Категории редкости": "Seltenheitskategorien",
+    "Предварительная структура коллекционного архива": "Vorläufige Struktur des Sammlerarchivs",
+    "Легендарные": "Legendär",
+    "Элитные номера": "Elite-Nummern",
+    "Коллекционные номера": "Sammlernummern",
+    "Специальные серии": "Sonderserien",
+    "Самые редкие первые номера. В дальнейшем могут быть переданы пользователям.": "Die seltensten ersten Nummern. Sie können später an Nutzer übertragen werden.",
+    "Особые карточки с отдельными ограниченными тиражами.": "Besondere Karten mit eigenen limitierten Auflagen.",
+    "Редкость определяется установленным тиражом каждого номера.": "Die Seltenheit wird durch die festgelegte Auflage jeder Nummer bestimmt.",
+    "Отдельные тематические выпуски с собственными правилами и тиражами.": "Separate Themeneditionen mit eigenen Regeln und Auflagen.",
+    "Правило тиража": "Auflagenregel",
+    "У каждого номера заранее задаётся максимальное количество экземпляров. После утверждения тираж не увеличивается. Одинаковые номера могут существовать в пределах этого тиража.": "Für jede Nummer wird vorab eine maximale Stückzahl festgelegt. Nach der Freigabe wird die Auflage nicht erhöht. Gleiche Nummern können innerhalb dieser Auflage mehrfach existieren.",
+    "Здесь будут отображаться редкие карточки, которыми владеет пользователь. Подключение реестра карточек будет выполнено отдельным этапом.": "Hier werden die seltenen Karten des Nutzers angezeigt. Das Kartenregister wird in einer separaten Phase angebunden.",
+    "Здесь появятся собранные наборы, например из трёх заданных номеров. Условия комплектов и возможного выкупа будут опубликованы до запуска.": "Hier erscheinen zusammengestellte Sets, zum Beispiel aus drei festgelegten Nummern. Die Bedingungen für Sets und einen möglichen Rückkauf werden vor dem Start veröffentlicht.",
+    "Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.": "Nach Anbindung des Registers ist hier die Ausgabe- und Besitzhistorie jeder Karte verfügbar.",
+    "Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.": "Die Verwaltung der Reserve 001–010, der Auflagen und Übertragungen wird nach Festlegung der Ausgaberegeln in einem separaten Adminbereich ergänzt.",
+    "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "Dieser Bereich ist ein Sammlerkatalog. Verkäufe, Auktionen und Rückkäufe gegen Geld sind noch nicht aktiv.",
   },
   "fr": {
     "Обзор": "Vue d’ensemble",
@@ -1146,6 +1224,32 @@ function App() {
     "Ошибка загрузки:": "Erreur de chargement :",
     "Загрузка юнитов...": "Chargement des Units…",
     "Юниты пока не удалось загрузить.": "Impossible de charger les Units pour le moment.",
+      "Редкие карточки": "Cartes rares",
+    "COLLECTOR ARCHIVE": "ARCHIVES DES COLLECTIONNEURS",
+    "Коллекционные номера, ограниченные тиражи и история карточек VORTEX UNIT.": "Numéros de collection, éditions limitées et historique des cartes VORTEX UNIT.",
+    "Резерв основателей": "Réserve des fondateurs",
+    "Ограниченные серии": "Séries limitées",
+    "Галерея": "Galerie",
+    "Моя коллекция": "Ma collection",
+    "Комплекты": "Ensembles",
+    "История": "Historique",
+    "Категории редкости": "Catégories de rareté",
+    "Предварительная структура коллекционного архива": "Structure préliminaire des archives de collection",
+    "Легендарные": "Légendaires",
+    "Элитные номера": "Numéros élite",
+    "Коллекционные номера": "Numéros de collection",
+    "Специальные серии": "Séries spéciales",
+    "Самые редкие первые номера. В дальнейшем могут быть переданы пользователям.": "Les tout premiers numéros, les plus rares. Ils pourront être transférés aux utilisateurs ultérieurement.",
+    "Особые карточки с отдельными ограниченными тиражами.": "Cartes spéciales avec leurs propres éditions limitées.",
+    "Редкость определяется установленным тиражом каждого номера.": "La rareté est déterminée par le tirage fixé pour chaque numéro.",
+    "Отдельные тематические выпуски с собственными правилами и тиражами.": "Des éditions thématiques distinctes avec leurs propres règles et tirages.",
+    "Правило тиража": "Règle de tirage",
+    "У каждого номера заранее задаётся максимальное количество экземпляров. После утверждения тираж не увеличивается. Одинаковые номера могут существовать в пределах этого тиража.": "Un nombre maximal d’exemplaires est fixé à l’avance pour chaque numéro. Une fois approuvé, le tirage ne peut plus être augmenté. Des numéros identiques peuvent exister dans la limite de ce tirage.",
+    "Здесь будут отображаться редкие карточки, которыми владеет пользователь. Подключение реестра карточек будет выполнено отдельным этапом.": "Les cartes rares détenues par l’utilisateur apparaîtront ici. Le registre des cartes sera connecté lors d’une étape distincte.",
+    "Здесь появятся собранные наборы, например из трёх заданных номеров. Условия комплектов и возможного выкупа будут опубликованы до запуска.": "Les ensembles constitués, par exemple de trois numéros définis, apparaîtront ici. Les conditions des ensembles et d’un éventuel rachat seront publiées avant le lancement.",
+    "Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.": "L’historique d’émission et des changements de propriétaire de chaque carte sera disponible après la connexion du registre.",
+    "Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.": "La gestion administrative de la réserve 001–010, des tirages et des transferts sera ajoutée à un panneau distinct après validation des règles d’émission.",
+    "Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.": "Cette section est un catalogue de collection. Les ventes, enchères et rachats en argent ne sont pas encore actifs.",
   },
 }
 
@@ -1379,7 +1483,7 @@ function App() {
     ['home', t('Обзор'), Home],
     ['cards', t('Юниты'), CreditCard],
     ['market', t('Маркетплейс'), Store],
-    ['rare', 'Редкие карточки', Gem],
+    ['rare', t('Редкие карточки'), Gem],
     ['referrals', t('Рефералы'), Users],
     ['profile', t('Профиль'), UserRound],
     ['support', t('Поддержка'), Mail]
@@ -1474,35 +1578,35 @@ function App() {
 
         {tab === 'rare' && <section className="rare-archive">
           <div className="rare-hero">
-            <div className="rare-kicker"><Gem size={15} /> VORTEX UNIT · COLLECTOR ARCHIVE</div>
-            <h2>Редкие карточки</h2>
-            <p>Коллекционные номера, ограниченные тиражи и история карточек VORTEX UNIT.</p>
+            <div className="rare-kicker"><Gem size={15} /> VORTEX UNIT · {t('COLLECTOR ARCHIVE')}</div>
+            <h2>{t('Редкие карточки')}</h2>
+            <p>{t('Коллекционные номера, ограниченные тиражи и история карточек VORTEX UNIT.')}</p>
             <div className="rare-hero-stats">
-              <div><b>001–010</b><span>Резерв основателей</span></div>
-              <div><b>LIMITED</b><span>Ограниченные серии</span></div>
+              <div><b>001–010</b><span>{t('Резерв основателей')}</span></div>
+              <div><b>LIMITED</b><span>{t('Ограниченные серии')}</span></div>
             </div>
           </div>
           <div className="rare-tabs" role="tablist" aria-label="Разделы редких карточек">
-            <button type="button" className={rareView === 'gallery' ? 'active' : ''} onClick={() => setRareView('gallery')}><Gem size={16}/> Галерея</button>
-            <button type="button" className={rareView === 'collection' ? 'active' : ''} onClick={() => setRareView('collection')}><CreditCard size={16}/> Моя коллекция</button>
-            <button type="button" className={rareView === 'sets' ? 'active' : ''} onClick={() => setRareView('sets')}><Layers size={16}/> Комплекты</button>
-            <button type="button" className={rareView === 'history' ? 'active' : ''} onClick={() => setRareView('history')}><History size={16}/> История</button>
+            <button type="button" className={rareView === 'gallery' ? 'active' : ''} onClick={() => setRareView('gallery')}><Gem size={16}/> {t('Галерея')}</button>
+            <button type="button" className={rareView === 'collection' ? 'active' : ''} onClick={() => setRareView('collection')}><CreditCard size={16}/> {t('Моя коллекция')}</button>
+            <button type="button" className={rareView === 'sets' ? 'active' : ''} onClick={() => setRareView('sets')}><Layers size={16}/> {t('Комплекты')}</button>
+            <button type="button" className={rareView === 'history' ? 'active' : ''} onClick={() => setRareView('history')}><History size={16}/> {t('История')}</button>
           </div>
           {rareView === 'gallery' && <>
-            <div className="rare-section-heading"><div><h3>Категории редкости</h3><p>Предварительная структура коллекционного архива</p></div></div>
+            <div className="rare-section-heading"><div><h3>{t('Категории редкости')}</h3><p>{t('Предварительная структура коллекционного архива')}</p></div></div>
             <div className="rare-category-grid">
-              <article className="rare-category legendary"><span>LEGENDARY</span><b>001–010</b><small>Резерв основателей</small><p>Самые редкие первые номера. В дальнейшем могут быть переданы пользователям.</p></article>
-              <article className="rare-category elite"><span>ELITE</span><b>011–050</b><small>Элитные номера</small><p>Особые карточки с отдельными ограниченными тиражами.</p></article>
-              <article className="rare-category special"><span>SPECIAL</span><b>051–100</b><small>Коллекционные номера</small><p>Редкость определяется установленным тиражом каждого номера.</p></article>
-              <article className="rare-category limited"><span>LIMITED SERIES</span><b>LIMITED</b><small>Специальные серии</small><p>Отдельные тематические выпуски с собственными правилами и тиражами.</p></article>
+              <article className="rare-category legendary"><span>LEGENDARY</span><b>001–010</b><small>{t('Резерв основателей')}</small><p>{t('Самые редкие первые номера. В дальнейшем могут быть переданы пользователям.')}</p></article>
+              <article className="rare-category elite"><span>ELITE</span><b>011–050</b><small>{t('Элитные номера')}</small><p>{t('Особые карточки с отдельными ограниченными тиражами.')}</p></article>
+              <article className="rare-category special"><span>SPECIAL</span><b>051–100</b><small>{t('Коллекционные номера')}</small><p>{t('Редкость определяется установленным тиражом каждого номера.')}</p></article>
+              <article className="rare-category limited"><span>LIMITED SERIES</span><b>LIMITED</b><small>{t('Специальные серии')}</small><p>{t('Отдельные тематические выпуски с собственными правилами и тиражами.')}</p></article>
             </div>
-            <div className="rare-note"><Trophy size={19}/><div><b>Правило тиража</b><p>У каждого номера заранее задаётся максимальное количество экземпляров. После утверждения тираж не увеличивается. Одинаковые номера могут существовать в пределах этого тиража.</p></div></div>
+            <div className="rare-note"><Trophy size={19}/><div><b>{t('Правило тиража')}</b><p>{t('У каждого номера заранее задаётся максимальное количество экземпляров. После утверждения тираж не увеличивается. Одинаковые номера могут существовать в пределах этого тиража.')}</p></div></div>
           </>}
-          {rareView === 'collection' && <div className="panel rare-empty"><CreditCard size={28}/><h3>Моя редкая коллекция</h3><p>Здесь будут отображаться редкие карточки, которыми владеет пользователь. Подключение реестра карточек будет выполнено отдельным этапом.</p></div>}
-          {rareView === 'sets' && <div className="panel rare-empty"><Layers size={28}/><h3>Коллекционные комплекты</h3><p>Здесь появятся собранные наборы, например из трёх заданных номеров. Условия комплектов и возможного выкупа будут опубликованы до запуска.</p></div>}
-          {rareView === 'history' && <div className="panel rare-empty"><History size={28}/><h3>История карточек</h3><p>Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.</p></div>}
-          {isAdmin && <div className="rare-admin-hint"><Shield size={17}/><span>Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.</span></div>}
-          <p className="rare-disclaimer">Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.</p>
+          {rareView === 'collection' && <div className="panel rare-empty"><CreditCard size={28}/><h3>{t('Моя коллекция')}</h3><p>{t('Здесь будут отображаться редкие карточки, которыми владеет пользователь. Подключение реестра карточек будет выполнено отдельным этапом.')}</p></div>}
+          {rareView === 'sets' && <div className="panel rare-empty"><Layers size={28}/><h3>{t('Комплекты')}</h3><p>{t('Здесь появятся собранные наборы, например из трёх заданных номеров. Условия комплектов и возможного выкупа будут опубликованы до запуска.')}</p></div>}
+          {rareView === 'history' && <div className="panel rare-empty"><History size={28}/><h3>{t('История')}</h3><p>{t('Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.')}</p></div>}
+          {isAdmin && <div className="rare-admin-hint"><Shield size={17}/><span>{t('Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.')}</span></div>}
+          <p className="rare-disclaimer">{t('Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.')}</p>
         </section>}
 
         {tab === 'support' && <SupportCenter userEmail={user?.email} language={language} />}
