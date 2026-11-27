@@ -543,6 +543,7 @@ function App() {
     "Рефералы": "Реферали",
     "Профиль": "Профіль",
     "Поддержка": "Підтримка",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · СПІЛЬНОТА КОЛЕКЦІОНЕРІВ",
     "Администрирование": "Адміністрування",
     "МЕНЮ": "МЕНЮ",
     "Установить": "Встановити",
@@ -551,7 +552,7 @@ function App() {
     "Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».": "Відкрийте меню браузера та виберіть «Додати на головний екран» або «Встановити застосунок».",
     "Приложение уже установлено": "Застосунок уже встановлено",
     "Установка приложения запущена": "Встановлення застосунку розпочато",
-    "NFT · DIGITAL UNITS": "VORTEX · СПІЛЬНОТА КОЛЕКЦІОНЕРІВ",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · СПІЛЬНОТА КОЛЕКЦІОНЕРІВ",
     "Вход или регистрация": "Вхід або реєстрація",
     "Панель администратора": "Панель адміністратора",
     "Статистика посещаемости": "Статистика відвідуваності",
@@ -646,7 +647,7 @@ function App() {
     "Показано записей:": "Показано записів:",
     "юнитов доступно": "юнитів доступно",
     "за юнит": "за юнит",
-    "NFT · DIGITAL UNITS": "VORTEX · СПІЛЬНОТА КОЛЕКЦІОНЕРІВ",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · СПІЛЬНОТА КОЛЕКЦІОНЕРІВ",
     "Зарегистрироваться": "Зареєструватися",
     "VORTEX UNIT — платформа уникальных цифровых юнитов и NFT. Создай аккаунт, управляй своими юнитами и открывай новые возможности.": "VORTEX UNIT — цифрова платформа юнитів. Створіть обліковий запис, керуйте своїми юнітами та відкривайте можливості платформи.",
     "У меня уже есть аккаунт": "У мене вже є обліковий запис",
@@ -742,6 +743,7 @@ function App() {
     "Рефералы": "Referrals",
     "Профиль": "Profile",
     "Поддержка": "Support",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · COLLECTOR COMMUNITY",
     "Администрирование": "Administration",
     "МЕНЮ": "MENU",
     "Установить": "Install",
@@ -750,7 +752,7 @@ function App() {
     "Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».": "Open your browser menu and choose “Add to Home screen” or “Install app”.",
     "Приложение уже установлено": "The app is already installed",
     "Установка приложения запущена": "App installation started",
-    "NFT · DIGITAL UNITS": "VORTEX · COLLECTOR COMMUNITY",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · COLLECTOR COMMUNITY",
     "Вход или регистрация": "Sign in or register",
     "Панель администратора": "Admin panel",
     "Статистика посещаемости": "Traffic statistics",
@@ -867,7 +869,7 @@ function App() {
     "Показано записей:": "Records shown:",
     "юнитов доступно": "units available",
     "за юнит": "per UNIT",
-    "NFT · DIGITAL UNITS": "Digital UNIT platform",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · COLLECTOR COMMUNITY",
     "Email получателя": "Recipient email",
     "Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.": "Only available units can be transferred. Units listed on the marketplace are locked until the listing is removed.",
     "Перевести другому пользователю": "Transfer to another user",
@@ -948,6 +950,7 @@ function App() {
     "Рефералы": "Empfehlungen",
     "Профиль": "Profil",
     "Поддержка": "Support",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · SAMMLER-COMMUNITY",
     "Администрирование": "Administration",
     "МЕНЮ": "MENÜ",
     "Установить": "Installieren",
@@ -956,7 +959,7 @@ function App() {
     "Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».": "Öffnen Sie das Browsermenü und wählen Sie „Zum Startbildschirm hinzufügen“ oder „App installieren“.",
     "Приложение уже установлено": "Die App ist bereits installiert",
     "Установка приложения запущена": "App-Installation gestartet",
-    "NFT · DIGITAL UNITS": "NFT · DIGITALE UNITS",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · SAMMLER-COMMUNITY",
     "Вход или регистрация": "Anmelden oder registrieren",
     "Панель администратора": "Adminbereich",
     "Статистика посещаемости": "Besucherstatistik",
@@ -1073,7 +1076,7 @@ function App() {
     "Показано записей:": "Angezeigte Einträge:",
     "юнитов доступно": "Units verfügbar",
     "за юнит": "pro UNIT",
-    "NFT · DIGITAL UNITS": "VORTEX · SAMMLER-COMMUNITY",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · SAMMLER-COMMUNITY",
     "Email получателя": "E-Mail des Empfängers",
     "Передать можно только свободные юниты. Юниты, выставленные на маркетплейс, заблокированы для перевода до снятия объявления с продажи.": "Nur verfügbare Units können übertragen werden. Auf dem Marktplatz angebotene Units sind bis zum Entfernen des Angebots gesperrt.",
     "Перевести другому пользователю": "An einen anderen Nutzer übertragen",
@@ -1152,6 +1155,7 @@ function App() {
     "Рефералы": "Parrainages",
     "Профиль": "Profil",
     "Поддержка": "Assistance",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · COMMUNAUTÉ DE COLLECTIONNEURS",
     "Администрирование": "Administration",
     "МЕНЮ": "MENU",
     "Установить": "Installer",
@@ -1160,7 +1164,7 @@ function App() {
     "Откройте меню браузера и выберите «Добавить на главный экран» или «Установить приложение».": "Ouvrez le menu du navigateur et choisissez « Ajouter à l’écran d’accueil » ou « Installer l’application ».",
     "Приложение уже установлено": "L’application est déjà installée",
     "Установка приложения запущена": "Installation de l’application lancée",
-    "NFT · DIGITAL UNITS": "VORTEX · COMMUNAUTÉ DE COLLECTIONNEURS",
+    "VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО": "VORTEX · COMMUNAUTÉ DE COLLECTIONNEURS",
     "Вход или регистрация": "Connexion ou inscription",
     "Панель администратора": "Panneau administrateur",
     "Статистика посещаемости": "Statistiques de fréquentation",
@@ -1607,7 +1611,7 @@ function App() {
 
       <main className="main">
         <div className="page-head">
-          <div><div className="eyebrow">{t('NFT · DIGITAL UNITS')}</div><h1>{title}</h1></div>
+          <div><div className="eyebrow">{t('VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО')}</div><h1>{title}</h1></div>
           <div className="avatar">{user?.user_metadata?.avatar_url ? <img src={user.user_metadata.avatar_url} alt="Аватар" /> : (user?.email?.[0]?.toUpperCase() || 'G')}</div>
         </div>
 
@@ -1618,7 +1622,7 @@ function App() {
         {tab === 'home' && <>
           <section className="hero">
             <div className="hero-copy">
-              <div className="pill"><Sparkles size={13} /> NFT · DIGITAL UNITS</div>
+              <div className="pill"><Sparkles size={13} /> VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО</div>
               <h2>Одна единица.<br /><span>Своя ценность.</span></h2>
               <p>Управляй юнитами, приглашай друзей и торгуй на P2P-маркетплейсе VORTEX UNIT.</p>
               <button type="button" className="primary" onClick={() => setTab('market')}>
@@ -1969,7 +1973,7 @@ function App() {
             <button type="button" className="outline full" disabled={pushBusy} onClick={() => savePushPreference(false)}>Не согласен</button>
           </section>
         </div>}
-        <footer>© 2026 VORTEX UNIT <span>NFT · DIGITAL UNITS</span></footer>
+        <footer>© 2026 VORTEX UNIT <span>VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО</span></footer>
       </main>
     </div>
   </div>
@@ -2073,7 +2077,7 @@ function App() {
           <p>Форма обращения доступна после входа в аккаунт, в разделе «Поддержка».</p>
           <button type="button" className="outline" onClick={() => { setPublicFooterOpen(''); openPublicAuth('login') }}>Войти в аккаунт</button>
         </div>}
-        <div className="public-footer-copy">© 2026 VORTEX UNIT <span>NFT · DIGITAL UNITS</span></div>
+        <div className="public-footer-copy">© 2026 VORTEX UNIT <span>VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО</span></div>
       </footer>
     </div>
     return translateTree(publicPage, language, translations)
