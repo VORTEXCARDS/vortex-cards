@@ -33,7 +33,7 @@ export default function WantedSection({ supabase, user, language='ru', onNotice,
   let profilesById={}
   if(otherIds.length){const {data:profiles}=await supabase.from('user_profiles').select('user_id,username,avatar_url').in('user_id',otherIds);profilesById=Object.fromEntries((profiles||[]).map(p=>[p.user_id,p]))}
   setConversations(joined.map(x=>{const otherId=x.request.requester_id===user.id?x.response.responder_id:x.request.requester_id;return {...x,otherId,otherProfile:profilesById[otherId]||{}}}).sort((x,y)=>new Date(y.response.created_at)-new Date(x.response.created_at)))
- ,stepsTitle:'Comment ça marche',step1:'Publier une demande',step1d:'Indiquez le numéro de carte, la quantité recherchée et le prix souhaité par carte.',step2:'Recevoir des réponses',step2d:'Les autres membres verront votre annonce et pourront répondre. Retrouvez les messages dans « Mes conversations ».',step3:'Finaliser l’échange',step3d:'Discutez des détails avec le vendeur. Paiement et transfert uniquement via la marketplace.',priceHint:'Indiquez le prix pour une carte, pas pour la quantité totale.',detailsHint2:'Par exemple : état de la carte, série ou préférences particulières (facultatif).',total:'Montant total souhaité',perCard:'par carte',responses:'Réponses',noResponses:'Aucune réponse pour le moment.',closeOwn:'Fermer l’annonce'},[supabase,user?.id,language])
+  },[supabase,user?.id,language])
  const load=useCallback(async()=>{
   if(!user){setRequests([]);setRequestProfiles({});return}
   setBusy(true)
