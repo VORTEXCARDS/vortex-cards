@@ -150,11 +150,11 @@ begin
   if v_game.attempts >= 8 then raise exception 'Попытки закончились'; end if;
 
   select count(*) into v_exact
-  from generate_series(1,4) n
-  where substr(v_guess,n,1)=substr(v_game.secret_serial,n,1);
+  from generate_series(1,4) as g(pos)
+  where substr(v_guess,g.pos,1)=substr(v_game.secret_serial,g.pos,1);
   select count(*) into v_present
-  from generate_series(1,4) n
-  where position(substr(v_guess,n,1) in v_game.secret_serial)>0;
+  from generate_series(1,4) as g(pos)
+  where position(substr(v_guess,g.pos,1) in v_game.secret_serial)>0;
   v_present := v_present-v_exact;
 
   update public.vortex_game_code_sessions
@@ -208,6 +208,7 @@ declare
   v_serial text;
   v_added integer := 0;
 begin
+  if not exists(select 1 from public.vortex_game_reward_pool) then
   while v_added < 10 loop
     select lpad(n::text,4,'0') into v_serial
     from generate_series(0,9999) n
@@ -226,4 +227,5 @@ begin
     v_added := v_added + 1;
   end loop;
   if v_added < 10 then raise exception 'Не удалось сформировать десять свободных игровых номеров'; end if;
+  end if;
 end $seed$;
