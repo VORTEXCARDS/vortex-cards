@@ -2,6 +2,22 @@
 -- Run this entire file in Supabase SQL Editor as project owner.
 -- The function exposes auth.users only to authenticated administrators.
 
+-- Ensure the account moderation table exists even on older installations.
+create table if not exists public.user_accounts (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  is_blocked boolean not null default false,
+  block_reason text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.user_accounts enable row level security;
+drop policy if exists "Users read own account status" on public.user_accounts;
+create policy "Users read own account status"
+  on public.user_accounts for select to authenticated
+  using (user_id = auth.uid() or public.is_admin());
+
+revoke insert, update, delete on public.user_accounts from anon, authenticated;
+
 create or replace function public.admin_list_users(
   p_search text default null,
   p_limit integer default 100,
