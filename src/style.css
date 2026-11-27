@@ -451,3 +451,23 @@ body{
 
 /* Display the uploaded profile photo in the application header */
 .avatar{overflow:hidden;flex:0 0 40px;padding:0}.avatar img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+
+
+/* VORTEX UNIT standalone card-wanted section */
+.wanted-archive{display:grid;gap:17px}
+.wanted-hero{position:relative;overflow:hidden;padding:25px;border:1px solid #40536c;border-radius:18px;background:radial-gradient(circle at 90% 5%,#1c9eae2b,transparent 38%),radial-gradient(circle at 5% 100%,#552a8050,transparent 45%),linear-gradient(125deg,#15172a,#101725 72%,#121b29);box-shadow:0 18px 45px #0004}
+.wanted-kicker{display:flex;align-items:center;gap:8px;color:#5fe4e1;font-size:10px;font-weight:800;letter-spacing:1.5px}
+.wanted-hero h2{margin:13px 0 8px;font-size:clamp(25px,4vw,35px);color:#f2f0fc}
+.wanted-hero>p{max-width:680px;margin:0;color:#b9b6c9;font-size:13px;line-height:1.7}
+.wanted-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.wanted-flow article{min-width:0;padding:17px;border:1px solid #373650;border-radius:13px;background:linear-gradient(145deg,#19182b,#101724)}
+.wanted-flow article>span{display:grid;place-items:center;width:30px;height:30px;margin-bottom:13px;border:1px solid #287b85;border-radius:9px;color:#52e3df;font-size:11px;font-weight:900}
+.wanted-flow b{display:block;color:#f1effb;font-size:13px;line-height:1.4}
+.wanted-flow p{margin:7px 0 0;color:#a9a5b9;font-size:11px;line-height:1.6}
+.wanted-coming{display:flex;align-items:flex-start;gap:15px;padding:20px;border-color:#3e4b62;background:linear-gradient(120deg,#151d2b,#171329)}
+.wanted-coming-icon{display:grid;place-items:center;flex:0 0 46px;height:46px;border:1px solid #347b86;border-radius:13px;background:#12343d;color:#55e5df}
+.wanted-coming h3{margin:2px 0 7px;color:#f2effb;font-size:16px}
+.wanted-coming p{max-width:760px;margin:0;color:#b1adbf;font-size:12px;line-height:1.7}
+.wanted-status{display:inline-flex;margin-top:12px;padding:6px 10px;border:1px solid #66502f;border-radius:20px;background:#3b2b182e;color:#e5c47d;font-size:10px;font-weight:800}
+.wanted-rule{margin:0;padding:13px 15px;border-left:3px solid #20c9ca;background:#10202a;color:#c5d5dc;font-size:11px;line-height:1.7}
+@media(max-width:700px){.wanted-flow{grid-template-columns:1fr}.wanted-hero{padding:21px 18px}.wanted-coming{padding:16px}}
