@@ -727,3 +727,12 @@ body{
 .games-reward-note p{margin:0;font-size:11px;line-height:1.6}
 .games-reward-note b{color:#ddd4f3}
 @media(max-width:600px){.games-hero{padding:20px}.games-hero-emblem{flex-basis:65px;width:65px;height:65px;border-radius:19px}.games-hero-emblem svg{width:34px}.games-panel{padding:15px}.games-daily{align-items:flex-start;flex-wrap:wrap}.games-daily-copy{width:calc(100% - 65px)}.games-daily button{margin-left:62px}.code-entry{flex-wrap:wrap}.code-entry input{flex:1}.memory-grid{gap:7px}.memory-card{border-radius:9px}}
+
+.code-legend{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:8px auto 12px;color:#aaa6bd;font-size:10px}
+.code-legend span{display:inline-flex;align-items:center;gap:5px}
+.code-legend i{display:inline-block;width:8px;height:8px;border-radius:50%}
+.legend-exact{background:#69e0c7}.legend-present{background:#c9a6ff}.legend-none{background:#777487}
+.code-attempt i.no-match{background:#29283a;color:#a5a1b5}
+.games-result.won{display:flex;flex-direction:column;align-items:center;gap:7px}
+.games-result.won strong{font-size:24px;letter-spacing:3px;color:#b8fff0}
+.games-result.won span{font-size:11px}
