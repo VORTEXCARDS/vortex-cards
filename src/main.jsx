@@ -473,8 +473,29 @@ function App() {
     setIsInstalled(window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true)
 
     if ('serviceWorker' in navigator) {
+      let refreshingAfterUpdate = false
+      const handleControllerChange = () => {
+        if (refreshingAfterUpdate) return
+        refreshingAfterUpdate = true
+        window.location.reload()
+      }
+      navigator.serviceWorker.addEventListener('controllerchange', handleControllerChange)
+
       navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL })
+        .then(registration => {
+          // Проверяем новую версию при каждом открытии установленного приложения.
+          registration.update().catch(error => console.warn('Не удалось проверить обновление приложения:', error))
+        })
         .catch(error => console.error('Не удалось зарегистрировать Service Worker:', error))
+
+      const checkAppUpdate = () => {
+        if (document.visibilityState === 'visible') {
+          navigator.serviceWorker.getRegistration(import.meta.env.BASE_URL)
+            .then(registration => registration?.update())
+            .catch(error => console.warn('Не удалось проверить обновление приложения:', error))
+        }
+      }
+      document.addEventListener('visibilitychange', checkAppUpdate)
     }
 
     if ('caches' in window) {
