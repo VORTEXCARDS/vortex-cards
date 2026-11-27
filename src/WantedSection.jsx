@@ -49,6 +49,35 @@ export default function WantedSection({ supabase, user, language='ru', onNotice,
   setBusy(false)
  },[supabase,user?.id,language])
  useEffect(()=>{load();loadConversations()},[load,loadConversations])
+ useEffect(()=>{
+  if(!user?.id)return
+  let active=true
+  const channel=supabase.channel('wanted-incoming-messages-'+user.id)
+   .on('postgres_changes',{event:'INSERT',schema:'public',table:'card_request_messages'},async payload=>{
+    const message=payload.new
+    if(!message?.response_id||message.sender_id===user.id)return
+    try{
+     const {data:response,error:responseError}=await supabase.from('card_request_responses').select('id,request_id,responder_id').eq('id',message.response_id).maybeSingle()
+     if(responseError||!response)return
+     const {data:request,error:requestError}=await supabase.from('card_requests').select('id,card_number,requester_id').eq('id',response.request_id).maybeSingle()
+     if(requestError||!request||request.requester_id!==user.id)return
+     const {data:profile}=await supabase.from('user_profiles').select('username').eq('user_id',message.sender_id).maybeSingle()
+     if(!active)return
+     const sender=profile?.username||c.unknown
+     const title=(language==='en'?'New message':language==='uk'?'Нове повідомлення':language==='de'?'Neue Nachricht':language==='fr'?'Nouveau message':'Новое сообщение')
+     const body=(language==='en'?'Card #':language==='uk'?'Картка №':language==='de'?'Karte Nr.':language==='fr'?'Carte n°':'Карточка №')+request.card_number+' · '+sender
+     onNotice(title+': '+body)
+     if('Notification' in window&&Notification.permission==='granted'&&document.visibilityState!=='visible'){
+      new Notification('VORTEX UNIT · '+title,{body,tag:'vortex-wanted-'+message.response_id})
+     }
+     if(thread?.responseId===message.response_id){
+      setMessages(current=>current.some(x=>x.id===message.id)?current:[...current,message])
+     }
+     loadConversations()
+    }catch(error){console.warn('Не удалось обработать новое сообщение:',error)}
+   }).subscribe()
+  return ()=>{active=false;supabase.removeChannel(channel)}
+ },[supabase,user?.id,language,thread?.responseId,loadConversations,onNotice,c.unknown])
  const create=async e=>{
   e.preventDefault();if(!user){onNotice(c.login);return}
   const p=Number(price)
