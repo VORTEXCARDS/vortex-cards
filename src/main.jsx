@@ -1541,7 +1541,7 @@ function App() {
       <main className="main">
         <div className="page-head">
           <div><div className="eyebrow">{t('NFT · DIGITAL UNITS')}</div><h1>{title}</h1></div>
-          <div className="avatar">{user?.email?.[0]?.toUpperCase() || 'G'}</div>
+          <div className="avatar">{user?.user_metadata?.avatar_url ? <img src={user.user_metadata.avatar_url} alt="Аватар" /> : (user?.email?.[0]?.toUpperCase() || 'G')}</div>
         </div>
 
         {notice && <div className="notice" role="status">
