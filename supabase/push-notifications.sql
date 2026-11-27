@@ -23,3 +23,13 @@ create policy "Users can manage their own push subscriptions"
   to authenticated
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
+
+-- Enable live message events for the VORTEX UNIT chat.
+do $$
+begin
+  alter publication supabase_realtime add table public.card_request_messages;
+exception
+  when duplicate_object then null;
+  when undefined_object then
+    raise notice 'supabase_realtime publication is not available in this project';
+end $$;
