@@ -64,6 +64,9 @@ function App() {
   const [adminLoading, setAdminLoading] = useState(false)
   const [adminData, setAdminData] = useState([])
   const [adminDataLoading, setAdminDataLoading] = useState(false)
+  const [adminUsers, setAdminUsers] = useState([])
+  const [adminUsersLoading, setAdminUsersLoading] = useState(false)
+  const [adminUserSearch, setAdminUserSearch] = useState('')
   const [financial, setFinancial] = useState({ ledger: [], cards: [], deposits: [], withdrawals: [], exchanges: [], error: '', loading: false })
   const [historyTab, setHistoryTab] = useState('deposits')
   const [transferEmail, setTransferEmail] = useState('')
@@ -170,10 +173,29 @@ function App() {
       const { error } = await supabase.rpc(rpcName, args)
       if (error) throw error
       setNotice(successMessage)
-      await loadAdminData()
+      await Promise.all([loadAdminData(), loadAdminUsers()])
     } catch (error) {
       setNotice('Действие не выполнено: ' + (error.message || 'ошибка сервера'))
     } finally { setAdminActionBusy(false) }
+  }
+
+  async function loadAdminUsers(search = adminUserSearch) {
+    if (!isAdmin) return
+    setAdminUsersLoading(true)
+    try {
+      const { data, error } = await supabase.rpc('admin_list_users', {
+        p_search: search.trim() || null,
+        p_limit: 200,
+        p_offset: 0
+      })
+      if (error) throw error
+      setAdminUsers(data || [])
+    } catch (error) {
+      setAdminUsers([])
+      setNotice('Не удалось загрузить список пользователей: ' + (error.message || 'ошибка сервера'))
+    } finally {
+      setAdminUsersLoading(false)
+    }
   }
 
   async function loadMarketplace(page = listingPage) {
@@ -258,7 +280,7 @@ function App() {
   }
 
   useEffect(() => {
-    if (tab === 'admin' && isAdmin) { loadAdminData(); loadAnalytics() }
+    if (tab === 'admin' && isAdmin) { loadAdminData(); loadAdminUsers(''); loadAnalytics() }
   }, [tab, isAdmin])
 
   useEffect(() => {
@@ -273,13 +295,9 @@ function App() {
     }
     setAdminLoading(true)
     try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', currentUser.id)
-        .maybeSingle()
-      if (error) console.error('Ошибка проверки администратора:', error)
-      setIsAdmin(!error && data?.role === 'admin')
+      const { data, error } = await supabase.rpc('is_admin')
+      if (error) throw error
+      setIsAdmin(data === true)
     } catch (error) {
       console.error('Ошибка проверки администратора:', error)
       setIsAdmin(false)
@@ -2355,6 +2373,49 @@ function App() {
                 </button>
               </>}
           </div>
+          {user && isAdmin && <div className="panel">
+            <div className="admin-head"><Users /><h2>Зарегистрированные пользователи</h2></div>
+            <p className="muted">Список берётся напрямую из защищённого реестра аккаунтов Supabase Auth. Здесь отображаются и новые регистрации, даже если пользователь ещё не заполнил профиль.</p>
+            <form className="listing-form" onSubmit={e => { e.preventDefault(); loadAdminUsers(); }}>
+              <label>Поиск по email, имени или ID пользователя
+                <input value={adminUserSearch} onChange={e => setAdminUserSearch(e.target.value)} placeholder="Введите email, имя или UUID" />
+              </label>
+              <div className="admin-user-toolbar">
+                <button type="submit" className="primary" disabled={adminUsersLoading}>{adminUsersLoading ? 'Поиск...' : 'Найти пользователей'}</button>
+                <button type="button" className="outline" onClick={() => { setAdminUserSearch(''); loadAdminUsers(''); }} disabled={adminUsersLoading}>Показать всех</button>
+              </div>
+            </form>
+            {adminUsersLoading ? <p className="muted">Загружаем пользователей...</p>
+              : adminUsers.length === 0 ? <p className="muted">Пользователи не найдены.</p>
+              : <>
+                <p className="muted">Найдено в текущей выборке: {adminUsers.length}. Максимум 200 записей за запрос.</p>
+                <div style={{ overflowX: 'auto', width: '100%' }}>
+                  <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '760px', fontSize: '12px', textAlign: 'left' }}>
+                    <thead><tr>
+                      {['Email','Имя','Дата регистрации','Почта','Последний вход','ID пользователя','Статус','Действие'].map(label => <th key={label} style={{ padding: '9px', borderBottom: '1px solid #51416f', color: '#27e5d2', whiteSpace: 'nowrap' }}>{label}</th>)}
+                    </tr></thead>
+                    <tbody>
+                      {adminUsers.map(row => {
+                        const account = adminData.find(table => table.name === 'user_accounts')?.rows.find(item => item.user_id === row.user_id)
+                        const blocked = account?.is_blocked === true
+                        return <tr key={row.user_id}>
+                          <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>{row.email || '—'}</td>
+                          <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>{row.username || '—'}</td>
+                          <td style={{ padding: '9px', borderBottom: '1px solid #252438', whiteSpace: 'nowrap' }}>{row.created_at ? new Date(row.created_at).toLocaleString('ru-RU') : '—'}</td>
+                          <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>{row.email_confirmed_at ? 'Подтверждена' : 'Ожидает подтверждения'}</td>
+                          <td style={{ padding: '9px', borderBottom: '1px solid #252438', whiteSpace: 'nowrap' }}>{row.last_sign_in_at ? new Date(row.last_sign_in_at).toLocaleString('ru-RU') : 'Ещё не входил'}</td>
+                          <td style={{ padding: '9px', borderBottom: '1px solid #252438', maxWidth: '190px', overflowWrap: 'anywhere' }}>{row.user_id}</td>
+                          <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>{blocked ? 'Заблокирован' : 'Активен'}</td>
+                          <td style={{ padding: '9px', borderBottom: '1px solid #252438' }}>
+                            {row.user_id !== user.id && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_user_block', { p_user_id: row.user_id, p_blocked: !blocked, p_reason: blocked ? null : 'Блокировка администратором' }, blocked ? 'Аккаунт разблокирован.' : 'Аккаунт заблокирован.')}>{blocked ? 'Разблокировать' : 'Заблокировать'}</button>}
+                          </td>
+                        </tr>
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </>}
+          </div>}
           {user && isAdmin && <div className="panel">
             <h3>Выпустить юнит пользователю</h3>
             <p className="muted">Укажите UUID пользователя из таблицы user_accounts и уникальный серийный номер. Выпуск создаёт запись в реестре карточек.</p>
