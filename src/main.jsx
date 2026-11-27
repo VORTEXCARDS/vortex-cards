@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createClient } from '@supabase/supabase-js'
 import {
   Home, CreditCard, Users, Store, UserRound, Shield, ArrowLeftRight,
-  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, Mail, Gem, Trophy, History, Layers
+  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, Mail, Gem, Trophy, History, Layers, Search
 } from 'lucide-react'
 import './style.css'
 
@@ -518,6 +518,18 @@ function App() {
     "Обзор": "Огляд",
     "Юниты": "Юніти",
     "Маркетплейс": "Маркетплейс",
+    "Ищу карточку": "Шукаю картку",
+    "Размещайте запросы на карточки, которых не хватает в вашей коллекции. Другие участники смогут откликнуться, а условия сделки вы обсудите напрямую.": "Публікуйте запити на картки, яких бракує у вашій колекції. Інші учасники зможуть відгукнутися, а умови угоди ви обговорите напряму.",
+    "Создайте объявление": "Створіть оголошення",
+    "Укажите номер карточки, количество и желаемую цену.": "Вкажіть номер картки, кількість і бажану ціну.",
+    "Договоритесь с продавцом": "Домовтеся з продавцем",
+    "Обсудите наличие и цену в личной переписке VORTEX UNIT.": "Обговоріть наявність і ціну в особистому листуванні VORTEX UNIT.",
+    "Завершите сделку на маркетплейсе": "Завершіть угоду на маркетплейсі",
+    "Продавец размещает карточку на маркетплейсе. Оплата и передача проходят только там.": "Продавець розміщує картку на маркетплейсі. Оплата й передавання відбуваються лише там.",
+    "Раздел готовится к запуску": "Розділ готується до запуску",
+    "Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.": "Форму оголошень, список запитів і особисті повідомлення буде підключено після налаштування захищеного зберігання оголошень і чатів. Зараз публікація запитів і листування ще не працюють.",
+    "Функция пока не активна": "Функція поки не активна",
+    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Важливо: домовленості можна буде обговорювати в чаті, але продавати й купувати картки дозволено лише через маркетплейс VORTEX UNIT."
     "Рефералы": "Реферали",
     "Профиль": "Профіль",
     "Администрирование": "Адміністрування",
@@ -704,6 +716,18 @@ function App() {
     "Обзор": "Overview",
     "Юниты": "Units",
     "Маркетплейс": "Marketplace",
+    "Ищу карточку": "Looking for a card",
+    "Размещайте запросы на карточки, которых не хватает в вашей коллекции. Другие участники смогут откликнуться, а условия сделки вы обсудите напрямую.": "Post requests for cards missing from your collection. Other members can respond and discuss the deal with you directly.",
+    "Создайте объявление": "Create a request",
+    "Укажите номер карточки, количество и желаемую цену.": "Enter the card number, quantity, and desired price.",
+    "Договоритесь с продавцом": "Agree with the seller",
+    "Обсудите наличие и цену в личной переписке VORTEX UNIT.": "Discuss availability and price in VORTEX UNIT private messages.",
+    "Завершите сделку на маркетплейсе": "Complete the deal on the marketplace",
+    "Продавец размещает карточку на маркетплейсе. Оплата и передача проходят только там.": "The seller lists the card on the marketplace. Payment and transfer take place there only.",
+    "Раздел готовится к запуску": "Coming soon",
+    "Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.": "Request forms, the request board, and private messages will be enabled after secure storage for requests and chats is configured. Posting and messaging are not available yet.",
+    "Функция пока не активна": "Not active yet",
+    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Important: users may discuss terms in chat, but cards can only be bought and sold through the VORTEX UNIT marketplace."
     "Рефералы": "Referrals",
     "Профиль": "Profile",
     "Администрирование": "Administration",
@@ -897,6 +921,18 @@ function App() {
     "Обзор": "Übersicht",
     "Юниты": "Units",
     "Маркетплейс": "Marktplatz",
+    "Ищу карточку": "Karte gesucht",
+    "Размещайте запросы на карточки, которых не хватает в вашей коллекции. Другие участники смогут откликнуться, а условия сделки вы обсудите напрямую.": "Stellen Sie Anfragen für Karten ein, die Ihrer Sammlung fehlen. Andere Mitglieder können reagieren und die Bedingungen direkt mit Ihnen besprechen.",
+    "Создайте объявление": "Anfrage erstellen",
+    "Укажите номер карточки, количество и желаемую цену.": "Geben Sie Kartennummer, Anzahl und Wunschpreis an.",
+    "Договоритесь с продавцом": "Mit dem Verkäufer einigen",
+    "Обсудите наличие и цену в личной переписке VORTEX UNIT.": "Besprechen Sie Verfügbarkeit und Preis in privaten VORTEX UNIT-Nachrichten.",
+    "Завершите сделку на маркетплейсе": "Kauf über den Marktplatz abschließen",
+    "Продавец размещает карточку на маркетплейсе. Оплата и передача проходят только там.": "Der Verkäufer stellt die Karte auf dem Marktplatz ein. Zahlung und Übergabe erfolgen ausschließlich dort.",
+    "Раздел готовится к запуску": "Demnächst verfügbar",
+    "Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.": "Anfrageformular, Übersicht und private Nachrichten werden nach Einrichtung der sicheren Speicherung aktiviert. Anfragen und Nachrichten funktionieren derzeit noch nicht.",
+    "Функция пока не активна": "Noch nicht aktiv",
+    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Wichtig: Absprachen sind im Chat möglich, Karten dürfen jedoch nur über den VORTEX UNIT-Marktplatz gekauft und verkauft werden."
     "Рефералы": "Empfehlungen",
     "Профиль": "Profil",
     "Администрирование": "Administration",
@@ -1088,6 +1124,18 @@ function App() {
     "Обзор": "Vue d’ensemble",
     "Юниты": "Units",
     "Маркетплейс": "Marché",
+    "Ищу карточку": "Je cherche une carte",
+    "Размещайте запросы на карточки, которых не хватает в вашей коллекции. Другие участники смогут откликнуться, а условия сделки вы обсудите напрямую.": "Publiez des demandes pour les cartes manquantes à votre collection. Les autres membres pourront répondre et discuter directement des conditions avec vous.",
+    "Создайте объявление": "Créer une demande",
+    "Укажите номер карточки, количество и желаемую цену.": "Indiquez le numéro, la quantité et le prix souhaité.",
+    "Договоритесь с продавцом": "Convenir avec le vendeur",
+    "Обсудите наличие и цену в личной переписке VORTEX UNIT.": "Discutez de la disponibilité et du prix dans la messagerie privée VORTEX UNIT.",
+    "Завершите сделку на маркетплейсе": "Finaliser sur la marketplace",
+    "Продавец размещает карточку на маркетплейсе. Оплата и передача проходят только там.": "Le vendeur publie la carte sur la marketplace. Le paiement et le transfert se font uniquement là.",
+    "Раздел готовится к запуску": "Bientôt disponible",
+    "Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.": "Le formulaire, la liste des demandes et la messagerie seront activés après la configuration du stockage sécurisé. La publication et les messages ne fonctionnent pas encore.",
+    "Функция пока не активна": "Fonction non active",
+    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Important : les conditions pourront être discutées par chat, mais les cartes ne pourront être achetées et vendues que sur la marketplace VORTEX UNIT."
     "Рефералы": "Parrainages",
     "Профиль": "Profil",
     "Администрирование": "Administration",
@@ -1491,6 +1539,7 @@ function App() {
     ['home', t('Обзор'), Home],
     ['cards', t('Юниты'), CreditCard],
     ['market', t('Маркетплейс'), Store],
+    ['wanted', t('Ищу карточку'), Search],
     ['rare', t('Редкие карточки'), Gem],
     ['referrals', t('Рефералы'), Users],
     ['profile', t('Профиль'), UserRound],
@@ -1615,6 +1664,28 @@ function App() {
           {rareView === 'history' && <div className="panel rare-empty"><History size={28}/><h3>{t('История')}</h3><p>{t('Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.')}</p></div>}
           {isAdmin && <div className="rare-admin-hint"><Shield size={17}/><span>{t('Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.')}</span></div>}
           <p className="rare-disclaimer">{t('Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.')}</p>
+        </section>}
+
+        {tab === 'wanted' && <section className="wanted-archive">
+          <div className="wanted-hero">
+            <div className="wanted-kicker"><Search size={16} /> VORTEX UNIT · CARD REQUESTS</div>
+            <h2>{t('Ищу карточку')}</h2>
+            <p>{t('Размещайте запросы на карточки, которых не хватает в вашей коллекции. Другие участники смогут откликнуться, а условия сделки вы обсудите напрямую.')}</p>
+          </div>
+          <div className="wanted-flow">
+            <article><span>01</span><b>{t('Создайте объявление')}</b><p>{t('Укажите номер карточки, количество и желаемую цену.')}</p></article>
+            <article><span>02</span><b>{t('Договоритесь с продавцом')}</b><p>{t('Обсудите наличие и цену в личной переписке VORTEX UNIT.')}</p></article>
+            <article><span>03</span><b>{t('Завершите сделку на маркетплейсе')}</b><p>{t('Продавец размещает карточку на маркетплейсе. Оплата и передача проходят только там.')}</p></article>
+          </div>
+          <div className="panel wanted-coming">
+            <div className="wanted-coming-icon"><Search size={24}/></div>
+            <div>
+              <h3>{t('Раздел готовится к запуску')}</h3>
+              <p>{t('Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.')}</p>
+              <span className="wanted-status">{t('Функция пока не активна')}</span>
+            </div>
+          </div>
+          <p className="wanted-rule">{t('Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.')}</p>
         </section>}
 
         {tab === 'support' && <SupportCenter userEmail={user?.email} language={language} />}
