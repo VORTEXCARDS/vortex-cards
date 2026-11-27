@@ -503,3 +503,22 @@ body{
  .profile-settings-panel{padding:14px}
  .profile-settings-heading h3{font-size:16px}
 }
+
+
+.financial-history{margin-top:22px}
+.financial-history-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px}
+.financial-history-tabs button{border:1px solid #34324f;background:#111525;color:#b9b8ca;border-radius:10px;padding:10px 13px;font:inherit;font-size:12px;cursor:pointer}
+.financial-history-tabs button.active{border-color:#7350d8;background:linear-gradient(110deg,#5225a9,#116c87);color:#fff;box-shadow:0 4px 16px #4020a633}
+.financial-history-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:13px 14px;margin:9px 0;border:1px solid #292c42;border-radius:12px;background:#111624}
+.financial-history-item>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.financial-history-item b{font-size:13px;color:#f0efff;overflow-wrap:anywhere}
+.financial-history-item span{font-size:11px;color:#a8a8bb;overflow-wrap:anywhere}
+.financial-history-amount{text-align:right;align-items:flex-end}
+.financial-history-item .history-status{display:inline-flex;padding:3px 7px;border-radius:20px;background:#25263a;color:#c7c5dc}
+@media(max-width:560px){
+ .financial-history-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .financial-history-tabs button{padding:9px 5px;font-size:11px}
+ .financial-history-item{gap:8px;padding:11px}
+ .financial-history-item b{font-size:12px}
+ .financial-history-item span{font-size:10px}
+}
