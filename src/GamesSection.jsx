@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Brain, LockKeyhole, Trophy, RotateCcw, Sparkles, Target, Zap, Award } from 'lucide-react'
 
 function makeDeck() {
@@ -8,7 +8,7 @@ function makeDeck() {
     .sort(() => Math.random() - 0.5)
 }
 
-export default function GamesSection({ user, onNotice, supabaseClient }) {
+export default function GamesSection({ user, onNotice, onReward, supabaseClient }) {
   const [activeGame, setActiveGame] = useState('code')
   const [gameId, setGameId] = useState('')
   const [guess, setGuess] = useState('')
@@ -17,6 +17,7 @@ export default function GamesSection({ user, onNotice, supabaseClient }) {
   const [codeBusy, setCodeBusy] = useState(false)
   const [rewardSerial, setRewardSerial] = useState('')
   const [points, setPoints] = useState(0)
+  const [lifetimePoints, setLifetimePoints] = useState(0)
   const [deck, setDeck] = useState(makeDeck)
   const [flipped, setFlipped] = useState([])
   const [matched, setMatched] = useState([])
@@ -25,6 +26,17 @@ export default function GamesSection({ user, onNotice, supabaseClient }) {
   const [dailyDone, setDailyDone] = useState(false)
 
   const memoryComplete = matched.length === deck.length
+
+  useEffect(() => {
+    let active = true
+    async function loadPoints() {
+      if (!user?.id) { setLifetimePoints(0); return }
+      const { data, error } = await supabaseClient.from('vortex_game_points').select('points').eq('user_id', user.id)
+      if (!error && active) setLifetimePoints((data || []).reduce((sum, row) => sum + Number(row.points || 0), 0))
+    }
+    loadPoints()
+    return () => { active = false }
+  }, [user?.id, supabaseClient])
 
   async function startCodeGame() {
     if (!user) { onNotice?.('Войди в аккаунт, чтобы начать игру на настоящую карточку.'); return }
@@ -63,8 +75,11 @@ export default function GamesSection({ user, onNotice, supabaseClient }) {
         setRewardSerial(data.serial_number || '')
         setPoints(data.points_awarded || 0)
         setSessionPoints(value => value + (data.points_awarded || 0))
-      } else if (data.status === 'lost') {
+        setLifetimePoints(value => value + (data.points_awarded || 0))
+        await onReward?.()
+      } else if (data.status === 'lost' || data.status === 'expired') {
         setCodeStatus('lost')
+        if (data.status === 'expired') onNotice?.('Время игры истекло. Начни новую игру.')
       }
     } catch (error) {
       onNotice?.('Не удалось проверить код: ' + (error.message || 'ошибка сервера'))
@@ -109,7 +124,7 @@ export default function GamesSection({ user, onNotice, supabaseClient }) {
           <span className="games-kicker"><Sparkles size={14} /> VORTEX ENTERTAINMENT</span>
           <h2>VORTEX <span>GAMES</span></h2>
           <p>Играй, проверяй логику и выигрывай настоящие коллекционные карточки с уникальными серийными номерами.</p>
-          <div className="games-session-score"><Trophy size={18}/><div><b>{sessionPoints}</b><small>Очки в этой игровой сессии</small></div></div>
+          <div className="games-session-score"><Trophy size={18}/><div><b>{sessionPoints}</b><small>Очки в этой игровой сессии · Всего: {lifetimePoints}</small></div></div>
         </div>
         <div className="games-hero-emblem"><Zap size={54}/></div>
       </section>
