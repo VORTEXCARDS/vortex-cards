@@ -38,6 +38,7 @@ function App() {
   const pushServerReady = Boolean(import.meta.env.VITE_VAPID_PUBLIC_KEY)
   const [profileSettingsOpen, setProfileSettingsOpen] = useState(false)
   const [username, setUsername] = useState('')
+  const [signupUsername, setSignupUsername] = useState('')
   const [usernameBusy, setUsernameBusy] = useState(false)
   const [avatarBusy, setAvatarBusy] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -1866,10 +1867,26 @@ function App() {
       setNotice('Пароль должен содержать не менее 6 символов.')
       return
     }
+    const cleanUsername = signupUsername.trim()
+    if (cleanUsername.length < 2 || cleanUsername.length > 24) {
+      setNotice('Имя пользователя должно содержать от 2 до 24 символов.')
+      return
+    }
+    if (!/^[\\p{L}\\p{N}_ .-]+$/u.test(cleanUsername)) {
+      setNotice('Имя может содержать буквы, цифры, пробел, точку, дефис или подчёркивание.')
+      return
+    }
 
     setBusy(true)
     setNotice('Отправляем запрос на регистрацию...')
     try {
+      const { data: existingNames, error: nameCheckError } = await supabase
+        .from('user_profiles').select('user_id').ilike('username', cleanUsername).limit(1)
+      if (nameCheckError) throw nameCheckError
+      if (existingNames?.length) {
+        setNotice('Это имя пользователя уже занято. Придумайте другое.')
+        return
+      }
       const ref = new URLSearchParams(location.search).get('ref')
       const emailRedirectTo = new URL(import.meta.env.BASE_URL, location.origin).toString()
       const { data, error } = await supabase.auth.signUp({
@@ -1877,7 +1894,7 @@ function App() {
         password,
         options: {
           emailRedirectTo,
-          data: { referral_code: ref, push_consent_status: 'pending', push_notifications_enabled: false }
+          data: { username: cleanUsername, referral_code: ref, push_consent_status: 'pending', push_notifications_enabled: false }
         }
       })
       if (error) throw error
@@ -2294,7 +2311,8 @@ function App() {
               </section>}
             </> : authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
               <p className="muted">{t('Укажите email, который использовали при регистрации. Мы отправим на него ссылку для восстановления доступа.')}</p>
-              <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
+              {authMode === 'signup' && <label>Имя пользователя<input type="text" value={signupUsername} onChange={e => setSignupUsername(e.target.value)} placeholder="Например, VORTEX" minLength="2" maxLength="24" required autoComplete="nickname" /></label>}
+           <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
               <button type="submit" className="primary full" disabled={busy}>{busy ? t('Отправляем...') : t('Отправить ссылку')}</button>
               <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('login'); setNotice('') }}>{t('Вернуться ко входу')}</button>
             </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
