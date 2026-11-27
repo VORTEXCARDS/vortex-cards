@@ -548,6 +548,10 @@ function App() {
 
   const translations = {
   "uk": {
+    "Удалить объявление": "Видалити оголошення",
+    "Удалить это объявление? Юниты вернутся в вашу коллекцию.": "Видалити це оголошення? Юніти повернуться до вашої колекції.",
+    "Объявление удалено. Юниты возвращены в вашу коллекцию.": "Оголошення видалено. Юніти повернено до вашої колекції.",
+    "Не удалось удалить объявление: ": "Не вдалося видалити оголошення: ",
     "Обзор": "Огляд",
     "Юниты": "Юніти",
     "Маркетплейс": "Маркетплейс",
@@ -787,6 +791,10 @@ function App() {
     "Управление платформой": "Керування платформою",
   },
   "en": {
+    "Удалить объявление": "Delete listing",
+    "Удалить это объявление? Юниты вернутся в вашу коллекцию.": "Delete this listing? The units will return to your collection.",
+    "Объявление удалено. Юниты возвращены в вашу коллекцию.": "Listing deleted. The units have been returned to your collection.",
+    "Не удалось удалить объявление: ": "Could not delete listing: ",
     "Обзор": "Overview",
     "Юниты": "Units",
     "Маркетплейс": "Marketplace",
@@ -1033,6 +1041,10 @@ function App() {
     "Управление платформой": "Platform management",
   },
   "de": {
+    "Удалить объявление": "Anzeige löschen",
+    "Удалить это объявление? Юниты вернутся в вашу коллекцию.": "Diese Anzeige löschen? Die Units werden Ihrer Sammlung zurückgegeben.",
+    "Объявление удалено. Юниты возвращены в вашу коллекцию.": "Anzeige gelöscht. Die Units wurden Ihrer Sammlung zurückgegeben.",
+    "Не удалось удалить объявление: ": "Anzeige konnte nicht gelöscht werden: ",
     "Обзор": "Übersicht",
     "Юниты": "Units",
     "Маркетплейс": "Marktplatz",
@@ -1277,6 +1289,10 @@ function App() {
     "Управление платформой": "Plattform verwalten",
   },
   "fr": {
+    "Удалить объявление": "Supprimer l’annonce",
+    "Удалить это объявление? Юниты вернутся в вашу коллекцию.": "Supprimer cette annonce ? Les unités seront rendues à votre collection.",
+    "Объявление удалено. Юниты возвращены в вашу коллекцию.": "Annonce supprimée. Les unités ont été rendues à votre collection.",
+    "Не удалось удалить объявление: ": "Impossible de supprimer l’annonce : ",
     "Обзор": "Vue d’ensemble",
     "Юниты": "Units",
     "Маркетплейс": "Marché",
@@ -1723,14 +1739,17 @@ function App() {
 
   async function cancelOwnListing(item) {
     if (!user || !item?.id || !item.isMine || busy) return
+    if (!window.confirm(t('Удалить это объявление? Юниты вернутся в вашу коллекцию.'))) return
     setBusy(true)
     try {
+      // The secure database action marks the listing as cancelled and releases its cards.
+      // Keeping the record preserves the transaction/audit history.
       const { error } = await supabase.rpc('cancel_own_market_listing', { p_listing_id: item.id })
       if (error) throw error
-      setNotice('Объявление снято с продажи. Юниты снова доступны для перевода.')
+      setNotice(t('Объявление удалено. Юниты возвращены в вашу коллекцию.'))
       await Promise.all([loadMarketplace(), loadFinancialData()])
     } catch (error) {
-      setNotice('Не удалось снять объявление: ' + (error.message || 'ошибка операции'))
+      setNotice(t('Не удалось удалить объявление: ') + (error.message || 'ошибка операции'))
     } finally {
       setBusy(false)
     }
@@ -1900,7 +1919,7 @@ function App() {
                 <div className="listing-info"><b>{item.seller}</b><span>VORTEX UNIT · {item.qty} шт.</span></div>
                 <div className="listing-price"><b>{item.price.toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за юнит</span></div>
                 <div className="listing-price"><b>{(item.price * item.qty).toLocaleString('en-US', { maximumFractionDigits: 8 })} {item.assetCode}</b><span>за всё количество</span></div>
-                {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>Снять с продажи</button>}
+                {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>{t('Удалить объявление')}</button>}
               </div>)}
           </div>
           <button type="button" className="outline" onClick={loadMarketplace} disabled={marketLoading}>Обновить предложения</button>
