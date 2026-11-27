@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, createPortal } from 'react-dom/client'
 import { createClient } from '@supabase/supabase-js'
 import {
   Home, CreditCard, Users, Store, UserRound, Shield, ArrowLeftRight,
@@ -359,6 +359,24 @@ function App() {
   useEffect(() => {
     localStorage.setItem('vortex-language', language)
   }, [language])
+
+  // Keep the public login dialog centered in the viewport, outside transformed page containers.
+  useEffect(() => {
+    if (!publicAuthOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const closeOnEscape = event => {
+      if (event.key === 'Escape') {
+        setPublicAuthOpen(false)
+        setNotice('')
+      }
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [publicAuthOpen])
 
   useEffect(() => {
     setUsername(user?.user_metadata?.username || '')
@@ -2486,27 +2504,28 @@ function App() {
           <article><Store /><b>P2P-маркетплейс</b><span>Просмотр предложений и торговые функции для пользователей.</span></article>
           <article><Users /><b>Сообщество</b><span>Приглашайте друзей и развивайтесь вместе с VORTEX.</span></article>
         </section>
+        <section className="public-discover">
+          <div className="public-discover-heading"><span>ОТКРОЙ VORTEX UNIT</span><h2>Больше, чем цифровая коллекция</h2><p>Два направления, которые объединяют коллекционеров и помогают развивать собственную коллекцию.</p></div>
+          <div className="public-discover-grid">
+            <article className="public-discover-card public-discover-collection">
+              <div className="public-discover-icon"><Gem /></div>
+              <span className="public-discover-kicker">01 · КОЛЛЕКЦИЯ</span>
+              <h3>Редкие серии и уникальные номера</h3>
+              <p>Открывайте уровни коллекции VORTEX UNIT, следите за сериями и собирайте собственную историю юнитов.</p>
+              <div className="public-series-tags"><span>LEGENDARY</span><span>ELITE</span><span>SPECIAL</span><span>LIMITED</span></div>
+              <button type="button" className="outline" onClick={() => openPublicAuth('signup')}>Стать коллекционером <ArrowLeftRight size={16} /></button>
+            </article>
+            <article className="public-discover-card public-discover-community">
+              <div className="public-discover-icon"><Users /></div>
+              <span className="public-discover-kicker">02 · СООБЩЕСТВО</span>
+              <h3>Находи нужные карточки и единомышленников</h3>
+              <p>Публикуйте запросы, отвечайте другим участникам и обсуждайте детали напрямую внутри сообщества.</p>
+              <div className="public-community-tags"><span>Ищу карточку</span><span>Общение</span><span>P2P</span></div>
+              <button type="button" className="outline" onClick={() => openPublicAuth('signup')}>Присоединиться <ArrowLeftRight size={16} /></button>
+            </article>
+          </div>
+        </section>
         {notice && <div className="notice" role="status"><span>{notice}</span><button type="button" aria-label="Закрыть" onClick={() => setNotice('')}>×</button></div>}
-        {publicAuthOpen && <div className="public-auth-backdrop" role="presentation" onMouseDown={e => { if (e.target === e.currentTarget) { setPublicAuthOpen(false); setNotice('') } }}>
-          <section className="panel auth-panel public-auth-panel" id="public-auth" role="dialog" aria-modal="true" aria-labelledby="public-auth-title">
-          <div className="public-auth-heading"><h2 id="public-auth-title">{authMode === 'signup' ? 'Регистрация VORTEX UNIT' : authMode === 'forgot' ? 'Восстановление пароля' : authMode === 'reset' ? 'Новый пароль' : 'Вход в аккаунт'}</h2><button type="button" className="outline" onClick={() => { setPublicAuthOpen(false); setNotice('') }}>Закрыть</button></div>
-          {authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
-            <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
-            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Отправляем...' : 'Отправить ссылку'}</button>
-            <button type="button" className="outline full" onClick={() => setAuthMode('login')}>Вернуться ко входу</button>
-          </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
-            <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
-            <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
-            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Сохраняем...' : 'Сохранить новый пароль'}</button>
-          </form> : <form onSubmit={authMode === 'signup' ? e => { e.preventDefault(); signUp() } : signIn}>
-            <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
-            <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
-            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : authMode === 'signup' ? 'Зарегистрироваться' : 'Войти'}</button>
-            {authMode === 'login' && <button type="button" className="outline full" disabled={busy} onClick={() => setAuthMode('forgot')}>Забыли пароль?</button>}
-            <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode(authMode === 'signup' ? 'login' : 'signup'); setNotice('') }}>{authMode === 'signup' ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}</button>
-          </form>}
-          </section>
-        </div>}
         </>}
       </main>
       <footer className="public-footer">
@@ -2528,7 +2547,36 @@ function App() {
         <div className="public-footer-copy">© 2026 VORTEX UNIT <span>VORTEX · КОЛЛЕКЦИОННОЕ СООБЩЕСТВО</span></div>
       </footer>
     </div>
-    return translateTree(publicPage, language, translations)
+    const publicAuthModal = publicAuthOpen ? createPortal(
+      <div className="public-auth-backdrop" role="presentation" onMouseDown={e => {
+        if (e.target === e.currentTarget) { setPublicAuthOpen(false); setNotice('') }
+      }}>
+        <section className="panel auth-panel public-auth-panel" id="public-auth" role="dialog" aria-modal="true" aria-labelledby="public-auth-title">
+          <div className="public-auth-heading">
+            <h2 id="public-auth-title">{authMode === 'signup' ? 'Регистрация VORTEX UNIT' : authMode === 'forgot' ? 'Восстановление пароля' : authMode === 'reset' ? 'Новый пароль' : 'Вход в аккаунт'}</h2>
+            <button type="button" className="outline" onClick={() => { setPublicAuthOpen(false); setNotice('') }}>Закрыть</button>
+          </div>
+          {notice && <div className="notice" role="status"><span>{notice}</span><button type="button" aria-label="Закрыть" onClick={() => setNotice('')}>×</button></div>}
+          {authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
+            <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
+            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Отправляем...' : 'Отправить ссылку'}</button>
+            <button type="button" className="outline full" onClick={() => setAuthMode('login')}>Вернуться ко входу</button>
+          </form> : authMode === 'reset' ? <form onSubmit={saveNewPassword}>
+            <label>Новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+            <label>Повторите новый пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)} minLength="6" required autoComplete="new-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Сохраняем...' : 'Сохранить новый пароль'}</button>
+          </form> : <form onSubmit={authMode === 'signup' ? e => { e.preventDefault(); signUp() } : signIn}>
+            <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
+            <label>Пароль<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
+            <button type="submit" className="primary full" disabled={busy}>{busy ? 'Подождите...' : authMode === 'signup' ? 'Зарегистрироваться' : 'Войти'}</button>
+            {authMode === 'login' && <button type="button" className="outline full" disabled={busy} onClick={() => setAuthMode('forgot')}>Забыли пароль?</button>}
+            <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode(authMode === 'signup' ? 'login' : 'signup'); setNotice('') }}>{authMode === 'signup' ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}</button>
+          </form>}
+        </section>
+      </div>,
+      document.body
+    ) : null
+    return <>{translateTree(publicPage, language, translations)}{publicAuthModal}</>
   }
 
   return translateTree(page, language, translations)
