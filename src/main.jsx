@@ -2498,7 +2498,7 @@ function App() {
                 <path d="m20 23 12 8 12-8M32 31v17" />
               </svg>
             </div>
-            <div style={{ fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 800, letterSpacing: '0.14em', textAlign: 'center', color: '#e2d4ff', textShadow: '0 0 16px rgba(167, 139, 250, 0.65)', margin: '8px 0' }}>№ 000001</div>
+            <div className="card-serial"><span>SERIAL NUMBER</span><b>№ 000001</b></div>
             <div className="card-bottom"><b>VORTEX</b><span>COLLECT · CONNECT · TRADE</span></div>
           </div>
         </section>
