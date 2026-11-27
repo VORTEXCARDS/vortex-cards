@@ -78,12 +78,7 @@ function App() {
   const [issueSerial, setIssueSerial] = useState('')
 
   const adminTables = [
-    { name: 'user_accounts', label: 'Аккаунты пользователей' },
-    { name: 'card_balances', label: 'Баланс юнитов' },
     { name: 'market_listings', label: 'Объявления маркетплейса' },
-    { name: 'complaints', label: 'Жалобы' },
-    { name: 'disputes', label: 'Спорные сделки' },
-    { name: 'buyback_requests', label: 'Заявки на выкуп' },
     { name: 'admin_audit_log', label: 'Журнал действий администратора' },
     { name: 'card_inventory', label: 'Реестр выпущенных юнитов' },
     { name: 'wallet_ledger', label: 'Финансовый журнал' },
@@ -2446,11 +2441,6 @@ function App() {
             <button type="button" className="outline" onClick={loadAnalytics}>Обновить статистику</button>
             <p className="muted">Считаются посещения страниц и анонимные сессии. IP-адреса и личные данные посетителей не сохраняются.</p>
           </div>}
-          {user && isAdmin && <div className="panel language-admin">
-            <div className="admin-head"><Sparkles /><h2>{t('Языки сайта')}</h2></div>
-            <p className="muted">Доступные языки интерфейса. Посетитель может выбрать язык в верхней панели; выбор сохраняется на его устройстве.</p>
-            <div className="language-options">{[['uk','Українська'],['ru','Русский'],['en','English'],['de','Deutsch'],['fr','Français']].map(([code,name]) => <span className="language-chip" key={code}>{name}</span>)}</div>
-          </div>}
           {user && isAdmin && adminData.map(table => {
             const columns = table.rows.length ? Object.keys(table.rows[0]) : []
             return <div className="panel" key={table.name}>
@@ -2475,13 +2465,6 @@ function App() {
                               return <td key={column} style={{ padding: '9px', borderBottom: '1px solid #252438', verticalAlign: 'top', maxWidth: '260px', overflowWrap: 'anywhere' }}>{display}</td>
                             })}
                             <td style={{ padding: '9px', borderBottom: '1px solid #252438', whiteSpace: 'nowrap' }}>
-                              {table.name === 'user_accounts' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_user_block', { p_user_id: row.user_id, p_blocked: !row.is_blocked, p_reason: row.is_blocked ? null : 'Блокировка администратором' }, row.is_blocked ? 'Аккаунт разблокирован.' : 'Аккаунт заблокирован.')}>{row.is_blocked ? 'Разблокировать' : 'Заблокировать'}</button>}
-                              {table.name === 'complaints' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_complaint', { p_complaint_id: row.id }, 'Жалоба отмечена как рассмотренная.')}>Рассмотреть</button>}
-                              {table.name === 'disputes' && row.status !== 'resolved' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_resolve_dispute', { p_dispute_id: row.id, p_resolution: 'Решено администратором VORTEX UNIT' }, 'Спор закрыт. Решение записано.')}>Закрыть спор</button>}
-                              {table.name === 'buyback_requests' && !['approved','rejected'].includes(row.status) && <>
-                                <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: true, p_note: 'Заявка одобрена. Выплата не произведена.' }, 'Заявка на выкуп одобрена без проведения выплаты.')}>Одобрить</button>
-                                <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_review_buyback', { p_request_id: row.id, p_approved: false, p_note: 'Заявка отклонена администратором.' }, 'Заявка на выкуп отклонена.')}>Отклонить</button>
-                              </>}
                               {table.name === 'card_inventory' && row.status !== 'sold' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_set_card_retired', { p_card_id: row.id, p_retired: row.status !== 'retired' }, row.status === 'retired' ? 'Юнит восстановлен.' : 'Юнит выведен из обращения.')}>{row.status === 'retired' ? 'Восстановить' : 'Вывести из обращения'}</button>}
                               {table.name === 'market_listings' && row.status === 'active' && <button type="button" className="outline admin-row-action" disabled={adminActionBusy} onClick={() => runAdminAction('admin_cancel_listing', { p_listing_id: row.id }, 'Объявление снято с продажи.')}>Снять с продажи</button>}
                               {table.name === 'crypto_deposit_requests' && ['pending','detected','confirming'].includes(row.status) && <>
