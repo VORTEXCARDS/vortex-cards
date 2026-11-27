@@ -65,6 +65,7 @@ function App() {
   const [adminData, setAdminData] = useState([])
   const [adminDataLoading, setAdminDataLoading] = useState(false)
   const [adminAuditPage, setAdminAuditPage] = useState(0)
+  const [adminAuditOpen, setAdminAuditOpen] = useState(false)
   const [adminAuditCount, setAdminAuditCount] = useState(0)
   const ADMIN_AUDIT_PAGE_SIZE = 100
   const [adminUsers, setAdminUsers] = useState([])
@@ -2458,7 +2459,11 @@ function App() {
             const columns = table.rows.length ? Object.keys(table.rows[0]) : []
             return <div className="panel" key={table.name}>
               <h3>{table.label}</h3>
-              {table.error
+              {table.name === 'admin_audit_log' && <button type="button" className="outline" style={{ width: '100%', minHeight: '40px', margin: '4px 0 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={() => setAdminAuditOpen(value => !value)}>
+                <span>{adminAuditOpen ? 'Свернуть журнал' : 'Открыть журнал действий'}</span>
+                <span>{adminAuditCount} записей {adminAuditOpen ? '↑' : '↓'}</span>
+              </button>}
+              {(table.name !== 'admin_audit_log' || adminAuditOpen) && (table.error
                 ? <p className="muted">Ошибка загрузки: {table.error}</p>
                 : table.rows.length === 0
                   ? <p className="muted">Записей пока нет.</p>
@@ -2499,7 +2504,7 @@ function App() {
                         </tbody>
                       </table>
                     </div>
-                  </>}
+                  </>)}
             </div>
           })}
           {user && isAdmin && adminDataLoading && adminData.length === 0 && <p className="muted">Загружаем таблицы базы данных...</p>}
