@@ -299,6 +299,10 @@ function App() {
   }, [tab, isAdmin])
 
   useEffect(() => {
+    if (tab === 'admin' && !adminLoading && !isAdmin) setTab('home')
+  }, [tab, adminLoading, isAdmin])
+
+  useEffect(() => {
     if (tab === 'market') loadMarketplace(listingPage)
   }, [tab])
 
@@ -2037,10 +2041,10 @@ function App() {
           </button>
         ))}
         <div className="side-spacer" />
-        <button type="button" className={`nav-item ${tab === 'admin' ? 'active' : ''}`}
+        {isAdmin && <button type="button" className={`nav-item ${tab === 'admin' ? 'active' : ''}`}
           onClick={() => { setTab('admin'); setMenu(false) }}>
           <Shield size={19} /> {t('Администрирование')}
-        </button>
+        </button>}
         <div className="sidebar-foot">VORTEX UNIT <span>v1.0 PWA</span></div>
       </aside>
 
