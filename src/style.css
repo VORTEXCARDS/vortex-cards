@@ -739,3 +739,9 @@ body{
 
 
 .code-attempt-detail{padding:12px 0;border-bottom:1px solid #29263a}.code-attempt-detail:last-child{border-bottom:0}.code-attempt-number{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;color:#e4dafa}.code-attempt-number b{font-size:11px;color:#aaa6bd}.code-attempt-number strong{font-family:monospace;font-size:17px;letter-spacing:3px}.code-digit-feedback{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.code-digit-result{display:flex;align-items:center;gap:7px;min-width:0;padding:7px 8px;border-radius:8px;background:#29283a;color:#c3bfd0}.code-digit-result b{font-family:monospace;font-size:16px;min-width:15px}.code-digit-result span{font-size:10px;line-height:1.25}.code-digit-result.exact{background:#173b32;color:#78e2bd}.code-digit-result.present{background:#3b3049;color:#dfbdff}.code-digit-result.absent{background:#29283a;color:#aaa6bd}@media(max-width:420px){.code-digit-feedback{grid-template-columns:1fr}}
+
+
+/* Admin user search controls: clear spacing and full-width touch targets */
+.admin-user-toolbar{display:flex;align-items:stretch;gap:12px;flex-wrap:wrap;margin-top:12px;width:100%}
+.admin-user-toolbar button{min-height:44px;min-width:150px;flex:1 1 180px;white-space:normal;line-height:1.3;padding:11px 16px}
+@media(max-width:600px){.admin-user-toolbar{display:grid;grid-template-columns:1fr;gap:10px}.admin-user-toolbar button{width:100%;min-width:0;flex:none}}
