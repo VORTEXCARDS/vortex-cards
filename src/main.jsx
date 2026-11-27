@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createClient } from '@supabase/supabase-js'
 import {
   Home, CreditCard, Users, Store, UserRound, Shield, ArrowLeftRight,
-  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, Mail
+  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, Mail, Gem, Trophy, History, Layers
 } from 'lucide-react'
 import './style.css'
 
@@ -18,6 +18,7 @@ const supabase = createClient(supabaseUrl, supabaseKey, { auth: { storageKey: au
 
 function App() {
   const [tab, setTab] = useState('home')
+  const [rareView, setRareView] = useState('gallery')
   const [language, setLanguage] = useState(() => localStorage.getItem('vortex-language') || 'ru')
   const [analytics, setAnalytics] = useState({ total: 0, today: 0, week: 0, unique: 0, error: '' })
   const [menu, setMenu] = useState(false)
@@ -1378,6 +1379,7 @@ function App() {
     ['home', t('Обзор'), Home],
     ['cards', t('Юниты'), CreditCard],
     ['market', t('Маркетплейс'), Store],
+    ['rare', 'Редкие карточки', Gem],
     ['referrals', t('Рефералы'), Users],
     ['profile', t('Профиль'), UserRound],
     ['support', t('Поддержка'), Mail]
@@ -1469,6 +1471,39 @@ function App() {
             {!isInstalled && <Quick className="install-quick" icon={<Download />} title={t('Скачать приложение VORTEX UNIT')} desc={t('Установите приложение на устройство')} click={handleInstall} />}
           </div>
         </>}
+
+        {tab === 'rare' && <section className="rare-archive">
+          <div className="rare-hero">
+            <div className="rare-kicker"><Gem size={15} /> VORTEX UNIT · COLLECTOR ARCHIVE</div>
+            <h2>Редкие карточки</h2>
+            <p>Коллекционные номера, ограниченные тиражи и история карточек VORTEX UNIT.</p>
+            <div className="rare-hero-stats">
+              <div><b>001–010</b><span>Резерв основателей</span></div>
+              <div><b>LIMITED</b><span>Ограниченные серии</span></div>
+            </div>
+          </div>
+          <div className="rare-tabs" role="tablist" aria-label="Разделы редких карточек">
+            <button type="button" className={rareView === 'gallery' ? 'active' : ''} onClick={() => setRareView('gallery')}><Gem size={16}/> Галерея</button>
+            <button type="button" className={rareView === 'collection' ? 'active' : ''} onClick={() => setRareView('collection')}><CreditCard size={16}/> Моя коллекция</button>
+            <button type="button" className={rareView === 'sets' ? 'active' : ''} onClick={() => setRareView('sets')}><Layers size={16}/> Комплекты</button>
+            <button type="button" className={rareView === 'history' ? 'active' : ''} onClick={() => setRareView('history')}><History size={16}/> История</button>
+          </div>
+          {rareView === 'gallery' && <>
+            <div className="rare-section-heading"><div><h3>Категории редкости</h3><p>Предварительная структура коллекционного архива</p></div></div>
+            <div className="rare-category-grid">
+              <article className="rare-category legendary"><span>LEGENDARY</span><b>001–010</b><small>Резерв основателей</small><p>Самые редкие первые номера. В дальнейшем могут быть переданы пользователям.</p></article>
+              <article className="rare-category elite"><span>ELITE</span><b>011–050</b><small>Элитные номера</small><p>Особые карточки с отдельными ограниченными тиражами.</p></article>
+              <article className="rare-category special"><span>SPECIAL</span><b>051–100</b><small>Коллекционные номера</small><p>Редкость определяется установленным тиражом каждого номера.</p></article>
+              <article className="rare-category limited"><span>LIMITED SERIES</span><b>LIMITED</b><small>Специальные серии</small><p>Отдельные тематические выпуски с собственными правилами и тиражами.</p></article>
+            </div>
+            <div className="rare-note"><Trophy size={19}/><div><b>Правило тиража</b><p>У каждого номера заранее задаётся максимальное количество экземпляров. После утверждения тираж не увеличивается. Одинаковые номера могут существовать в пределах этого тиража.</p></div></div>
+          </>}
+          {rareView === 'collection' && <div className="panel rare-empty"><CreditCard size={28}/><h3>Моя редкая коллекция</h3><p>Здесь будут отображаться редкие карточки, которыми владеет пользователь. Подключение реестра карточек будет выполнено отдельным этапом.</p></div>}
+          {rareView === 'sets' && <div className="panel rare-empty"><Layers size={28}/><h3>Коллекционные комплекты</h3><p>Здесь появятся собранные наборы, например из трёх заданных номеров. Условия комплектов и возможного выкупа будут опубликованы до запуска.</p></div>}
+          {rareView === 'history' && <div className="panel rare-empty"><History size={28}/><h3>История карточек</h3><p>Здесь будет доступна история выпуска и смены владельцев каждой карточки после подключения реестра.</p></div>}
+          {isAdmin && <div className="rare-admin-hint"><Shield size={17}/><span>Административное управление резервом 001–010, тиражами и передачами будет добавлено в отдельную панель после утверждения правил выпуска.</span></div>}
+          <p className="rare-disclaimer">Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.</p>
+        </section>}
 
         {tab === 'support' && <SupportCenter userEmail={user?.email} language={language} />}
 
