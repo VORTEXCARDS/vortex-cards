@@ -66,6 +66,7 @@ function App() {
   const [adminDataLoading, setAdminDataLoading] = useState(false)
   const [adminAuditPage, setAdminAuditPage] = useState(0)
   const [adminAuditOpen, setAdminAuditOpen] = useState(false)
+  const [adminOpenSection, setAdminOpenSection] = useState('')
   const [adminAuditCount, setAdminAuditCount] = useState(0)
   const ADMIN_AUDIT_PAGE_SIZE = 100
   const [adminUsers, setAdminUsers] = useState([])
@@ -2458,12 +2459,11 @@ function App() {
           {user && isAdmin && adminData.map(table => {
             const columns = table.rows.length ? Object.keys(table.rows[0]) : []
             return <div className="panel" key={table.name}>
-              <h3>{table.label}</h3>
-              {table.name === 'admin_audit_log' && <button type="button" className="outline" style={{ width: '100%', minHeight: '40px', margin: '4px 0 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={() => setAdminAuditOpen(value => !value)}>
-                <span>{adminAuditOpen ? 'Свернуть журнал' : 'Открыть журнал действий'}</span>
-                <span>{adminAuditCount} записей {adminAuditOpen ? '↑' : '↓'}</span>
-              </button>}
-              {(table.name !== 'admin_audit_log' || adminAuditOpen) && (table.error
+              <button type="button" className="outline admin-section-toggle" style={{ width: '100%', minHeight: '44px', margin: '0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'left' }} aria-expanded={adminOpenSection === table.name} onClick={() => setAdminOpenSection(value => value === table.name ? '' : table.name)}>
+                <span>{table.label}</span>
+                <span style={{ whiteSpace: 'nowrap', marginLeft: '10px' }}>{table.name === 'admin_audit_log' ? adminAuditCount : table.rows.length} {table.name === 'admin_audit_log' ? 'действий' : 'записей'} {adminOpenSection === table.name ? '↑' : '↓'}</span>
+              </button>
+              {adminOpenSection === table.name && (table.error
                 ? <p className="muted">Ошибка загрузки: {table.error}</p>
                 : table.rows.length === 0
                   ? <p className="muted">Записей пока нет.</p>
@@ -2505,6 +2505,7 @@ function App() {
                       </table>
                     </div>
                   </>)}
+              )}
             </div>
           })}
           {user && isAdmin && adminDataLoading && adminData.length === 0 && <p className="muted">Загружаем таблицы базы данных...</p>}
