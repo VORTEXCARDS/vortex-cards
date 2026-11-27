@@ -1566,7 +1566,7 @@ function App() {
   const listingGross = Math.round(listingUnitPrice * listingQuantity * 100) / 100
   const listingFee = Math.round(listingGross * 0.05 * 100) / 100
   const listingNet = Math.round((listingGross - listingFee) * 100) / 100
-  const money = value => value.toLocaleString('uk-UA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const money = value => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 })
 
   const page = <div className="app-shell">
     <header className="topbar">
