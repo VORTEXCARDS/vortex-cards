@@ -4,10 +4,11 @@ import { createPortal } from 'react-dom'
 import { createClient } from '@supabase/supabase-js'
 import {
   Home, CreditCard, Users, Store, UserRound, Shield, ArrowLeftRight,
-  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, Mail, Gem, Trophy, History, Layers, Search
+  Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, Mail, Gem, Trophy, History, Layers, Search, Gamepad2
 } from 'lucide-react'
 import './style.css'
 import WantedSection from './WantedSection.jsx'
+import GamesSection from './GamesSection.jsx'
 
 try { sessionStorage.removeItem('vortex-startup-reload') } catch (_) {}
 
@@ -1962,6 +1963,7 @@ function App() {
     ['market', t('Маркетплейс'), Store],
     ['wanted', t('Ищу карточку'), Search],
     ['rare', t('Редкие карточки'), Gem],
+    ['games', 'VORTEX GAMES', Gamepad2],
     ['referrals', t('Рефералы'), Users],
     ['profile', t('Профиль'), UserRound],
     ['support', t('Поддержка'), Mail]
@@ -2018,6 +2020,8 @@ function App() {
         {notice && <div className="notice" role="status">
           <span>{notice}</span><button type="button" aria-label="Закрыть" onClick={() => setNotice('')}>×</button>
         </div>}
+
+        {tab === 'games' && <GamesSection user={user} onNotice={setNotice} />}
 
         {tab === 'home' && <>
           <section className="hero">
