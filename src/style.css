@@ -448,3 +448,6 @@ body{
 .rare-admin-hint{border-color:#4c426a;background:#211a333d;color:#bca8e8;font-size:11px;line-height:1.6}
 .rare-disclaimer{margin:0;color:#77758c;font-size:10px;line-height:1.6}
 @media(max-width:600px){.rare-hero{padding:21px 18px}.rare-category-grid{grid-template-columns:1fr}.rare-category{min-height:155px}.rare-tabs button{padding:10px 11px;font-size:10px}}
+
+/* Display the uploaded profile photo in the application header */
+.avatar{overflow:hidden;flex:0 0 40px;padding:0}.avatar img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
