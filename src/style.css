@@ -399,3 +399,11 @@ body{
   .profile-avatar-preview{width:70px;height:70px;flex-basis:70px}
   .profile-avatar-copy>span{font-size:10px}
 }
+
+
+/* Seller payout preview on marketplace listing form */
+.seller-net-preview{display:grid;gap:9px;padding:14px 16px;border:1px solid #3b4260;border-radius:12px;background:linear-gradient(120deg,#121a2a,#171329);font-size:12px}
+.seller-net-preview>div{display:flex;align-items:center;justify-content:space-between;gap:14px;color:var(--muted)}
+.seller-net-preview b{color:#f4f2ff;font-variant-numeric:tabular-nums;white-space:nowrap}
+.seller-net-preview .seller-net-total{padding-top:10px;border-top:1px solid #3b4260;color:#d8fff6;font-weight:800}
+.seller-net-preview .seller-net-total b{color:#35dfc5;font-size:16px}
