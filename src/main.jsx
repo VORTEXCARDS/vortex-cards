@@ -34,6 +34,7 @@ function App() {
   const pushServerReady = Boolean(import.meta.env.VITE_VAPID_PUBLIC_KEY)
   const [username, setUsername] = useState('')
   const [usernameBusy, setUsernameBusy] = useState(false)
+  const [avatarBusy, setAvatarBusy] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletePhrase, setDeletePhrase] = useState('')
   const [deleteBusy, setDeleteBusy] = useState(false)
@@ -177,15 +178,30 @@ function App() {
         .order('created_at', { ascending: false })
         .limit(100)
       if (error) throw error
-      setListings((data || []).map(item => ({
-        id: item.id,
-        sellerId: item.seller_id,
-        isMine: item.seller_id === user?.id,
-        seller: item.seller_id === user?.id ? (user?.user_metadata?.username || 'Вы') : 'Пользователь',
-        qty: Number(item.quantity || 0),
-        price: Number(item.price || 0),
-        createdAt: item.created_at
-      })))
+      const sellerIds = [...new Set((data || []).map(item => item.seller_id).filter(Boolean))]
+      let profilesById = {}
+      if (sellerIds.length) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('user_profiles')
+          .select('user_id, username, avatar_url')
+          .in('user_id', sellerIds)
+        if (profilesError) console.warn('Не удалось загрузить аватары продавцов:', profilesError.message)
+        profilesById = Object.fromEntries((profiles || []).map(profile => [profile.user_id, profile]))
+      }
+      setListings((data || []).map(item => {
+        const profile = profilesById[item.seller_id] || {}
+        const isMine = item.seller_id === user?.id
+        return {
+          id: item.id,
+          sellerId: item.seller_id,
+          isMine,
+          seller: profile.username || (isMine ? (user?.user_metadata?.username || 'Вы') : 'Пользователь'),
+          avatarUrl: profile.avatar_url || (isMine ? user?.user_metadata?.avatar_url : '') || '',
+          qty: Number(item.quantity || 0),
+          price: Number(item.price || 0),
+          createdAt: item.created_at
+        }
+      }))
     } catch (error) {
       setListings([])
       setMarketError(error.message || 'Не удалось загрузить объявления')
@@ -283,12 +299,83 @@ function App() {
     try {
       const { data, error } = await supabase.auth.updateUser({ data: { username: clean } })
       if (error) throw error
+      const { error: profileError } = await supabase.from('user_profiles').upsert({
+        user_id: user.id, username: clean,
+        avatar_url: data.user.user_metadata?.avatar_url || null,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' })
+      if (profileError) throw profileError
       setUser(data.user)
       setNotice('Имя пользователя сохранено.')
     } catch (error) {
       setNotice('Не удалось сохранить имя: ' + (error.message || 'ошибка'))
     } finally {
       setUsernameBusy(false)
+    }
+  }
+
+  async function uploadAvatar(event) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file || !user || avatarBusy) return
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setNotice('Выберите изображение JPG, PNG или WEBP.')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setNotice('Размер изображения не должен превышать 5 МБ.')
+      return
+    }
+    setAvatarBusy(true)
+    try {
+      const extension = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg'
+      const path = user.id + '/avatar.' + extension
+      const oldPath = user.user_metadata?.avatar_path
+      const { error: uploadError } = await supabase.storage.from('avatars').upload(path, file, {
+        cacheControl: '3600', upsert: true, contentType: file.type
+      })
+      if (uploadError) throw uploadError
+      const { data: publicData } = supabase.storage.from('avatars').getPublicUrl(path)
+      const avatarUrl = publicData.publicUrl + '?v=' + Date.now()
+      const { data, error } = await supabase.auth.updateUser({ data: { avatar_url: avatarUrl, avatar_path: path } })
+      if (error) throw error
+      const { error: profileError } = await supabase.from('user_profiles').upsert({
+        user_id: user.id, username: data.user.user_metadata?.username || username || null,
+        avatar_url: avatarUrl, updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' })
+      if (profileError) throw profileError
+      if (oldPath && oldPath !== path) await supabase.storage.from('avatars').remove([oldPath])
+      setUser(data.user)
+      setNotice('Аватар успешно обновлён.')
+      if (tab === 'market') await loadMarketplace()
+    } catch (error) {
+      setNotice('Не удалось загрузить аватар: ' + (error.message || 'ошибка'))
+    } finally {
+      setAvatarBusy(false)
+    }
+  }
+
+  async function removeAvatar() {
+    if (!user || avatarBusy || !user.user_metadata?.avatar_path) return
+    setAvatarBusy(true)
+    try {
+      const path = user.user_metadata.avatar_path
+      const { error: removeError } = await supabase.storage.from('avatars').remove([path])
+      if (removeError) throw removeError
+      const { data, error } = await supabase.auth.updateUser({ data: { avatar_url: null, avatar_path: null } })
+      if (error) throw error
+      const { error: profileError } = await supabase.from('user_profiles').upsert({
+        user_id: user.id, username: data.user.user_metadata?.username || username || null,
+        avatar_url: null, updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' })
+      if (profileError) throw profileError
+      setUser(data.user)
+      setNotice('Аватар удалён.')
+      if (tab === 'market') await loadMarketplace()
+    } catch (error) {
+      setNotice('Не удалось удалить аватар: ' + (error.message || 'ошибка'))
+    } finally {
+      setAvatarBusy(false)
     }
   }
 
@@ -1417,8 +1504,8 @@ function App() {
               : marketError ? <p className="muted">Не удалось загрузить предложения: {marketError}</p>
               : listings.length === 0 ? <div className="panel"><h3>Пока нет юнитов в продаже</h3><p className="muted">Когда пользователи разместят реальные юниты, предложения появятся здесь.</p></div>
               : listings.map(item => <div className="listing market-card" key={item.id}>
-                <div className="listing-avatar"><CreditCard /></div>
-                <div className="listing-info"><b>VORTEX UNIT</b><span>Продавец: {item.seller} · {item.qty} шт.</span></div>
+                <div className="listing-avatar">{item.avatarUrl ? <img src={item.avatarUrl} alt="" /> : <UserRound />}</div>
+                <div className="listing-info"><b>{item.seller}</b><span>VORTEX UNIT · {item.qty} шт.</span></div>
                 <div className="listing-price"><b>{item.price.toLocaleString('uk-UA')} ₴</b><span>за юнит</span></div>
                 <div className="listing-price"><b>{(item.price * item.qty).toLocaleString('uk-UA')} ₴</b><span>за всё количество</span></div>
                 {item.isMine && <button type="button" className="outline" disabled={busy} onClick={() => cancelOwnListing(item)}>Снять с продажи</button>}
@@ -1448,6 +1535,24 @@ function App() {
           <section className="panel auth-panel profile-account">
             <h2>{user ? t('Аккаунт') : t('Вход или регистрация')}</h2>
             {user && authMode !== 'reset' ? <>
+              <div className="profile-avatar-card">
+                <div className="profile-avatar-preview">
+                  {user.user_metadata?.avatar_url
+                    ? <img src={user.user_metadata.avatar_url} alt="Аватар профиля" />
+                    : <UserRound size={38} />}
+                </div>
+                <div className="profile-avatar-copy">
+                  <b>Фото профиля</b>
+                  <span>Загрузите изображение JPG, PNG или WEBP до 5 МБ. Его увидят другие пользователи.</span>
+                  <div className="profile-avatar-actions">
+                    <label className="primary avatar-upload-label">
+                      {avatarBusy ? 'Загружаем...' : user.user_metadata?.avatar_url ? 'Изменить фото' : 'Загрузить аватар'}
+                      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadAvatar} disabled={avatarBusy} />
+                    </label>
+                    {user.user_metadata?.avatar_url && <button type="button" className="outline" onClick={removeAvatar} disabled={avatarBusy}>Удалить</button>}
+                  </div>
+                </div>
+              </div>
               <form className="username-settings" onSubmit={saveUsername}>
                 <label>{t('Имя пользователя (псевдоним)')}
                   <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder={t('Например, VORTEX')} minLength="2" maxLength="24" autoComplete="nickname" />
