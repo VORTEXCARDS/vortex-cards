@@ -2389,7 +2389,10 @@ function App() {
               </>}
           </div>
           {user && isAdmin && <div className="panel">
-            <div className="admin-head"><Users /><h2>Зарегистрированные пользователи</h2></div>
+            <button type="button" className="outline admin-section-toggle" style={{ width: '100%', minHeight: '44px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'left' }} aria-expanded={adminOpenSection === 'users'} onClick={() => setAdminOpenSection(value => value === 'users' ? '' : 'users')}>
+              <span>Зарегистрированные пользователи</span><span>{adminUsers.length} в выборке {adminOpenSection === 'users' ? '↑' : '↓'}</span>
+            </button>
+            {adminOpenSection === 'users' && <>
             <p className="muted">Список берётся напрямую из защищённого реестра аккаунтов Supabase Auth. Здесь отображаются и новые регистрации, даже если пользователь ещё не заполнил профиль.</p>
             <form className="listing-form" onSubmit={e => { e.preventDefault(); loadAdminUsers(); }}>
               <label>Поиск по email, имени или ID пользователя
@@ -2435,8 +2438,13 @@ function App() {
                   <button type="button" className="outline" disabled={adminUsersLoading || !adminUsersHasMore} onClick={() => loadAdminUsers(adminUserSearch, adminUserOffset + 200)}>Далее</button>
                 </div>
               </>}
+            </>}
           </div>}
           {user && isAdmin && <div className="panel">
+            <button type="button" className="outline admin-section-toggle" style={{ width: '100%', minHeight: '44px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'left' }} aria-expanded={adminOpenSection === 'issue'} onClick={() => setAdminOpenSection(value => value === 'issue' ? '' : 'issue')}>
+              <span>Выпустить юнит пользователю</span><span>{adminOpenSection === 'issue' ? '↑' : '↓'}</span>
+            </button>
+            {adminOpenSection === 'issue' && <>
             <h3>Выпустить юнит пользователю</h3>
             <p className="muted">Выберите пользователя в списке выше или вставьте его UUID. Укажите уникальный серийный номер. Выпуск закрепит карточку за аккаунтом.</p>
             <form className="listing-form" onSubmit={issueCard}>
@@ -2444,8 +2452,13 @@ function App() {
               <label>Серийный номер<input value={issueSerial} onChange={e => setIssueSerial(e.target.value)} placeholder="VTX-000001" required /></label>
               <button type="submit" className="primary" disabled={adminActionBusy}>{adminActionBusy ? 'Выполняется...' : 'Выпустить юнит'}</button>
             </form>
+            </>}
           </div>}
           {user && isAdmin && <div className="panel analytics-panel">
+            <button type="button" className="outline admin-section-toggle" style={{ width: '100%', minHeight: '44px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'left' }} aria-expanded={adminOpenSection === 'analytics'} onClick={() => setAdminOpenSection(value => value === 'analytics' ? '' : 'analytics')}>
+              <span>Статистика посещаемости</span><span>{adminOpenSection === 'analytics' ? '↑' : '↓'}</span>
+            </button>
+            {adminOpenSection === 'analytics' && <>
             <div className="admin-head"><Users /><h2>{t('Статистика посещаемости')}</h2></div>
             {analytics.error ? <p className="muted">{analytics.error}. Выполните SQL-файл настройки аналитики в Supabase.</p> : <div className="admin-stats-grid">
               <Stat label="ВСЕ ПОСЕЩЕНИЯ" value={analytics.total} icon={<Users />} />
@@ -2455,6 +2468,7 @@ function App() {
             </div>}
             <button type="button" className="outline" onClick={loadAnalytics}>Обновить статистику</button>
             <p className="muted">Считаются посещения страниц и анонимные сессии. IP-адреса и личные данные посетителей не сохраняются.</p>
+            </>}
           </div>}
           {user && isAdmin && adminData.map(table => {
             const columns = table.rows.length ? Object.keys(table.rows[0]) : []
