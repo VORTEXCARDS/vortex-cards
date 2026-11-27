@@ -522,3 +522,20 @@ body{
  .financial-history-item b{font-size:12px}
  .financial-history-item span{font-size:10px}
 }
+
+
+/* Wanted conversations: clear recipient and touch-friendly composer */
+.wanted-chat-person{display:block;margin-top:7px;color:#a9a8bd;font-size:12px}
+.wanted-chat-person b{color:#f2f0ff}
+.wanted-chat-recipient{display:flex;align-items:center;gap:11px;margin:12px 0;padding:11px 13px;border:1px solid #34324f;border-radius:12px;background:#111827}
+.wanted-chat-recipient img,.wanted-avatar-fallback{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:0 0 40px}
+.wanted-avatar-fallback{display:grid;place-items:center;background:linear-gradient(135deg,#7438d5,#087f9c);color:white;font-weight:700}
+.wanted-chat-recipient>div{display:flex;flex-direction:column;gap:4px}
+.wanted-chat-recipient small{color:#a9a8bd;font-size:11px}
+.wanted-chat-recipient b{color:#f4f2ff;font-size:14px}
+.wanted-send{position:relative;z-index:5;display:flex;align-items:flex-end;gap:10px;margin-top:14px;padding:12px;border:1px solid #34324f;border-radius:14px;background:#101626;pointer-events:auto}
+.wanted-message-input{display:flex;flex:1;min-width:0;flex-direction:column;gap:7px;color:#aaa9bf;font-size:12px}
+.wanted-message-input input{display:block;width:100%;min-height:48px;min-width:0;padding:12px 14px;border:1px solid #55506f;border-radius:11px;background:#080d1b;color:#fff;font-size:16px;line-height:1.4;outline:none;pointer-events:auto;touch-action:manipulation}
+.wanted-message-input input:focus{border-color:#29c8d2;box-shadow:0 0 0 2px #29c8d233}
+.wanted-send .wanted-send-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:48px;white-space:nowrap;pointer-events:auto;touch-action:manipulation}
+@media(max-width:600px){.wanted-send{display:flex;flex-direction:column;align-items:stretch}.wanted-send-button{width:100%}}
