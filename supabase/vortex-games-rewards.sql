@@ -134,6 +134,7 @@ declare
   v_guess text := trim(coalesce(p_guess,''));
   v_exact integer;
   v_present integer;
+  v_feedback jsonb;
   v_points integer;
   v_card_id uuid;
 begin
@@ -170,6 +171,17 @@ begin
   where position(substr(v_guess,g.pos,1) in v_game.secret_serial)>0;
   v_present := v_present-v_exact;
 
+  select jsonb_agg(jsonb_build_object(
+    'digit', substr(v_guess,g.pos,1),
+    'status', case
+      when substr(v_guess,g.pos,1)=substr(v_game.secret_serial,g.pos,1) then 'exact'
+      when position(substr(v_guess,g.pos,1) in v_game.secret_serial)>0 then 'present'
+      else 'absent'
+    end
+  ) order by g.pos)
+  into v_feedback
+  from generate_series(1,4) as g(pos);
+
   update public.vortex_game_code_sessions
   set attempts=attempts+1
   where id=v_game.id;
@@ -193,16 +205,17 @@ begin
       values(auth.uid(),v_game.id,v_points,'code_game_win');
     return jsonb_build_object('status','won','exact',v_exact,'present',v_present,
       'serial_number',v_game.secret_serial,'card_id',v_card_id,'points_awarded',v_points,
+      'feedback',v_feedback,
       'attempts_used',v_game.attempts+1);
   elsif v_game.attempts+1 >= 8 then
     update public.vortex_game_code_sessions set status='lost',completed_at=now() where id=v_game.id;
     update public.vortex_game_reward_pool
       set reserved_session_id=null,reserved_until=null
       where serial_number=v_game.secret_serial and reserved_session_id=v_game.id;
-    return jsonb_build_object('status','lost','exact',v_exact,'present',v_present,'attempts_used',8);
+    return jsonb_build_object('status','lost','exact',v_exact,'present',v_present,'feedback',v_feedback,'attempts_used',8);
   end if;
   return jsonb_build_object('status','playing','exact',v_exact,'present',v_present,
-    'attempts_used',v_game.attempts+1,'attempts_left',7-v_game.attempts);
+    'attempts_used',v_game.attempts+1,'attempts_left',7-v_game.attempts,'feedback',v_feedback);
 end;
 $$;
 
