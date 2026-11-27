@@ -64,6 +64,9 @@ function App() {
   const [adminLoading, setAdminLoading] = useState(false)
   const [adminData, setAdminData] = useState([])
   const [adminDataLoading, setAdminDataLoading] = useState(false)
+  const [adminAuditPage, setAdminAuditPage] = useState(0)
+  const [adminAuditCount, setAdminAuditCount] = useState(0)
+  const ADMIN_AUDIT_PAGE_SIZE = 100
   const [adminUsers, setAdminUsers] = useState([])
   const [adminUsersLoading, setAdminUsersLoading] = useState(false)
   const [adminUserSearch, setAdminUserSearch] = useState('')
@@ -265,12 +268,19 @@ function App() {
     }
   }
 
-  async function loadAdminData() {
+  async function loadAdminData(auditPage = adminAuditPage) {
     setAdminDataLoading(true)
     const results = await Promise.all(adminTables.map(async table => {
       try {
         let request = supabase.from(table.name).select('*')
         if (table.name === 'card_requests') request = request.order('created_at', { ascending: false })
+        if (table.name === 'admin_audit_log') {
+          request = request.order('created_at', { ascending: false }).range(auditPage * ADMIN_AUDIT_PAGE_SIZE, (auditPage + 1) * ADMIN_AUDIT_PAGE_SIZE - 1)
+          const { data, error, count } = await supabase.from(table.name).select('*', { count: 'exact' }).order('created_at', { ascending: false }).range(auditPage * ADMIN_AUDIT_PAGE_SIZE, (auditPage + 1) * ADMIN_AUDIT_PAGE_SIZE - 1)
+          if (error) return { ...table, rows: [], error: error.message }
+          setAdminAuditCount(count || 0)
+          return { ...table, rows: data || [], error: '' }
+        }
         const { data, error } = await request.limit(50)
         if (error) return { ...table, rows: [], error: error.message }
         return { ...table, rows: data || [], error: '' }
@@ -2453,7 +2463,11 @@ function App() {
                 : table.rows.length === 0
                   ? <p className="muted">Записей пока нет.</p>
                   : <>
-                    <p className="muted">Показано записей: {table.rows.length} (максимум 50)</p>
+                    {table.name === 'admin_audit_log' ? <div className="admin-user-toolbar" style={{ alignItems: 'center', margin: '10px 0 14px' }}>
+                      <span className="muted">Страница {adminAuditPage + 1} · всего действий: {adminAuditCount} · показано: {table.rows.length}</span>
+                      <button type="button" className="outline" disabled={adminAuditPage === 0 || adminDataLoading} onClick={() => { const next = Math.max(0, adminAuditPage - 1); setAdminAuditPage(next); loadAdminData(next) }}>← Новее</button>
+                      <button type="button" className="outline" disabled={(adminAuditPage + 1) * ADMIN_AUDIT_PAGE_SIZE >= adminAuditCount || adminDataLoading} onClick={() => { const next = adminAuditPage + 1; setAdminAuditPage(next); loadAdminData(next) }}>Старее →</button>
+                    </div> : <p className="muted">Показано записей: {table.rows.length} (максимум 50)</p>}
                     <div style={{ overflowX: 'auto', width: '100%' }}>
                       <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '520px', fontSize: '11px', textAlign: 'left' }}>
                         <thead><tr>
