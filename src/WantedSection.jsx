@@ -37,7 +37,7 @@ export default function WantedSection({ supabase, user, language='ru', onNotice,
  const load=useCallback(async()=>{
   if(!user){setRequests([]);setRequestProfiles({});return}
   setBusy(true)
-  const {data,error}=await supabase.from('card_requests').select('*').order('created_at',{ascending:false}).limit(100)
+  const {data,error}=await supabase.from('card_requests').select('*').neq('status','deleted').order('created_at',{ascending:false}).limit(100)
   if(error){onNotice(c.error+error.message);setBusy(false);return}
   const rows=data||[];setRequests(rows)
   const ownerIds=[...new Set(rows.map(x=>x.requester_id).filter(Boolean))]
