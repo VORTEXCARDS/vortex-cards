@@ -2548,7 +2548,7 @@ function App() {
       </footer>
     </div>
     const publicAuthModal = publicAuthOpen ? createPortal(
-      <div className="public-auth-backdrop" role="presentation" onMouseDown={e => {
+      translateTree(<div className="public-auth-backdrop" role="presentation" onMouseDown={e => {
         if (e.target === e.currentTarget) { setPublicAuthOpen(false); setNotice('') }
       }}>
         <section className="panel auth-panel public-auth-panel" id="public-auth" role="dialog" aria-modal="true" aria-labelledby="public-auth-title">
@@ -2573,7 +2573,7 @@ function App() {
             <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode(authMode === 'signup' ? 'login' : 'signup'); setNotice('') }}>{authMode === 'signup' ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}</button>
           </form>}
         </section>
-      </div>,
+      </div>, language, translations),
       document.body
     ) : null
     return <>{translateTree(publicPage, language, translations)}{publicAuthModal}</>
