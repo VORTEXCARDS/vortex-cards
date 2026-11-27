@@ -15,6 +15,10 @@ create table if not exists public.vortex_game_reward_pool (
 
 -- Enforce four different digits (including leading zeroes).
 alter table public.vortex_game_reward_pool
+  add column if not exists reserved_session_id uuid;
+alter table public.vortex_game_reward_pool
+  add column if not exists reserved_until timestamptz;
+alter table public.vortex_game_reward_pool
   drop constraint if exists vortex_game_reward_unique_digits;
 alter table public.vortex_game_reward_pool
   add constraint vortex_game_reward_unique_digits
@@ -98,6 +102,7 @@ begin
   select serial_number into v_serial
   from public.vortex_game_reward_pool
   where claimed_at is null
+    and (reserved_until is null or reserved_until < now())
     and not exists(select 1 from public.card_inventory c where c.serial_number=vortex_game_reward_pool.serial_number)
   order by random()
   limit 1
@@ -105,6 +110,9 @@ begin
   if v_serial is null then raise exception 'Нет свободных игровых карточек. Попробуй позже'; end if;
   insert into public.vortex_game_code_sessions(user_id,secret_serial)
   values(auth.uid(),v_serial) returning id into v_id;
+  update public.vortex_game_reward_pool
+    set reserved_session_id=v_id,reserved_until=now()+interval '35 minutes'
+    where serial_number=v_serial and claimed_at is null;
   return jsonb_build_object('session_id',v_id,'attempts_allowed',8);
 end;
 $$;
@@ -158,8 +166,9 @@ begin
   if v_exact=4 then
     v_points := greatest(20,100-v_game.attempts*10);
     update public.vortex_game_reward_pool
-      set claimed_by=auth.uid(),claimed_at=now()
-      where serial_number=v_game.secret_serial and claimed_at is null;
+      set claimed_by=auth.uid(),claimed_at=now(),reserved_session_id=null,reserved_until=null
+      where serial_number=v_game.secret_serial and claimed_at is null
+        and reserved_session_id=v_game.id;
     if not found then raise exception 'Эта карточка уже выиграна. Начни новую игру'; end if;
 
     insert into public.card_inventory(serial_number,owner_id,status)
@@ -176,6 +185,9 @@ begin
       'attempts_used',v_game.attempts+1);
   elsif v_game.attempts+1 >= 8 then
     update public.vortex_game_code_sessions set status='lost',completed_at=now() where id=v_game.id;
+    update public.vortex_game_reward_pool
+      set reserved_session_id=null,reserved_until=null
+      where serial_number=v_game.secret_serial and reserved_session_id=v_game.id;
     return jsonb_build_object('status','lost','exact',v_exact,'present',v_present,'attempts_used',8);
   end if;
   return jsonb_build_object('status','playing','exact',v_exact,'present',v_present,
@@ -190,7 +202,30 @@ grant execute on function public.admin_add_game_reward(text) to authenticated;
 grant execute on function public.game_start_code() to authenticated;
 grant execute on function public.game_submit_code(uuid,text) to authenticated;
 
--- After running this script, add the serial numbers reserved for prizes:
--- select public.admin_add_game_reward('5831');
--- select public.admin_add_game_reward('7264');
--- Use only numbers that have not already been issued or promised elsewhere.
+-- Seed ten genuine, unique four-digit prize serials that do not already exist.
+-- They become official card numbers only when a player wins and they are
+-- inserted into card_inventory. Existing issued numbers are never touched.
+do $
+declare
+  v_serial text;
+  v_added integer := 0;
+begin
+  while v_added < 10 loop
+    select lpad(n::text,4,'0') into v_serial
+    from generate_series(0,9999) n
+    where substr(lpad(n::text,4,'0'),1,1) <> substr(lpad(n::text,4,'0'),2,1)
+      and substr(lpad(n::text,4,'0'),1,1) <> substr(lpad(n::text,4,'0'),3,1)
+      and substr(lpad(n::text,4,'0'),1,1) <> substr(lpad(n::text,4,'0'),4,1)
+      and substr(lpad(n::text,4,'0'),2,1) <> substr(lpad(n::text,4,'0'),3,1)
+      and substr(lpad(n::text,4,'0'),2,1) <> substr(lpad(n::text,4,'0'),4,1)
+      and substr(lpad(n::text,4,'0'),3,1) <> substr(lpad(n::text,4,'0'),4,1)
+      and not exists(select 1 from public.card_inventory c where c.serial_number=lpad(n::text,4,'0'))
+      and not exists(select 1 from public.vortex_game_reward_pool p where p.serial_number=lpad(n::text,4,'0'))
+    order by random()
+    limit 1;
+    exit when v_serial is null;
+    insert into public.vortex_game_reward_pool(serial_number) values(v_serial);
+    v_added := v_added + 1;
+  end loop;
+  if v_added < 10 then raise exception 'Не удалось сформировать десять свободных игровых номеров'; end if;
+end $;
