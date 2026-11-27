@@ -538,7 +538,7 @@ function App() {
     "Раздел готовится к запуску": "Розділ готується до запуску",
     "Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.": "Форму оголошень, список запитів і особисті повідомлення буде підключено після налаштування захищеного зберігання оголошень і чатів. Зараз публікація запитів і листування ще не працюють.",
     "Функция пока не активна": "Функція поки не активна",
-    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Важливо: домовленості можна буде обговорювати в чаті, але продавати й купувати картки дозволено лише через маркетплейс VORTEX UNIT."
+    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Важливо: домовленості можна буде обговорювати в чаті, але продавати й купувати картки дозволено лише через маркетплейс VORTEX UNIT.",
     "Рефералы": "Реферали",
     "Профиль": "Профіль",
     "Администрирование": "Адміністрування",
@@ -736,7 +736,7 @@ function App() {
     "Раздел готовится к запуску": "Coming soon",
     "Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.": "Request forms, the request board, and private messages will be enabled after secure storage for requests and chats is configured. Posting and messaging are not available yet.",
     "Функция пока не активна": "Not active yet",
-    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Important: users may discuss terms in chat, but cards can only be bought and sold through the VORTEX UNIT marketplace."
+    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Important: users may discuss terms in chat, but cards can only be bought and sold through the VORTEX UNIT marketplace.",
     "Рефералы": "Referrals",
     "Профиль": "Profile",
     "Администрирование": "Administration",
@@ -941,7 +941,7 @@ function App() {
     "Раздел готовится к запуску": "Demnächst verfügbar",
     "Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.": "Anfrageformular, Übersicht und private Nachrichten werden nach Einrichtung der sicheren Speicherung aktiviert. Anfragen und Nachrichten funktionieren derzeit noch nicht.",
     "Функция пока не активна": "Noch nicht aktiv",
-    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Wichtig: Absprachen sind im Chat möglich, Karten dürfen jedoch nur über den VORTEX UNIT-Marktplatz gekauft und verkauft werden."
+    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Wichtig: Absprachen sind im Chat möglich, Karten dürfen jedoch nur über den VORTEX UNIT-Marktplatz gekauft und verkauft werden.",
     "Рефералы": "Empfehlungen",
     "Профиль": "Profil",
     "Администрирование": "Administration",
@@ -1144,7 +1144,7 @@ function App() {
     "Раздел готовится к запуску": "Bientôt disponible",
     "Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.": "Le formulaire, la liste des demandes et la messagerie seront activés après la configuration du stockage sécurisé. La publication et les messages ne fonctionnent pas encore.",
     "Функция пока не активна": "Fonction non active",
-    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Important : les conditions pourront être discutées par chat, mais les cartes ne pourront être achetées et vendues que sur la marketplace VORTEX UNIT."
+    "Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.": "Important : les conditions pourront être discutées par chat, mais les cartes ne pourront être achetées et vendues que sur la marketplace VORTEX UNIT.",
     "Рефералы": "Parrainages",
     "Профиль": "Profil",
     "Администрирование": "Administration",
