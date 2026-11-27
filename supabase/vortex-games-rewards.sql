@@ -97,6 +97,16 @@ as $$
 declare v_serial text; v_id uuid;
 begin
   if auth.uid() is null then raise exception 'Войди в аккаунт'; end if;
+  perform pg_advisory_xact_lock(hashtext(auth.uid()::text));
+  update public.vortex_game_reward_pool p
+    set reserved_session_id=null,reserved_until=null
+    where p.reserved_session_id in (
+      select id from public.vortex_game_code_sessions
+      where user_id=auth.uid() and status='playing'
+    );
+  update public.vortex_game_code_sessions
+    set status='expired',completed_at=now()
+    where user_id=auth.uid() and status='playing';
   select serial_number into v_serial
   from public.vortex_game_reward_pool
   where claimed_at is null
@@ -145,7 +155,10 @@ begin
   if v_game.status <> 'playing' then raise exception 'Эта игра уже завершена'; end if;
   if now() > v_game.expires_at then
     update public.vortex_game_code_sessions set status='expired',completed_at=now() where id=v_game.id;
-    raise exception 'Время игры истекло. Начни новую игру'; 
+    update public.vortex_game_reward_pool
+      set reserved_session_id=null,reserved_until=null
+      where serial_number=v_game.secret_serial and reserved_session_id=v_game.id;
+    return jsonb_build_object('status','expired','attempts_used',v_game.attempts);
   end if;
   if v_game.attempts >= 8 then raise exception 'Попытки закончились'; end if;
 
