@@ -2021,7 +2021,7 @@ function App() {
           <span>{notice}</span><button type="button" aria-label="Закрыть" onClick={() => setNotice('')}>×</button>
         </div>}
 
-        {tab === 'games' && <GamesSection user={user} onNotice={setNotice} supabaseClient={supabase} />}
+        {tab === 'games' && <GamesSection user={user} onNotice={setNotice} onReward={loadFinancialData} supabaseClient={supabase} />}
 
         {tab === 'home' && <>
           <section className="hero">
