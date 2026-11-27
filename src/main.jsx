@@ -6,6 +6,7 @@ import {
   Plus, Copy, Menu, X, Download, Wallet, Sparkles, Eye, Mail, Gem, Trophy, History, Layers, Search
 } from 'lucide-react'
 import './style.css'
+import WantedSection from './WantedSection.jsx'
 
 try { sessionStorage.removeItem('vortex-startup-reload') } catch (_) {}
 
@@ -1680,27 +1681,7 @@ function App() {
           <p className="rare-disclaimer">{t('Раздел создан как коллекционный каталог. Продажа, аукцион и денежный выкуп здесь пока не активны.')}</p>
         </section>}
 
-        {tab === 'wanted' && <section className="wanted-archive">
-          <div className="wanted-hero">
-            <div className="wanted-kicker"><Search size={16} /> VORTEX UNIT · CARD REQUESTS</div>
-            <h2>{t('Ищу карточку')}</h2>
-            <p>{t('Размещайте запросы на карточки, которых не хватает в вашей коллекции. Другие участники смогут откликнуться, а условия сделки вы обсудите напрямую.')}</p>
-          </div>
-          <div className="wanted-flow">
-            <article><span>01</span><b>{t('Создайте объявление')}</b><p>{t('Укажите номер карточки, количество и желаемую цену.')}</p></article>
-            <article><span>02</span><b>{t('Договоритесь с продавцом')}</b><p>{t('Обсудите наличие и цену в личной переписке VORTEX UNIT.')}</p></article>
-            <article><span>03</span><b>{t('Завершите сделку на маркетплейсе')}</b><p>{t('Продавец размещает карточку на маркетплейсе. Оплата и передача проходят только там.')}</p></article>
-          </div>
-          <div className="panel wanted-coming">
-            <div className="wanted-coming-icon"><Search size={24}/></div>
-            <div>
-              <h3>{t('Раздел готовится к запуску')}</h3>
-              <p>{t('Форма объявлений, список запросов и личные сообщения будут подключены после настройки защищённого хранения объявлений и чатов. Сейчас публикация запросов и переписка ещё не работают.')}</p>
-              <span className="wanted-status">{t('Функция пока не активна')}</span>
-            </div>
-          </div>
-          <p className="wanted-rule">{t('Важно: договорённости можно будет обсуждать в чате, но продавать и покупать карточки разрешено только через маркетплейс VORTEX UNIT.')}</p>
-        </section>}
+        {tab === 'wanted' && <WantedSection supabase={supabase} user={user} language={language} onNotice={setNotice} onMarketplace={() => setTab('market')} />}
 
         {tab === 'support' && <SupportCenter userEmail={user?.email} language={language} />}
 
