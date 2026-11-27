@@ -2487,8 +2487,9 @@ function App() {
           <article><Users /><b>Сообщество</b><span>Приглашайте друзей и развивайтесь вместе с VORTEX.</span></article>
         </section>
         {notice && <div className="notice" role="status"><span>{notice}</span><button type="button" aria-label="Закрыть" onClick={() => setNotice('')}>×</button></div>}
-        {publicAuthOpen && <section className="panel auth-panel public-auth-panel" id="public-auth">
-          <div className="public-auth-heading"><h2>{authMode === 'signup' ? 'Регистрация VORTEX UNIT' : authMode === 'forgot' ? 'Восстановление пароля' : authMode === 'reset' ? 'Новый пароль' : 'Вход в аккаунт'}</h2><button type="button" className="outline" onClick={() => { setPublicAuthOpen(false); setNotice('') }}>Закрыть</button></div>
+        {publicAuthOpen && <div className="public-auth-backdrop" role="presentation" onMouseDown={e => { if (e.target === e.currentTarget) { setPublicAuthOpen(false); setNotice('') } }}>
+          <section className="panel auth-panel public-auth-panel" id="public-auth" role="dialog" aria-modal="true" aria-labelledby="public-auth-title">
+          <div className="public-auth-heading"><h2 id="public-auth-title">{authMode === 'signup' ? 'Регистрация VORTEX UNIT' : authMode === 'forgot' ? 'Восстановление пароля' : authMode === 'reset' ? 'Новый пароль' : 'Вход в аккаунт'}</h2><button type="button" className="outline" onClick={() => { setPublicAuthOpen(false); setNotice('') }}>Закрыть</button></div>
           {authMode === 'forgot' ? <form onSubmit={sendPasswordReset}>
             <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" /></label>
             <button type="submit" className="primary full" disabled={busy}>{busy ? 'Отправляем...' : 'Отправить ссылку'}</button>
@@ -2504,7 +2505,8 @@ function App() {
             {authMode === 'login' && <button type="button" className="outline full" disabled={busy} onClick={() => setAuthMode('forgot')}>Забыли пароль?</button>}
             <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode(authMode === 'signup' ? 'login' : 'signup'); setNotice('') }}>{authMode === 'signup' ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}</button>
           </form>}
-        </section>}
+          </section>
+        </div>}
         </>}
       </main>
       <footer className="public-footer">
