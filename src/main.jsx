@@ -1872,7 +1872,7 @@ function App() {
       setNotice('Имя пользователя должно содержать от 2 до 24 символов.')
       return
     }
-    if (!/^[\\p{L}\\p{N}_ .-]+$/u.test(cleanUsername)) {
+    if (!/^[\p{L}\p{N}_ .-]+$/u.test(cleanUsername)) {
       setNotice('Имя может содержать буквы, цифры, пробел, точку, дефис или подчёркивание.')
       return
     }
