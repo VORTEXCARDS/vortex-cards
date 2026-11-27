@@ -1657,6 +1657,32 @@ function App() {
     }
   }
 
+  async function resendConfirmation() {
+    if (busy) return
+    const cleanEmail = email.trim()
+    if (!cleanEmail || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(cleanEmail)) {
+      setNotice('Сначала укажите правильный адрес электронной почты.')
+      return
+    }
+    setBusy(true)
+    setNotice('Отправляем письмо подтверждения...')
+    try {
+      const emailRedirectTo = new URL(import.meta.env.BASE_URL, location.origin).toString()
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: cleanEmail,
+        options: { emailRedirectTo }
+      })
+      if (error) throw error
+      setNotice('Если аккаунт ожидает подтверждения, письмо отправлено. Проверьте входящие и папку «Спам».')
+    } catch (error) {
+      console.error('Ошибка повторной отправки подтверждения:', error)
+      setNotice('Не удалось отправить письмо: ' + (error.message || 'ошибка сервера'))
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function sendPasswordReset(e) {
     e.preventDefault()
     if (busy) return
@@ -2159,6 +2185,7 @@ function App() {
               <label>{t('Пароль')}<div className="password-field"><input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} minLength="6" required autoComplete="current-password" /><button type="button" className="password-toggle" aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(v => !v)}><Eye size={18} /></button></div></label>
               <button type="submit" className="primary full" disabled={busy}>{busy ? t('Подождите...') : t('Войти')}</button>
               <button type="button" className="outline full" disabled={busy} onClick={signUp}>{busy ? t('Подождите...') : t('Создать аккаунт')}</button>
+              <button type="button" className="outline full" disabled={busy} onClick={resendConfirmation}>{busy ? t('Отправляем...') : t('Отправить письмо подтверждения повторно')}</button>
               <button type="button" className="outline full" disabled={busy} onClick={() => { setAuthMode('forgot'); setNotice('') }}>{t('Забыли пароль?')}</button>
             </form>}
           </section>
